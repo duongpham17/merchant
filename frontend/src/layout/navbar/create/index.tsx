@@ -23,6 +23,7 @@ const CreateIndex = () => {
     quantity: 0,
     price: 0,
     sold: 0,
+    icon: "",
     new_total_quantity: 0,
   };
 
@@ -31,8 +32,10 @@ const CreateIndex = () => {
   async function callback(){
     const isExist = OSRSGrandExchange.find(el => el.name.toLowerCase() === values.name.toLowerCase());
     if(!isExist) return setCustomErrors({name: "invalid id"});
-    const id = OSRSGrandExchange.find(el => el.name === values.name)?.id || 1;
-    await dispatch(Items.create({...values, id}));
+    const index = OSRSGrandExchange.findIndex(el => el.name === values.name);
+    const id = OSRSGrandExchange[index].id;
+    const icon = OSRSGrandExchange[index].icon
+    await dispatch(Items.create({...values, id, icon}));
     setCustomErrors({});
     onClear();
   };

@@ -21,6 +21,10 @@ const itemsSchema = new mongoose_1.Schema({
     quantity: {
         type: Number
     },
+    icon: {
+        type: String,
+        default: ""
+    },
     sold: {
         type: Number,
         default: 0

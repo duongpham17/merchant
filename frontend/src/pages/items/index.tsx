@@ -10,7 +10,7 @@ import useOpen from '@hooks/useOpen';
 import useQuery from '@hooks/useQuery';
 
 import Trades from './trades';
-import axios from 'axios';
+import { firstcaps } from '@utils/functions';
 
 const ItemsIndex = () => {
 
@@ -28,18 +28,10 @@ const ItemsIndex = () => {
     )
   };
 
-  const api = async () => {
-    try{
-      const res = await axios.get('https://prices.osrs.cloud');
-      console.log(res.data);
-    } catch(er){
-      console.log(er)
-    }
-  }
-
   const filteredItemData = () => {
     const data: {
       id: number;
+      icon: string,
       name: string,
       trades: IItems[];
     }[] = [];
@@ -47,7 +39,7 @@ const ItemsIndex = () => {
     for(let x of items){
       const itemIndex = data.findIndex(el => el.id === x.id);
       if(itemIndex === -1){
-        data.push({id: x.id, name: x.name, trades: [x]});
+        data.push({id: x.id, name: x.name, icon: x.icon, trades: [x]});
       } else {
         data[itemIndex].trades.push(x);
       };
@@ -83,8 +75,6 @@ const ItemsIndex = () => {
   return (
     <div className={styles.container}>
 
-      <button onClick={api}>api</button>
-
       <Label1 
         size={20} 
         name={`Total Transaction ${items.length}`} 
@@ -101,7 +91,8 @@ const ItemsIndex = () => {
           {filtered.map((el) => 
             <Button 
               key={el.id} 
-              label1={el.name}
+              label1={<img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>}
+              label2={el.name}
               onClick={() => onChangeItem(el.id.toString())}  
               color="dark" 
               margin 

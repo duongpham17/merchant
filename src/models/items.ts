@@ -8,6 +8,7 @@ export interface IItems extends Document {
     quantity: number,
     price: number,
     sold: number,
+    icon: string,
     new_total_quantity: number,
     timestamp: Number
 };
@@ -30,6 +31,10 @@ const itemsSchema = new Schema<IItems>({
     },
     quantity: {
         type: Number
+    },
+    icon:{
+        type: String,
+        default: ""
     },
     sold: {
         type: Number,
