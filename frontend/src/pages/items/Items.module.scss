@@ -1,0 +1,19 @@
+.container{
+
+    .itemsContainer{
+        display: grid;
+        grid-template-columns: 0.35fr 1fr;
+        grid-area: 
+        "ids items";
+        gap: 1rem;
+
+        .ids{
+            grid-area: "ids";
+            min-width: 150px;
+        }
+    
+        .items{
+            grid-area: "items";
+        }
+    }
+}

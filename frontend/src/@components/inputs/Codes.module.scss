@@ -1,0 +1,27 @@
+.container {
+
+    div {
+        margin: 0.5rem auto;
+        display: flex;
+        justify-content: space-between;
+        
+        .box {
+            text-align: center;
+            height: 50px;
+            width: 35px;
+            border-radius: 5px;
+            border: 2px solid var(--clr-light-light); 
+            background-color: var(--clr-light-light);
+
+            &:hover{
+                border-color: var(--clr-light);
+            }
+
+            &:focus {
+                outline: none;
+                border-color: var(--clr-main);
+            }
+        }
+    }
+
+}
