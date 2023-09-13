@@ -10,6 +10,7 @@ import useOpen from '@hooks/useOpen';
 import useQuery from '@hooks/useQuery';
 
 import Trades from './trades';
+import axios from 'axios';
 
 const ItemsIndex = () => {
 
@@ -26,6 +27,15 @@ const ItemsIndex = () => {
       <Label1 name="No item created" />
     )
   };
+
+  const api = async () => {
+    try{
+      const res = await axios.get('https://prices.osrs.cloud');
+      console.log(res.data);
+    } catch(er){
+      console.log(er)
+    }
+  }
 
   const filteredItemData = () => {
     const data: {
@@ -72,6 +82,8 @@ const ItemsIndex = () => {
 
   return (
     <div className={styles.container}>
+
+      <button onClick={api}>api</button>
 
       <Label1 
         size={20} 
