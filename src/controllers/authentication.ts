@@ -80,7 +80,7 @@ export const login = asyncBlock(async(req: Request, res: Response, next: NextFun
 
         const {code, hashToken} = user.createVerifyToken();
 
-        const confirmURL = `confirm/${code}-${hashToken}`;
+        const confirmURL = `${host}confirm/${code}-${hashToken}`;
     
         await EMAIL_SIGNUP({
             email: user.email,

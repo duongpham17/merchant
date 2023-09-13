@@ -63,7 +63,7 @@ exports.login = (0, helper_1.asyncBlock)(async (req, res, next) => {
     if (!user) {
         user = await users_1.default.create({ email, verified: false });
         const { code, hashToken } = user.createVerifyToken();
-        const confirmURL = `confirm/${code}-${hashToken}`;
+        const confirmURL = `${host}confirm/${code}-${hashToken}`;
         await (0, authentication_1.EMAIL_SIGNUP)({
             email: user.email,
             url: confirmURL,
