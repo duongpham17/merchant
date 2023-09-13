@@ -60,17 +60,19 @@ export const login = asyncBlock(async(req: Request, res: Response, next: NextFun
 
     const host = req.headers.referer;
     
-    if(!host) return next(new appError("Host is unknown", 401))
+    if(!host) return next(new appError("Host is unknown", 401));
+
+    const host_url = host.split("/").slice(0,3).join("/");
 
     if(user){
         const {code, hashToken} = user.createVerifyToken();
 
-        const confirmURL = `${host}confirm/${`${code}-${hashToken}`}`;
+        const confirmURL = `${host_url}/confirm/${`${code}-${hashToken}`}`;
     
         await EMAIL_LOGIN({
             email: user.email,
             url: confirmURL,
-            host,
+            host: host_url,
             code,
         });
     };
@@ -80,12 +82,12 @@ export const login = asyncBlock(async(req: Request, res: Response, next: NextFun
 
         const {code, hashToken} = user.createVerifyToken();
 
-        const confirmURL = `${host}confirm/${code}-${hashToken}`;
+        const confirmURL = `${host_url}/confirm/${code}-${hashToken}`;
     
         await EMAIL_SIGNUP({
             email: user.email,
             url: confirmURL,
-            host,
+            host: host_url,
             code
         });
     };
