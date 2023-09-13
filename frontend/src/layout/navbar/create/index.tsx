@@ -23,7 +23,6 @@ const CreateIndex = () => {
     quantity: 0,
     price: 0,
     sold: 0,
-    cost_basis: 0,
     new_total_quantity: 0,
   };
 
@@ -92,14 +91,6 @@ const CreateIndex = () => {
         name="sold"
         placeholder='...'
         value={values.sold || ""} 
-        onChange={onChange} 
-      />
-
-      <Input
-        label1="Cost Basis"
-        name="cost_basis"
-        value={values.cost_basis || ""} 
-        placeholder="..."
         onChange={onChange} 
       />
 

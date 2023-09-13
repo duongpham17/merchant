@@ -156,7 +156,7 @@ const Trades = ({data, latest}: Props) => {
                   </Flex>
                   :
                   <Flex>
-                    <Label2 name="CBASIS" value={`${item.price.toLocaleString()}`} />
+                    <Label2 name="CBASIS" value={`${item.new_total_quantity / item.price}`} />
                     <Label2 name="NTQTY" value={`${item.quantity.toLocaleString()}`} />
                     <Label2 name="BEVEN" value={`${item.sold.toLocaleString()}`} />
                   </Flex>

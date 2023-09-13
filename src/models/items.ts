@@ -8,7 +8,6 @@ export interface IItems extends Document {
     quantity: number,
     price: number,
     sold: number,
-    cost_basis: number,
     new_total_quantity: number,
     timestamp: Number
 };
@@ -37,10 +36,6 @@ const itemsSchema = new Schema<IItems>({
         default: 0
     },
     price: {
-        type: Number,
-        default: 0
-    },
-    cost_basis: {
         type: Number,
         default: 0
     },

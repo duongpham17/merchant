@@ -29,10 +29,6 @@ const itemsSchema = new mongoose_1.Schema({
         type: Number,
         default: 0
     },
-    cost_basis: {
-        type: Number,
-        default: 0
-    },
     new_total_quantity: {
         type: Number,
         default: 0

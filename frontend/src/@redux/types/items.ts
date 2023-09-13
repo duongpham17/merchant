@@ -8,7 +8,6 @@ export interface IItems {
     quantity: number,
     price: number,
     sold: number,
-    cost_basis: number,
     new_total_quantity: number,
     timestamp: Number
 };
