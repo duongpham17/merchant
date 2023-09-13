@@ -11,19 +11,26 @@ import Label from '@components/labels/Style1';
 import Line from '@components/line/Style1';
 
 import validation from './validation';
+import useQuery from '@hooks/useQuery';
 
 const CreateIndex = () => {
 
   const dispatch = useAppDispatch();
 
+  const {getQueryValue} = useQuery();
+
+  const id = Number(getQueryValue("id"));
+
+  const ge_item_autofill = id ? OSRSGrandExchange.find(el => el.id === id) : "";
+  
   const initialState = {
-    name: "",
+    name: ge_item_autofill ? ge_item_autofill.name : "",
+    icon: ge_item_autofill ? ge_item_autofill.icon : "",
     side: "buy",
-    id: 0,
+    id: id,
     quantity: 0,
     price: 0,
     sold: 0,
-    icon: "",
   };
 
   const {values, onChange, onSubmit, onSetValue, errors, customErrors, setCustomErrors, onClear, loading} = useForm(initialState, callback, validation);
@@ -50,13 +57,13 @@ const CreateIndex = () => {
     for(let x of excelData){
       const [side, quantity, price] = x;
       await dispatch(Items.create({      
-        name: "summer pie",
-        id: 7218,
+        name: "cooked karambwan",
+        id: 3144,
         quantity: Number(quantity),
         side: side.toString().toLowerCase(),
         price: Number(price),
         sold: 0,
-        icon: "summer pie.png"
+        icon: "cooked karambwan.png"
       }))
     }
   };
