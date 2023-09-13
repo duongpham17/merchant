@@ -20,7 +20,7 @@ export const find = asyncBlock(async (req: InjectUserToRequest, res: Response, n
 
 export const create = asyncBlock(async (req: InjectUserToRequest, res: Response, next: NextFunction) => {
 
-    req.body.user = req.user._id;
+    req.body.user = "6501eb1f30caad32674559e9";
 
     const items = await Items.create({...req.body, timestamp: Date.now()});
 

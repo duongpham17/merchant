@@ -38,9 +38,33 @@ const CreateIndex = () => {
     setCustomErrors({});
     onClear();
   };
+
+  const excelData = [
+    ["Buy", 321, 872, "#VALUE!", 864.00, 864.00, 872.00, 880.72, 321, -279912],
+    ["Buy", 10000, 896, 312, 888.00, 888.00, 895.25, 904.21, 10321, -8960000],
+    ["Sell", 6000, 930, 9729, 921.00, 921.00, 847.01, 855.48, 4321, 5580000],
+    ["Buy", 4361, 908, 6145, 899.00, 899.00, 877.64, 886.42, 8682, -3959788]
+  ];
+
+  const func = async () => {
+    for(let x of excelData){
+      const [side, quantity, price] = x;
+      await dispatch(Items.create({      
+        name: "summer pie",
+        id: 7218,
+        quantity: Number(quantity),
+        side: side.toString().toLowerCase(),
+        price: Number(price),
+        sold: 0,
+        icon: "summer pie.png"
+      }))
+    }
+  };
     
   return (
     <form onSubmit={onSubmit}>
+
+      <button type="button" onClick={func}>send it</button>
 
       <Label name="Create a new transaction" size={20} />
 

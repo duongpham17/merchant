@@ -37,11 +37,17 @@ const Trades = ({data, latest}: Props) => {
     if(item.side === "sell"){
       const at_total = item.price * item.quantity;
       const current_total = item.quantity * item.sold;
-      return current_total - at_total
+      return {
+        pnl: Math.floor((current_total - at_total) * 0.99),
+        tax: Math.floor((current_total) * 0.01)
+      };
     } else {
       const at_total = item.price * item.quantity;
       const current_total = item.quantity * average_cost;
-      return current_total - at_total;
+      return {
+        pnl: Math.floor((current_total - at_total) * 0.99),
+        tax: 0
+      }
     }
   };
 
@@ -51,7 +57,7 @@ const Trades = ({data, latest}: Props) => {
 
   const calc = (item: IItems[]) => {
 
-    let [buy, sell, quantity, bquantity, squantity] = [0, 0, 0, 0, 0];
+    let [buy, sell, quantity, tax] = [0, 0, 0, 0];
 
     let [unrealised_pnl, realised_pnl, liquidation] = [0, 0, 0];
 
@@ -61,6 +67,7 @@ const Trades = ({data, latest}: Props) => {
         const at_total = x.price * x.quantity;
         const current_total = x.quantity * x.sold;
         realised_pnl+=current_total - at_total
+        tax += Math.floor(current_total * 0.01);
       } else {
         const at_total = x.price * x.quantity;
         const current_total = x.quantity * average_cost;
@@ -69,12 +76,11 @@ const Trades = ({data, latest}: Props) => {
 
       if(x.side === "buy"){
         buy += (x.quantity*x.price);
-        bquantity += x.quantity;
         quantity += x.quantity;
       } else {
         sell += (x.quantity*x.sold);
-        squantity += x.quantity;
       };
+      
     };
 
     liquidation = buy + sell;
@@ -85,10 +91,9 @@ const Trades = ({data, latest}: Props) => {
       sell, 
       pnl: buy - sell,
       liquidation,
-      squantity,
-      bquantity,
       unrealised_pnl,
-      realised_pnl
+      realised_pnl,
+      tax
     }
   };
 
@@ -113,16 +118,31 @@ const Trades = ({data, latest}: Props) => {
   
   };
 
+  const dca = (index: number, array: IItems[]) => {
+    return array.slice(index).map(el => el.side==="buy" ? el.quantity : -el.quantity).reduce((acc,cur) => acc+cur);
+  };
+
   return (
     <div key={data.id}>
 
         <Container>
           <Label1 color="light" name="Current Price" value={`H ${latest[data.id].high.toLocaleString()} . A ${((latest[data.id].low + latest[data.id].high) / 2).toLocaleString()} . L ${latest[data.id].low.toLocaleString()}`} />
-          <Label1 color="light" name="Holdings" value={`C ${total.quantity.toLocaleString()} . B ${total.bquantity.toLocaleString()} . S ${total.squantity.toLocaleString()}`}/>
+          <Line />
+            {data.trades.map((item, index, array) => 
+              index === 0 ? 
+                <div key={item._id}>
+                  <Label1 color="light" name="DCA" value={costBasis(index, array)}/>
+                  <Label1 color="light" name="Total Quantity" value={dca(index, array).toLocaleString()}/>
+                  <Label1 color="light" name="Break Even" value={(Number(costBasis(index, array)) * 1.01).toFixed(2).toLocaleString()} />
+                </div>
+              : ""
+            )}
           <Line /> 
-          <Label1 color="light" name="Buy" value={`${total.buy.toLocaleString()}`}/>
-          <Label1 color="light" name="Sell" value={`${total.sell.toLocaleString()}`}/>
-          <Label1 color="light" name="Liquidation" value={`${total.liquidation.toLocaleString()}`}/>
+          <Label3 color="light" name="Buy" value={`${total.buy.toLocaleString()}`}  valueColor="green" />
+          <Label3 color="light" name="Sell" value={`${total.sell.toLocaleString()}`}  valueColor={"red"} />
+          <Line />
+          <Label1 color="light" name="Liquidation" value={`${(Math.floor(total.liquidation * 0.99)).toLocaleString()}`}/>
+          <Label1 color="light" name="Tax" value={`${total.tax.toLocaleString()}`}/>
           <Line />
           <Label3 color="light" name="Unrealised PNL" value={`${total.unrealised_pnl.toLocaleString()}`} valueColor={total.unrealised_pnl >= 0 ? "green" : "red"} />
           <Label3 color="light" name="Realised PNL" value={`${total.realised_pnl.toLocaleString()}`} valueColor={total.realised_pnl >= 0 ? "green" : "red"} />
@@ -166,21 +186,27 @@ const Trades = ({data, latest}: Props) => {
                 { item.side === "sell" ?      
                   <Flex>
                     <Label2 name="DCA" value={`${costBasis(index, array)}`} />
-                    <Label2 name="CHANGE" value={`${(item.sold - item.price).toLocaleString()}`} />
                     <Label2 name="ACCUMLATION" value={`${item.quantity.toLocaleString()}`} />
+                    <Label2 name="" value={""} />
                   </Flex>
                   :
                   <Flex>
                     <Label2 name="DCA" value={costBasis(index, array)} />
-                    <Label2 name="BEVEN" value={`${item.sold.toLocaleString()}`} />
-                    <Label2 name="ACCUMLATION" value={array.slice(index).map(el => el.side==="buy" ? el.quantity : -el.quantity).reduce((acc,cur) => acc+cur)} />
+                    <Label2 name="ACCUMLATION" value={`${item.quantity.toLocaleString()}`} />
+                    <Label2 name="" value={``} />
                   </Flex>
                 }
   
                 <Line />
   
                 <Flex>
-                <Label2 name={item.side === "buy" ? "UNREALISED PNL" : "PROFIT/LOSS"} value={`${profitNLoss(item).toLocaleString()}`} color={profitNLoss(item) <= 0 ? "red" : "green"} />
+                  <Label2 name={item.side === "buy" ? "UNREALISED PNL" : "REALISED PNL"} value={`${profitNLoss(item).pnl.toLocaleString()}`} color={profitNLoss(item).pnl <= 0 ? "red" : "green"} />
+                  { item.side === "sell" &&
+                    <>
+                      <Label2 name="TAX" value={`${profitNLoss(item).tax.toLocaleString()}`} />
+                      <Label2 name="SOLD" value={`${(item.sold).toLocaleString()}`} />
+                    </>
+                  }
                 </Flex>
   
             </Container>

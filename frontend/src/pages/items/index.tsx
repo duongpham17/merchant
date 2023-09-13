@@ -70,7 +70,7 @@ const ItemsIndex = () => {
   const onChangeItem = (id: string ) => {
     onOpenLocal(id.toString());
     setQuery("id", id.toString());
-  }
+  };
 
   return (
     <div className={styles.container}>
