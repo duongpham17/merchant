@@ -36,8 +36,6 @@ const EditIndex = ({data}: {data: IItems}) => {
 
             <Input type="number" label1="Quantity" name="quantity" value={values.quantity} onChange={onChange} />
 
-            <Input type="number" label1="New Total Quantity" name="new_total_quantity" value={values.new_total_quantity || ""} onChange={onChange} />
-
             {edited && <Button type="submit" label1={"update"} loading={loading} color="blue" />}
         </form>
     )

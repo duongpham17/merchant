@@ -24,7 +24,6 @@ const CreateIndex = () => {
     price: 0,
     sold: 0,
     icon: "",
-    new_total_quantity: 0,
   };
 
   const {values, onChange, onSubmit, onSetValue, errors, customErrors, setCustomErrors, onClear, loading} = useForm(initialState, callback, validation);
@@ -94,14 +93,6 @@ const CreateIndex = () => {
         name="sold"
         placeholder='...'
         value={values.sold || ""} 
-        onChange={onChange} 
-      />
-
-      <Input
-        label1="New Total Quantity"
-        name="new_total_quantity"
-        placeholder="..."
-        value={values.new_total_quantity || ""} 
         onChange={onChange} 
       />
 

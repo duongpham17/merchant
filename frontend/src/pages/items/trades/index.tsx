@@ -45,10 +45,6 @@ const Trades = ({data, latest}: Props) => {
     }
   };
 
-  // const costBasis = (item: IItems) => {
-  //   const cost = (item.quantity * item.price)
-  // };
-
   const onDelete = (id: string) => {
     dispatch(Item.remove(id))
   };
@@ -98,6 +94,25 @@ const Trades = ({data, latest}: Props) => {
 
   const total = calc(data.trades);
 
+  const costBasis = (index: number, array: IItems[]) => {
+
+    let [total_spent, accumulation] = [0, 0];
+    
+    for(let x of array.slice(index)){
+      if(x.side === "sell") {
+        accumulation -= x.quantity;
+        total_spent -= x.price * x.quantity;
+      }
+      if(x.side === "buy") {
+        accumulation += x.quantity;
+        total_spent += x.price * x.quantity;
+      }
+    };
+
+    return (total_spent / accumulation).toFixed(2)
+  
+  };
+
   return (
     <div key={data.id}>
 
@@ -116,7 +131,7 @@ const Trades = ({data, latest}: Props) => {
         </Container>
 
         <Pagination data={data.trades} show={25}>
-          {(item, index) => 
+          {(item, index, array) => 
             <Container background="dark" key={item._id}>
                 <Flex>
                 <Label1 name={`${index+1}. ${firstcaps(item.name)}`} />
@@ -134,9 +149,9 @@ const Trades = ({data, latest}: Props) => {
   
                 { item.side === "sell" ?
                   <Flex>
-                    <Label2 name="SOLD" value={`${item.sold.toLocaleString()}`} />
+                    <Label2 name="PRICE" value={`${item.price.toLocaleString()}`} />
                     <Label2 name="QTY" value={`${item.quantity.toLocaleString()}`} />
-                    <Label2 name="TOTAL" value={`${(item.quantity * item.sold).toLocaleString()}`} />
+                    <Label2 name="TOTAL" value={`${(item.quantity * item.price).toLocaleString()}`} />
                   </Flex>
                 :
                   <Flex>
@@ -150,15 +165,15 @@ const Trades = ({data, latest}: Props) => {
   
                 { item.side === "sell" ?      
                   <Flex>
-                    <Label2 name="PRICE" value={`${item.price.toLocaleString()}`} />
+                    <Label2 name="DCA" value={`${costBasis(index, array)}`} />
                     <Label2 name="CHANGE" value={`${(item.sold - item.price).toLocaleString()}`} />
-                    <Label2 name="NTQTY" value={`${item.quantity.toLocaleString()}`} />
+                    <Label2 name="ACCUMLATION" value={`${item.quantity.toLocaleString()}`} />
                   </Flex>
                   :
                   <Flex>
-                    <Label2 name="CBASIS" value={`${item.new_total_quantity / item.price}`} />
-                    <Label2 name="NTQTY" value={`${item.quantity.toLocaleString()}`} />
+                    <Label2 name="DCA" value={costBasis(index, array)} />
                     <Label2 name="BEVEN" value={`${item.sold.toLocaleString()}`} />
+                    <Label2 name="ACCUMLATION" value={array.slice(index).map(el => el.side==="buy" ? el.quantity : -el.quantity).reduce((acc,cur) => acc+cur)} />
                   </Flex>
                 }
   

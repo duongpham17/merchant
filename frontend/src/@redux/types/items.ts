@@ -9,7 +9,6 @@ export interface IItems {
     price: number,
     sold: number,
     icon: string,
-    new_total_quantity: number,
     timestamp: Number
 };
 
