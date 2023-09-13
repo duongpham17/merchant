@@ -5,6 +5,7 @@ import { OSRS_GE } from '@redux/types/osrs';
 import Edit from '../edit';
 
 import Button from '@components/buttons/Button';
+import Message from '@components/hover/Message';
 import Line from '@components/line/Style1';
 import Label1 from '@components/labels/Style1';
 import Label2 from '@components/labels/Style2';
@@ -16,7 +17,7 @@ import Pagination from '@components/pagination/Style1';
 
 import { UK } from '@utils/time';
 import { firstcaps } from '@utils/functions';
-import { MdKeyboardArrowRight } from 'react-icons/md';
+import { MdKeyboardArrowRight, MdContentCopy } from 'react-icons/md';
 
 interface Props {
   data: {
@@ -33,13 +34,13 @@ const Trades = ({data, latest}: Props) => {
 
   const dispatch = useAppDispatch();
 
-  const profitNLoss = (item: IItems) => {
+  const ProfitNLoss = (item: IItems) => {
     if(item.side === "sell"){
       const at_total = item.price * item.quantity;
       const current_total = item.quantity * item.sold;
       return {
         pnl: Math.floor((current_total - at_total) * 0.99),
-        tax: Math.floor((current_total) * 0.01)
+        tax: (item.price - Math.trunc(item.price * 0.01)) * item.quantity
       };
     } else {
       const at_total = item.price * item.quantity;
@@ -51,11 +52,7 @@ const Trades = ({data, latest}: Props) => {
     }
   };
 
-  const onDelete = (id: string) => {
-    dispatch(Item.remove(id))
-  };
-
-  const calc = (item: IItems[]) => {
+  const TotalDataSets = (item: IItems[]) => {
 
     let [buy, sell, quantity, tax] = [0, 0, 0, 0];
 
@@ -66,7 +63,7 @@ const Trades = ({data, latest}: Props) => {
       if(x.side === "sell"){
         const at_total = x.price * x.quantity;
         const current_total = x.quantity * x.sold;
-        realised_pnl+=current_total - at_total
+        realised_pnl += current_total - at_total
         tax += Math.floor(current_total * 0.01);
       } else {
         const at_total = x.price * x.quantity;
@@ -97,9 +94,7 @@ const Trades = ({data, latest}: Props) => {
     }
   };
 
-  const total = calc(data.trades);
-
-  const costBasis = (index: number, array: IItems[]) => {
+  const calc_cost_basis = (index: number, array: IItems[]) => {
 
     let [total_spent, accumulation] = [0, 0];
     
@@ -118,25 +113,57 @@ const Trades = ({data, latest}: Props) => {
   
   };
 
-  const dca = (index: number, array: IItems[]) => {
+  const calc_dca = (index: number, array: IItems[]) => {
     return array.slice(index).map(el => el.side==="buy" ? el.quantity : -el.quantity).reduce((acc,cur) => acc+cur);
+  };
+
+  const Methods = () => {
+    let [COST, DCA] = [0, 0];
+
+    for(let i of data.trades){
+      const index = Number(i) 
+      if(index === 0){
+        COST = Number(calc_cost_basis(index, data.trades));
+        DCA = Number(calc_dca(index, data.trades));
+        break
+      }
+    }
+    
+    return {
+      costBasis: COST,
+      dca: DCA,
+    }
+  };
+
+  const methods = Methods();
+
+  const total = TotalDataSets(data.trades);
+
+  const onCopy = () => {
+    navigator.clipboard.writeText(JSON.stringify({
+      cost_basis: methods.costBasis,
+      dca: methods.dca,
+      average_cost: average_cost
+    }));
+  };
+
+  const onDelete = (id: string) => {
+    dispatch(Item.remove(id))
   };
 
   return (
     <div key={data.id}>
 
         <Container>
+          <Flex>
+            <div></div>
+            <Message message="copy"><Button label1={<MdContentCopy/>} onClick={onCopy} color="dark" margin /></Message>
+          </Flex>
           <Label1 color="light" name="Current Price" value={`H ${latest[data.id].high.toLocaleString()} . A ${((latest[data.id].low + latest[data.id].high) / 2).toLocaleString()} . L ${latest[data.id].low.toLocaleString()}`} />
           <Line />
-            {data.trades.map((item, index, array) => 
-              index === 0 ? 
-                <div key={item._id}>
-                  <Label1 color="light" name="DCA" value={costBasis(index, array)}/>
-                  <Label1 color="light" name="Total Quantity" value={dca(index, array).toLocaleString()}/>
-                  <Label1 color="light" name="Break Even" value={(Number(costBasis(index, array)) * 1.01).toFixed(2).toLocaleString()} />
-                </div>
-              : ""
-            )}
+          <Label1 color="light" name="DCA" value={methods.costBasis}/>
+          <Label1 color="light" name="Total Quantity" value={methods.dca.toLocaleString()}/>
+          <Label1 color="light" name="Break Even" value={(Number(methods.costBasis) * 1.01).toFixed(2).toLocaleString()} />
           <Line /> 
           <Label3 color="light" name="Buy" value={`${total.buy.toLocaleString()}`}  valueColor="green" />
           <Label3 color="light" name="Sell" value={`${total.sell.toLocaleString()}`}  valueColor={"red"} />
@@ -151,7 +178,7 @@ const Trades = ({data, latest}: Props) => {
         </Container>
 
         <Pagination data={data.trades} show={25}>
-          {(item, index, array) => 
+          {(item, index) => 
             <Container background="dark" key={item._id}>
                 <Flex>
                 <Label1 name={`${index+1}. ${firstcaps(item.name)}`} />
@@ -185,13 +212,13 @@ const Trades = ({data, latest}: Props) => {
   
                 { item.side === "sell" ?      
                   <Flex>
-                    <Label2 name="DCA" value={`${costBasis(index, array)}`} />
+                    <Label2 name="DCA" value={`${methods.dca}`} />
                     <Label2 name="ACCUMLATION" value={`${item.quantity.toLocaleString()}`} />
                     <Label2 name="" value={""} />
                   </Flex>
                   :
                   <Flex>
-                    <Label2 name="DCA" value={costBasis(index, array)} />
+                    <Label2 name="DCA" value={methods.dca} />
                     <Label2 name="ACCUMLATION" value={`${item.quantity.toLocaleString()}`} />
                     <Label2 name="" value={``} />
                   </Flex>
@@ -200,10 +227,10 @@ const Trades = ({data, latest}: Props) => {
                 <Line />
   
                 <Flex>
-                  <Label2 name={item.side === "buy" ? "UNREALISED PNL" : "REALISED PNL"} value={`${profitNLoss(item).pnl.toLocaleString()}`} color={profitNLoss(item).pnl <= 0 ? "red" : "green"} />
+                  <Label2 name={item.side === "buy" ? "UNREALISED PNL" : "REALISED PNL"} value={`${ProfitNLoss(item).pnl.toLocaleString()}`} color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} />
                   { item.side === "sell" &&
                     <>
-                      <Label2 name="TAX" value={`${profitNLoss(item).tax.toLocaleString()}`} />
+                      <Label2 name="TAX" value={`${ProfitNLoss(item).tax.toLocaleString()}`} />
                       <Label2 name="SOLD" value={`${(item.sold).toLocaleString()}`} />
                     </>
                   }

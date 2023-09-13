@@ -25,6 +25,7 @@ export enum TYPES {
     ITEMS_CREATE = "ITEMS_CREATE",
     ITEMS_UPDATE = "ITEMS_UPDATE",
     ITEMS_REMOVE = "ITEMS_REMOVE",
+    ITEMS_MANY   = "ITEMS_MANY"
 };
 
 interface FIND {
@@ -47,4 +48,9 @@ interface REMOVE {
     payload: IItems
 };
 
-export type ACTIONS = FIND | CREATE | UPDATE | REMOVE
+interface MANY {
+    type: TYPES.ITEMS_MANY,
+    payload: null
+}
+
+export type ACTIONS = FIND | CREATE | UPDATE | REMOVE | MANY

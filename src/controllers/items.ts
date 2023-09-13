@@ -20,7 +20,7 @@ export const find = asyncBlock(async (req: InjectUserToRequest, res: Response, n
 
 export const create = asyncBlock(async (req: InjectUserToRequest, res: Response, next: NextFunction) => {
 
-    req.body.user = "6501eb1f30caad32674559e9";
+    req.body.user = req.user._id;
 
     const items = await Items.create({...req.body, timestamp: Date.now()});
 
@@ -49,6 +49,25 @@ export const remove = asyncBlock(async (req: InjectUserToRequest, res: Response,
     const items = await Items.findByIdAndDelete(req.params.id);
 
     if(!items) return next(new appError('cannot delete items data', 401));
+
+    res.status(200).json({
+        status: "success",
+        data: items
+    });
+});
+
+export const many = asyncBlock(async (req: InjectUserToRequest, res: Response, next: NextFunction) => {
+    
+    const filter = Object.assign({}, ...req.params.filter.split(",").map(el => ({[el.split("=")[0]]: el.split("=")[1]})))
+    
+    const items = await Items.find({...filter, user: req.user._id});
+
+    if(!items) return next(new appError('cannot delete items data', 401));
+
+    for(let x of items){
+        await Items.findByIdAndDelete(x._id);
+        console.log("delete", x._id);
+    };
 
     res.status(200).json({
         status: "success",

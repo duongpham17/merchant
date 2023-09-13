@@ -12,4 +12,5 @@ router.get("/:filter", items_1.find);
 router.post("/", items_1.create);
 router.patch("/", items_1.update);
 router.delete("/:id", items_1.remove);
+router.patch("/many/:filter", items_1.many);
 exports.default = router;

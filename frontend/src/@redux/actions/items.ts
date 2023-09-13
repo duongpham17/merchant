@@ -51,11 +51,25 @@ const remove = (id: string) => async (dispatch: Dispatch<ACTIONS>) => {
     }
 };
 
+const many = () => async (dispatch: Dispatch<ACTIONS>) => {
+    try{
+        const res = await api.patch(`/items/many`);
+        dispatch({
+            type: TYPES.ITEMS_MANY,
+            payload: res.data.data
+        });
+    } catch (error: any) {
+        console.log("Please reload")
+        console.log(error.response);
+    }
+};
+
 const Orders = {
     find,
     create, 
     update,
     remove,
+    many
 };
 
 export default Orders;
