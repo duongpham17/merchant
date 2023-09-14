@@ -2,10 +2,11 @@
 
     .itemsContainer{
         display: grid;
-        grid-template-columns: 0.35fr 1fr;
-        grid-area: 
-        "ids items";
+        grid-template-columns: 1fr;
         gap: 1rem;
+        grid-area: 
+        "ids"
+        "items";
 
         .ids{
             grid-area: "ids";

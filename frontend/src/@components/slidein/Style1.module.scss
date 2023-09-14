@@ -32,6 +32,7 @@
         
         .iconOpen{
             display: flex;
+            align-items: center;
             justify-content: space-between;
             width: 100%;
             margin-bottom: 1rem;
@@ -66,7 +67,8 @@
 
     @media (max-width: 450px){
         .sidebar{
-            max-width: 100%;
+            min-width: 100%;
+            border: 1px solid var(--clr-main);
         }
     }
 }

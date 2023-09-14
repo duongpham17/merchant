@@ -1,7 +1,7 @@
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Items from '@redux/actions/items';
-import useForm from '@hooks/useForm';
 import OSRSGrandExchange from '@data/osrs-ge';
+import {FaPaste} from 'react-icons/fa';
 
 import Button from '@components/buttons/Button';
 import Search from '@components/inputs/Search';
@@ -12,10 +12,10 @@ import Line from '@components/line/Style1';
 import Flex from '@components/flex/Style1';
 import Message from '@components/hover/Message';
 
-import validation from './validation';
 import useQuery from '@hooks/useQuery';
+import useForm from '@hooks/useForm';
 
-import {FaPaste} from 'react-icons/fa';
+import validation from './validation';
 
 const CreateIndex = () => {
 
@@ -51,14 +51,21 @@ const CreateIndex = () => {
   };
 
   const onPaste = async () => {
-    const value = await navigator.clipboard.readText();
-    if(!value.includes("{")) return;
-    const parsed = JSON.parse(value);
-    onSetValue({price: parsed.cost_basis, sold: parsed.average_cost});
+    try {
+      const value = await navigator.clipboard.readText();
+      const parsed = JSON.parse(value);
+      if (typeof parsed === 'object' && parsed !== null) {
+          onSetValue({ price: parsed.cost_basis, sold: parsed.average_cost });
+      } else {
+        console.error('Invalid clipboard data: Not a valid JSON object.');
+      }
+    } catch (error) {
+      console.error('Error parsing clipboard data:', error);
+    }
   };
     
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} onContextMenu={onPaste}>
 
       <Flex>
         <Label name="Create a new transaction" size={20} />
@@ -68,10 +75,10 @@ const CreateIndex = () => {
       <Line />
 
       <Search 
-        label1="Name of Item"
+        label1="Item"
         label2={customErrors.name}
         error={errors.name}
-        placeholder="name"
+        placeholder="..."
         name="name"
         value={values.name} 
         onChange={onChange} 
@@ -88,7 +95,7 @@ const CreateIndex = () => {
       />
 
       <Input 
-        label1="Price"
+        label1="Buy Price"
         label2={errors.price}
         error={errors.price}
         name="price"
@@ -108,7 +115,7 @@ const CreateIndex = () => {
       />
 
       <Input 
-        label1="Sold Price"
+        label1="Sell Price"
         label2={errors.sold}
         error={errors.sold}
         name="sold"

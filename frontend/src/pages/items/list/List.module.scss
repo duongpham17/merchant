@@ -1,0 +1,87 @@
+.container{
+    display: flex;
+    align-items: center;
+
+    .button{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--clr-dark);
+        padding: 0.5rem;
+        border: 1px solid var(--clr-light);
+        min-height: 50px;
+        min-width: 50px;
+
+        &:hover{
+            border-color: var(--clr-main);
+        }
+
+        svg{
+            font-size: 1.2rem;
+        }
+    }
+
+    .ids{
+        display: inline-flex;
+        overflow-x: auto;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        button{
+            margin-right: 0.3rem;
+        }
+        img{
+            object-fit: contain;
+        }
+        .selected{
+            border-color: var(--clr-main);
+        }
+    }
+
+    .slide{
+        .button{
+            background-color: var(--clr-main);
+            border: 1px solid var(--clr-light);
+            &:hover{
+                background-color: var(--clr-main-light);
+            }
+        }
+
+        .items{
+            button{
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background-color: var(--clr-dark);
+                padding: 0.5rem;
+                border: 1px solid var(--clr-light);
+                width: 100%;
+                min-height: 50px;
+                margin-bottom: 0.5rem;
+                position: relative;
+
+                &:hover{
+                    border-color: var(--clr-main);
+                }
+            }
+            div{
+                width: 100%;
+                text-align: right;
+                margin-left: 1rem;
+            }
+            p{
+                padding: 0.2rem 0;
+                word-break: break-all;
+            }
+            b{
+                display: flex;
+                justify-content: space-between;
+                margin: 0.5rem 0;
+            }
+            small{
+                color: var(--clr-text-light);
+            }
+        }
+    }
+    
+}

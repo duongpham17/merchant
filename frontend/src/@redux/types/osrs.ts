@@ -1,6 +1,6 @@
 /*TYPES**************************************************************************************************************/
 
-export interface OSRS_GE {
+export interface OSRS_GE_LATEST {
     high: number,
     highTime: number,
     low: number,
@@ -9,7 +9,7 @@ export interface OSRS_GE {
 /*STATE**************************************************************************************************************/
 
 export interface INITIALSTATE {
-    latest: OSRS_GE[] | [],
+    latest: OSRS_GE_LATEST[] | [],
 };
 
 /*ACTION**************************************************************************************************************/
@@ -20,7 +20,7 @@ export enum TYPES {
 
 interface LATEST {
     type: TYPES.OSRS_GE_LATEST,
-    payload: OSRS_GE[]
+    payload: OSRS_GE_LATEST[]
 };
 
 export type ACTIONS = LATEST

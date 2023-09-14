@@ -30,11 +30,11 @@ const EditIndex = ({data}: {data: IItems}) => {
                 onClick={v => onSetValue({side: v})}
             />
 
-            <Input type="number" label1="Price" name="price" value={values.price} onChange={onChange} />
-
-            <Input type="number" label1="Sold" name="sold" value={values.sold} onChange={onChange} />
+            <Input type="number" label1="Buy Price" name="price" value={values.price} onChange={onChange} />
 
             <Input type="number" label1="Quantity" name="quantity" value={values.quantity} onChange={onChange} />
+
+            <Input type="number" label1="Sell Price" name="sold" value={values.sold} onChange={onChange} />
 
             {edited && <Button type="submit" label1={"update"} loading={loading} color="blue" />}
         </form>

@@ -30,10 +30,12 @@ const Sidebar = ({children, icon, autoClose=true, width=500, iconOpen}: Types) =
         return () => document.body.classList.remove('bodyScrollBar');
     }, [open]);
 
+    const location = window.location.href;
+
     useEffect(() => {
         if(!autoClose) return;
         setOpen(false);
-    }, [autoClose]);
+    }, [autoClose, location]);
 
     return (
         <div className={styles.container}>
