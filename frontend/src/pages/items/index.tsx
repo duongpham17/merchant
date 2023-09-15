@@ -12,9 +12,9 @@ const ItemsIndex = () => {
 
   const {items} = useAppSelector(state => state.items);
 
-  const {latest, timeseries} = useAppSelector(state => state.osrs);
+  const {latest} = useAppSelector(state => state.osrs);
 
-  if(!items || latest.length === 0 || timeseries.length === 0 ){
+  if(!items || latest.length === 0){
     return (
       <Label1 name="No item created" />
     )
@@ -48,9 +48,7 @@ const ItemsIndex = () => {
         itemsFiltered={itemsFiltered}
       />
 
-      <Chart 
-        timeseries={timeseries}
-      />
+      <Chart />
 
       <Transactions 
         items={items} 

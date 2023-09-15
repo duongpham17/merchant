@@ -5,6 +5,7 @@ import { useAppSelector } from '@redux/hooks/useRedux';
 
 import { Context } from 'themes'; 
 
+import { FaWater } from 'react-icons/fa';
 import { BsSunFill, BsFillMoonFill } from 'react-icons/bs';
 import { AiFillHome, AiFillFileAdd, AiOutlineUser } from 'react-icons/ai';
 import { FaSitemap } from 'react-icons/fa';
@@ -44,6 +45,16 @@ const Navbar = () => {
         {theme.name === "night" &&
           <Message message='Dark'>
             <button className={styles.button} onClick={onSetTheme}><BsFillMoonFill/></button>
+          </Message>
+        }
+        {theme.name === "sunset" &&
+          <Message message='Sunset'>
+            <button className={styles.button} onClick={onSetTheme}><BsSunFill/></button>
+          </Message>
+        }
+        {theme.name === "ocean" &&
+          <Message message='Ocean'>
+            <button className={styles.button} onClick={onSetTheme}><FaWater/></button>
           </Message>
         }
 

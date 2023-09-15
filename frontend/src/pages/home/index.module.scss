@@ -2,10 +2,16 @@
     margin: 1rem;
 
     .element{
-        margin-bottom: 1rem;
+        margin: 0.5rem 0;
         background-color: var(--clr-dark-light);
         padding: 0.5rem;
         border-radius: 5px;
+        border: 1px solid transparent;
+        transition: ease-in-out 0.3s;
+
+        &:hover{
+            border-color: var(--clr-main);
+        }
     }
 
     .image{     
@@ -13,8 +19,8 @@
         align-items: center;
 
         img{
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
             margin-right: 1rem;
         }

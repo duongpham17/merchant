@@ -1,16 +1,18 @@
 import styles from './Style1.module.scss';
 import { ReactElement, ReactNode, useState, useEffect } from 'react';
 import { MdOutlineKeyboardBackspace } from 'react-icons/md';
+import { useLocation } from 'react-router-dom';
 
 interface Types {
   children: ReactNode | ReactElement,
   icon: ReactNode | ReactElement,
   iconOpen?: ReactNode | ReactElement,
-  autoClose?: boolean
   width?: number
 }
 
-const Sidebar = ({children, icon, autoClose=true, width=500, iconOpen}: Types) => {
+const Sidebar = ({children, icon, width=500, iconOpen}: Types) => {
+
+    const location = useLocation();
 
     const [open, setOpen] = useState<boolean>(false); 
 
@@ -30,12 +32,9 @@ const Sidebar = ({children, icon, autoClose=true, width=500, iconOpen}: Types) =
         return () => document.body.classList.remove('bodyScrollBar');
     }, [open]);
 
-    const location = window.location.href;
-
     useEffect(() => {
-        if(!autoClose) return;
         setOpen(false);
-    }, [autoClose, location]);
+    }, [location])
 
     return (
         <div className={styles.container}>

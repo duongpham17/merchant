@@ -44,7 +44,24 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
 
   const data = itemsFiltered.filter(item => item.id.toString() === (getQueryValue("id") || openLocal || ""))[0];
 
-  const average_cost = (latest[data.id].high + latest[data.id].low) / 2;
+  if(!data){
+    return <Container>
+      <Label1 color='red' name="Invalid item, try refreshing"/>
+    </Container>
+  }
+
+  let average_cost = 0;
+
+  try{
+    average_cost = (latest[data.id].high + latest[data.id].low) / 2;
+  } catch(_){
+    return <Container>
+      <Label1 color='red' name="Invalid item"/>
+      {data.items.map(el => 
+        <Button key={el._id} color="red" label1={`Delete ${el._id}`} onClick={() => dispatch(Item.remove(el._id))}/>  
+      )}
+    </Container>
+  }
 
   const ProfitNLoss = (item: IItems) => {
     if(item.side === "sell"){
@@ -277,7 +294,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                     <Flex>
                       <Label2 
                         name="Sold" 
-                        value={item.sold.toLocaleString()} 
+                        value={item.sold} 
                       />
                       <Label2 
                         name="Tax" 

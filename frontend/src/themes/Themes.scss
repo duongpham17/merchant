@@ -12,20 +12,20 @@ div, section, main, form, header, nav, footer, nav, table, tr, td, title, summar
 }
 
 .theme-light{
-    --clr-main: #7658ef;
-    --clr-main-light: rgba(96, 66, 215, 0.797);
-    --clr-main-fade: hsl(24, 100%, 98%);
+    --clr-main: rgb(21, 187, 57);
+    --clr-main-light: rgba(21, 187, 57, 0.803);
+    --clr-main-fade: rgba(21, 187, 57, 0.524);
     --clr-main-trans: rgb(206, 160, 151, 0.5);
-    --clr-background: white;
-    --clr-background-light: rgba(245, 245, 245, 0.883);
-    --clr-text: #555555;
-    --clr-text-light: #7f7f7fe1;
-    --clr-dark: #f4f3f3;
-    --clr-dark-light: #efeeeecb;
-    --clr-grey: rgb(246, 246, 246); 
-    --clr-grey-light: rgba(149, 149, 149, 0.746); 
-    --clr-light: #cbcbcb;
-    --clr-light-light: rgba(216, 216, 216, 0.862);
+    --clr-background: rgb(0, 0, 0);
+    --clr-background-light: rgba(0, 0, 0, 0.883);
+    --clr-text: white;
+    --clr-text-light: #c3c3c3e1;
+    --clr-dark: #191919c5;
+    --clr-dark-light: #34343452;
+    --clr-grey: rgb(149, 149, 149); 
+    --clr-grey-light: rgba(143, 143, 143, 0.746); 
+    --clr-light: #2b2b2b;
+    --clr-light-light: rgba(52, 52, 52, 0.862);
 
     --clr-red: rgb(225, 99, 99);
     --clr-blue: rgb(36, 116, 245);
@@ -42,10 +42,54 @@ div, section, main, form, header, nav, footer, nav, table, tr, td, title, summar
     --clr-background-light: black;
     --clr-text: white;
     --clr-text-light: #c3c3c3e1;
-    --clr-dark: #292929c5;
-    --clr-dark-light: #34343485;
+    --clr-dark: #191919c5;
+    --clr-dark-light: #34343452;
     --clr-grey: rgb(149, 149, 149); 
-    --clr-grey-light: rgba(149, 149, 149, 0.746); 
+    --clr-grey-light: rgba(143, 143, 143, 0.746); 
+    --clr-light: #2b2b2b;
+    --clr-light-light: rgba(52, 52, 52, 0.862);
+
+    --clr-red: rgb(225, 99, 99);
+    --clr-blue: rgb(36, 116, 245);
+    --clr-green: rgb(84, 210, 111);
+    --clr-yellow: yellow;
+}
+
+.theme-sunset{
+    --clr-main: rgb(231, 155, 56);
+    --clr-main-light: rgb(231, 155, 56);
+    --clr-main-fade: rgb(231, 155, 56);
+    --clr-main-trans: rgb(206, 160, 151, 0.5);
+    --clr-background: rgb(0, 0, 0);
+    --clr-background-light: rgba(0, 0, 0, 0.883);
+    --clr-text: white;
+    --clr-text-light: #c3c3c3e1;
+    --clr-dark: #191919c5;
+    --clr-dark-light: #34343452;
+    --clr-grey: rgb(149, 149, 149); 
+    --clr-grey-light: rgba(143, 143, 143, 0.746); 
+    --clr-light: #2b2b2b;
+    --clr-light-light: rgba(52, 52, 52, 0.862);
+
+    --clr-red: rgb(225, 99, 99);
+    --clr-blue: rgb(36, 116, 245);
+    --clr-green: rgb(84, 210, 111);
+    --clr-yellow: yellow;
+}
+
+.theme-ocean{
+    --clr-main: rgb(19, 73, 232);
+    --clr-main-light: rgba(19, 72, 232, 0.777);
+    --clr-main-fade: rgba(19, 72, 232, 0.552);
+    --clr-main-trans: rgb(206, 160, 151, 0.5);
+    --clr-background: rgb(0, 0, 0);
+    --clr-background-light: rgba(0, 0, 0, 0.883);
+    --clr-text: white;
+    --clr-text-light: #c3c3c3e1;
+    --clr-dark: #191919c5;
+    --clr-dark-light: #34343452;
+    --clr-grey: rgb(149, 149, 149); 
+    --clr-grey-light: rgba(143, 143, 143, 0.746); 
     --clr-light: #2b2b2b;
     --clr-light-light: rgba(52, 52, 52, 0.862);
 

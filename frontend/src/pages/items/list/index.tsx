@@ -1,6 +1,7 @@
 import styles from './List.module.scss';
 import { IItems } from '@redux/types/items';
 import { firstcaps } from '@utils/functions';
+import { gp } from '@utils/osrs';
 import { MdOutlineUnfoldMoreDouble } from 'react-icons/md';
 
 import SlideIn from '@components/slidein/Style1';
@@ -37,15 +38,7 @@ const ListIndex = ({itemsFiltered, items}: Props) => {
     const totalValue = () => {
         let total = 0;
         items.forEach(item => total += item.quantity * item.price);
-        let format = "";
-        if(total < 1_000_000){
-            format = `${(total / 1000).toFixed(2)}K`
-        } else if(total >= 1_000_000 && total < 1_000_000_000){
-            format = `${(total / 1_000_000).toFixed(2)}M`
-        } else if(total >= 1_000_000_000){
-            format = `${(total / 1_000_000_000).toFixed(2)}B`
-        }
-        return format;
+        return total;
     };
 
     const sortItemsFiltered = () => {
@@ -70,10 +63,10 @@ const ListIndex = ({itemsFiltered, items}: Props) => {
             </div>
 
             <div className={styles.slide}>
-                <SlideIn 
+                <SlideIn
                     width={300} 
                     icon={<button className={styles.button}><MdOutlineUnfoldMoreDouble /></button>} 
-                    iconOpen={`[${itemsFiltered.length}] ${totalValue()}`}
+                    iconOpen={`[${itemsFiltered.length}] ${gp(totalValue())}`}
                 >
                     <div className={styles.items}>
                     {itemsFiltered.map(el => 
