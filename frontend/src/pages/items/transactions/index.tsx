@@ -4,6 +4,7 @@ import Item from '@redux/actions/items';
 import { OSRS_GE_LATEST } from '@redux/types/osrs';
 
 import { UK } from '@utils/time';
+import { getax, gp } from '@utils/osrs';
 import { firstcaps } from '@utils/functions';
 import { MdKeyboardArrowRight, MdContentCopy } from 'react-icons/md';
 
@@ -61,20 +62,22 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
         <Button key={el._id} color="red" label1={`Delete ${el._id}`} onClick={() => dispatch(Item.remove(el._id))}/>  
       )}
     </Container>
-  }
+  };
 
   const ProfitNLoss = (item: IItems) => {
     if(item.side === "sell"){
       const at_total = item.price * item.quantity;
       const current_total = item.quantity * item.sold;
       return {
+        total: current_total,
         pnl: Math.floor((current_total - at_total) * 0.99),
-        tax: (item.price - Math.trunc(item.price * 0.01)) * item.quantity
+        tax: getax(item.price).tax * item.quantity
       };
     } else {
       const at_total = item.price * item.quantity;
       const current_total = item.quantity * average_cost;
       return {
+        total: current_total,
         pnl: Math.floor((current_total - at_total) * 0.99),
         tax: 0
       }
@@ -183,8 +186,16 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
         <Container style={{padding: "0.5rem 0"}}>
 
           <Label1 color="light" 
-            name="Price [H-A-L]" 
-            value={`${latest[data.id].high.toLocaleString()} - ${((latest[data.id].low + latest[data.id].high) / 2).toLocaleString()} - ${latest[data.id].low.toLocaleString()}`} 
+            name="High Price" 
+            value={latest[data.id].high.toLocaleString()} 
+          />
+          <Label1 color="light" 
+            name="Avg Price" 
+            value={(Math.floor((latest[data.id].low + latest[data.id].high) / 2)).toLocaleString()} 
+          />
+          <Label1 color="light" 
+            name="Low Price" 
+            value={(latest[data.id].low).toLocaleString()} 
           />
           
           <Line />
@@ -205,31 +216,31 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
 
           <Label1 color="light" 
             name="Buy" 
-            value={`${total.buy.toLocaleString()}`} 
+            value={total.buy.toLocaleString()} 
           />
           <Label1 color="light" 
             name="Sell" 
-            value={`${total.sell.toLocaleString()}`} 
+            value={total.sell.toLocaleString()} 
           />
 
           <Line />
           
           <Label1 color="light" 
             name="Liquidation" 
-            value={`${(Math.floor(total.liquidation * 0.99)).toLocaleString()}`}
+            value={(Math.floor(total.liquidation * 0.99)).toLocaleString()}
           />
           <Label1 color="light" 
-            name="Tax" 
-            value={`${total.tax.toLocaleString()}`}
+            name="Realised Tax" 
+            value={total.tax.toLocaleString()}
           />
           <Line />
           <Label3 color="light" valueColor={total.unrealised_pnl >= 0 ? "green" : "red"} 
             name="Unrealised PNL"
-            value={`${total.unrealised_pnl.toLocaleString()}`} 
+            value={total.unrealised_pnl.toLocaleString()} 
           />
           <Label3 color="light" valueColor={total.realised_pnl >= 0 ? "green" : "red"} 
             name="Realised PNL"
-            value={`${total.realised_pnl.toLocaleString()}`} 
+            value={total.realised_pnl.toLocaleString()} 
           />
           <Line />
         </Container>
@@ -258,16 +269,23 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                     name="" 
                     value={item.side.toUpperCase()} 
                   />
+
                   {item.side === "sell" && 
-                    <Label3 color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} 
-                      name={ProfitNLoss(item).pnl.toLocaleString()}
-                    />
+                    <Message message={(ProfitNLoss(item).pnl).toLocaleString()}>
+                      <Label3 color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} 
+                        name={item.sold ? gp(ProfitNLoss(item).pnl) : "unknown"}
+                      />
+                    </Message>
                   }
-                  {item.side === "buy"  && 
-                    <Label3 color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} 
-                      name={ProfitNLoss(item).pnl.toLocaleString()}
-                    />
+
+                  {item.side === "buy" && 
+                    <Message message={(ProfitNLoss(item).pnl).toLocaleString()}>
+                      <Label3 color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} 
+                        name={gp(ProfitNLoss(item).pnl)}
+                      />
+                    </Message>
                   }
+
                 </Flex>
   
                 <Line />
@@ -276,7 +294,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                   <>
                     <Flex>
                       <Label2 
-                        name="Price" 
+                        name="Buy Price" 
                         value={item.price.toLocaleString()} 
                       />
                       <Label2 
@@ -284,8 +302,8 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                         value={item.quantity.toLocaleString()} 
                       />
                       <Label2 
-                        name="Total" 
-                        value={(item.quantity * item.price).toLocaleString()} 
+                        name="Buy Valuation" 
+                        value={gp(item.quantity * item.price)} 
                       />
                     </Flex>
 
@@ -293,16 +311,16 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
 
                     <Flex>
                       <Label2 
-                        name="Sold" 
-                        value={item.sold} 
+                        name="Sell Price" 
+                        value={item.sold || 0} 
                       />
                       <Label2 
                         name="Tax" 
-                        value={ProfitNLoss(item).tax.toLocaleString()} 
+                        value={ProfitNLoss(item).tax} 
                       />
                       <Label2 
-                        name="" 
-                        value="" 
+                        name="Sell Valuation" 
+                        value={gp(ProfitNLoss(item).total)} 
                       />
                     </Flex>
 
@@ -329,7 +347,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                   <>
                     <Flex>
                       <Label2 
-                        name="Price" 
+                        name="Buy Price" 
                         value={item.price.toLocaleString()} 
                       />
                       <Label2 
@@ -337,8 +355,8 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                         value={item.quantity.toLocaleString()} 
                       />
                       <Label2 
-                        name="Total" 
-                        value={(item.quantity * item.price).toLocaleString()} 
+                        name="Buy Valuation" 
+                        value={gp(item.quantity * item.price)} 
                       />
                     </Flex>
 

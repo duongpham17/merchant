@@ -4,6 +4,7 @@ import {localSet, localGet} from '@utils/localstorage';
 import {ThemeTypes} from './Data';
 
 export interface PropsTypes {
+    selected: string[],
     theme: ThemeTypes,
     onSetTheme: () => void,
 };
@@ -14,6 +15,7 @@ export const Context = createContext<PropsTypes>({
         name: "light",
         background: "white",
     },
+    selected: ["", ""],
     onSetTheme: () => null
 });
 
@@ -26,7 +28,14 @@ export const Theme = ({children}: {children: ReactNode}) => {
 
     const theme_selected = theme_saved || theme_default;
 
-    const [theme, setTheme] = useState<ThemeTypes>(theme_selected)
+    const [theme, setTheme] = useState<ThemeTypes>(theme_selected);
+
+    const selected =         
+        theme.name === "light"  ? [`#15bb39`, `#15bb3986`] :
+        theme.name === "night"  ? [`#6042d7`, `#6042d7cb`] :
+        theme.name === "sunset" ? [`#e79b38`, `#e79b38`]   :
+        theme.name === "ocean" ? [`#1349e8` , `#1348e8c6`] : 
+        ["", ""]
 
     useLayoutEffect(() => { 
         document.body.style.background = theme.background 
@@ -43,6 +52,7 @@ export const Theme = ({children}: {children: ReactNode}) => {
     };
 
     const value: PropsTypes = {
+        selected,
         theme,
         onSetTheme,
     };

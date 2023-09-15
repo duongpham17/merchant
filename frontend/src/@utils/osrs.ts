@@ -1,5 +1,5 @@
 export const gp = (total: number) => {
-    const t = Number(total);
+    const t = Math.abs(Number(total));
     let format = "";
     if(t < 1_000_000){
       format = `${t.toLocaleString()}`
@@ -11,6 +11,13 @@ export const gp = (total: number) => {
     return format;
 };
 
-export const getax = (value: number) => {
-
+export const getax = (item_price: number, tax_rate=0.01) => {
+  const tax_amount = Math.trunc(item_price * tax_rate);
+  const max_tax_applied = 5_000_000; // 5 million
+  const max_limit_of_item_price = 500_000_000; // 500 million;
+  const tax_filter = item_price >= max_limit_of_item_price ? max_tax_applied : item_price - tax_amount;
+  return {
+    after_tax_price:tax_filter,
+    tax: tax_amount
+  }
 }

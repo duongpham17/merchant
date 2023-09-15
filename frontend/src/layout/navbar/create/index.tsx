@@ -116,16 +116,18 @@ const CreateIndex = () => {
         onChange={onChange} 
       />
 
-      <Input 
-        type="number"
-        label1="Sell Price"
-        label2={errors.sold}
-        error={errors.sold}
-        name="sold"
-        placeholder='...'
-        value={values.sold || ""} 
-        onChange={onChange} 
-      />
+      {values.side === "sell" &&
+        <Input 
+          type="number"
+          label1="Sell Price"
+          label2={errors.sold}
+          error={errors.sold}
+          name="sold"
+          placeholder='...'
+          value={values.sold || ""} 
+          onChange={onChange} 
+        />
+      }
 
       <Button
         type="submit"

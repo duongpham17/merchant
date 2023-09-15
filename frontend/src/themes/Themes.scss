@@ -12,9 +12,9 @@ div, section, main, form, header, nav, footer, nav, table, tr, td, title, summar
 }
 
 .theme-light{
-    --clr-main: rgb(21, 187, 57);
-    --clr-main-light: rgba(21, 187, 57, 0.803);
-    --clr-main-fade: rgba(21, 187, 57, 0.524);
+    --clr-main: #15bb39;
+    --clr-main-light: #15bb39cd;
+    --clr-main-fade: #15bb3986;
     --clr-main-trans: rgb(206, 160, 151, 0.5);
     --clr-background: rgb(0, 0, 0);
     --clr-background-light: rgba(0, 0, 0, 0.883);
@@ -34,8 +34,8 @@ div, section, main, form, header, nav, footer, nav, table, tr, td, title, summar
 }
 
 .theme-night{
-    --clr-main: rgb(96, 66, 215);
-    --clr-main-light: rgba(96, 66, 215, 0.797);
+    --clr-main: #6042d7;
+    --clr-main-light: #6042d7cb;
     --clr-main-fade: hsl(24, 100%, 98%);
     --clr-main-trans: rgb(206, 160, 151, 0.5);
     --clr-background: black;
@@ -56,8 +56,8 @@ div, section, main, form, header, nav, footer, nav, table, tr, td, title, summar
 }
 
 .theme-sunset{
-    --clr-main: rgb(231, 155, 56);
-    --clr-main-light: rgb(231, 155, 56);
+    --clr-main: #e79b38;
+    --clr-main-light: #e79b38;
     --clr-main-fade: rgb(231, 155, 56);
     --clr-main-trans: rgb(206, 160, 151, 0.5);
     --clr-background: rgb(0, 0, 0);
@@ -78,8 +78,8 @@ div, section, main, form, header, nav, footer, nav, table, tr, td, title, summar
 }
 
 .theme-ocean{
-    --clr-main: rgb(19, 73, 232);
-    --clr-main-light: rgba(19, 72, 232, 0.777);
+    --clr-main: #1349e8;
+    --clr-main-light: #1348e8c6;
     --clr-main-fade: rgba(19, 72, 232, 0.552);
     --clr-main-trans: rgb(206, 160, 151, 0.5);
     --clr-background: rgb(0, 0, 0);
