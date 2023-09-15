@@ -3,17 +3,18 @@ import { useAppSelector } from '@redux/hooks/useRedux';
 import { IItems } from '@redux/types/items';
 
 import Label1 from '@components/labels/Style1';
-import Transactions from './transactions';
 
+import Transactions from './transactions';
+import Chart from './chart';
 import List from './list';
 
 const ItemsIndex = () => {
 
   const {items} = useAppSelector(state => state.items);
 
-  const {latest} = useAppSelector(state => state.osrs);
+  const {latest, timeseries} = useAppSelector(state => state.osrs);
 
-  if(!items || latest.length === 0 ){
+  if(!items || latest.length === 0 || timeseries.length === 0 ){
     return (
       <Label1 name="No item created" />
     )
@@ -45,6 +46,10 @@ const ItemsIndex = () => {
       <List 
         items={items} 
         itemsFiltered={itemsFiltered}
+      />
+
+      <Chart 
+        timeseries={timeseries}
       />
 
       <Transactions 

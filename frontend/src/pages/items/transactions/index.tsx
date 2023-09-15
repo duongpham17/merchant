@@ -32,7 +32,7 @@ interface Props {
     name: string,
     items: IItems[];
   }[],
-}
+};
 
 const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
 
@@ -158,26 +158,62 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
         <Label3 
           name={`[${data.items.length}] ${firstcaps(data.name)}`} 
           value={<Message message="copy"><Button label1={<MdContentCopy/>} onClick={onCopy} color="dark" margin /></Message>} 
-          size="1.5rem"
+          size="1.2rem"
         />
 
         <Line />
 
         <Container style={{padding: "0.5rem 0"}}>
-          <Label1 color="light" name="Price" value={`H ${latest[data.id].high.toLocaleString()} . A ${((latest[data.id].low + latest[data.id].high) / 2).toLocaleString()} . L ${latest[data.id].low.toLocaleString()}`} />
+
+          <Label1 color="light" 
+            name="Price [H-A-L]" 
+            value={`${latest[data.id].high.toLocaleString()} - ${((latest[data.id].low + latest[data.id].high) / 2).toLocaleString()} - ${latest[data.id].low.toLocaleString()}`} 
+          />
+          
           <Line />
-          <Label1 color="light" name="Quantity" value={methods.dca.toLocaleString()}/>
-          <Label1 color="light" name="Dca" value={methods.costBasis.toLocaleString()}/>
-          <Label1 color="light" name="Break Even" value={(Number(methods.costBasis) * 1.01).toLocaleString()} />
+
+          <Label1 color="light" 
+            name="Quantity" 
+            value={methods.dca.toLocaleString()} 
+          />
+          <Label1 color="light" 
+            name="Dca" 
+            value={methods.costBasis.toLocaleString()} 
+          />
+          <Label1 color="light" name="Break Even" 
+            value={(Number(methods.costBasis) * 1.01).toLocaleString()} 
+          />
+
           <Line /> 
-          <Label1 color="light" name="Buy" value={`${total.buy.toLocaleString()}`} />
-          <Label1 color="light" name="Sell" value={`${total.sell.toLocaleString()}`} />
+
+          <Label1 color="light" 
+            name="Buy" 
+            value={`${total.buy.toLocaleString()}`} 
+          />
+          <Label1 color="light" 
+            name="Sell" 
+            value={`${total.sell.toLocaleString()}`} 
+          />
+
           <Line />
-          <Label1 color="light" name="Liquidation" value={`${(Math.floor(total.liquidation * 0.99)).toLocaleString()}`}/>
-          <Label1 color="light" name="Tax" value={`${total.tax.toLocaleString()}`}/>
+          
+          <Label1 color="light" 
+            name="Liquidation" 
+            value={`${(Math.floor(total.liquidation * 0.99)).toLocaleString()}`}
+          />
+          <Label1 color="light" 
+            name="Tax" 
+            value={`${total.tax.toLocaleString()}`}
+          />
           <Line />
-          <Label3 color="light" name="Unrealised PNL" value={`${total.unrealised_pnl.toLocaleString()}`} valueColor={total.unrealised_pnl >= 0 ? "green" : "red"} />
-          <Label3 color="light" name="Realised PNL" value={`${total.realised_pnl.toLocaleString()}`} valueColor={total.realised_pnl >= 0 ? "green" : "red"} />
+          <Label3 color="light" valueColor={total.unrealised_pnl >= 0 ? "green" : "red"} 
+            name="Unrealised PNL"
+            value={`${total.unrealised_pnl.toLocaleString()}`} 
+          />
+          <Label3 color="light" valueColor={total.realised_pnl >= 0 ? "green" : "red"} 
+            name="Realised PNL"
+            value={`${total.realised_pnl.toLocaleString()}`} 
+          />
           <Line />
         </Container>
 
@@ -186,18 +222,35 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
             <Container background="dark" key={item._id}>
 
                 <Flex>
-                  <Label1 name={`${index+1}. ${UK(new Date(Number(item.timestamp)))}`} />
-                  <SlideIn width={350} icon={<MdKeyboardArrowRight/>} iconOpen={<Button onClick={() => onDelete(item._id)} label1="Delete" color="red" style={{"width": "100%"}}/>}>
-                      <Edit data={item} />
+                  <Label1 
+                    name={`${index+1}. ${UK(new Date(Number(item.timestamp)))}`} 
+                  />
+                  <SlideIn 
+                    width={350} 
+                    icon={<MdKeyboardArrowRight/>} 
+                    iconOpen={<Button onClick={() => onDelete(item._id)} label1="Delete" color="red" style={{"width": "100%"}}/>}
+                  >
+                    <Edit data={item} />
                   </SlideIn>
                 </Flex>
 
                 <Line />
-  
+
                 <Flex>
-                  <Label3 name="" value={item.side.toUpperCase()} color={item.side === "buy" ? "green" : "red"} />
-                  {item.side === "sell" && <Label3 name={ProfitNLoss(item).pnl.toLocaleString()} color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} />}
-                  {item.side === "buy"  && <Label3 name={ProfitNLoss(item).pnl.toLocaleString()} color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} />}
+                  <Label3 color={item.side === "buy" ? "green" : "red"} 
+                    name="" 
+                    value={item.side.toUpperCase()} 
+                  />
+                  {item.side === "sell" && 
+                    <Label3 color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} 
+                      name={ProfitNLoss(item).pnl.toLocaleString()}
+                    />
+                  }
+                  {item.side === "buy"  && 
+                    <Label3 color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} 
+                      name={ProfitNLoss(item).pnl.toLocaleString()}
+                    />
+                  }
                 </Flex>
   
                 <Line />
@@ -205,42 +258,90 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                 { item.side === "sell" &&
                   <>
                     <Flex>
-                      <Label2 name="Price" value={item.price.toLocaleString()} />
-                      <Label2 name="Quantity" value={item.quantity.toLocaleString()} />
-                      <Label2 name="Total" value={(item.quantity * item.price).toLocaleString()} />
+                      <Label2 
+                        name="Price" 
+                        value={item.price.toLocaleString()} 
+                      />
+                      <Label2 
+                        name="Quantity" 
+                        value={item.quantity.toLocaleString()} 
+                      />
+                      <Label2 
+                        name="Total" 
+                        value={(item.quantity * item.price).toLocaleString()} 
+                      />
                     </Flex>
+
                     <Line />
+
                     <Flex>
-                      <Label2 name="Sold" value={item.sold.toLocaleString()} />
-                      <Label2 name="Tax" value={ProfitNLoss(item).tax.toLocaleString()} />
-                      <Label2 name="" value="" />
+                      <Label2 
+                        name="Sold" 
+                        value={item.sold.toLocaleString()} 
+                      />
+                      <Label2 
+                        name="Tax" 
+                        value={ProfitNLoss(item).tax.toLocaleString()} 
+                      />
+                      <Label2 
+                        name="" 
+                        value="" 
+                      />
                     </Flex>
+
                     <Line />
+
                     <Flex>
-                      <Label2 name="Dca" value={calc_cost_basis(index, array)} />
-                      <Label2 name="NQuantity" value={calc_dca(index, array).toLocaleString()} />
-                      <Label2 name="" value="" />
+                      <Label2 
+                        name="Dca" 
+                        value={calc_cost_basis(index, array)} 
+                      />
+                      <Label2 
+                        name="NQuantity" 
+                        value={calc_dca(index, array).toLocaleString()} 
+                      />
+                      <Label2 
+                        name="" 
+                        value="" 
+                      />
                     </Flex>
                   </>
                 }
 
                 { item.side === "buy" &&
                   <>
+                    <Flex>
+                      <Label2 
+                        name="Price" 
+                        value={item.price.toLocaleString()} 
+                      />
+                      <Label2 
+                        name="Quantity" 
+                        value={item.quantity.toLocaleString()} 
+                      />
+                      <Label2 
+                        name="Total" 
+                        value={(item.quantity * item.price).toLocaleString()} 
+                      />
+                    </Flex>
 
-                      <Flex>
-                        <Label2 name="Price" value={item.price.toLocaleString()} />
-                        <Label2 name="Quantity" value={item.quantity.toLocaleString()} />
-                        <Label2 name="Total" value={(item.quantity * item.price).toLocaleString()} />
-                      </Flex>
+                    <Line />
 
-                      <Line />
-
-                      <Flex>
-                        <Label2 name="Dca" value={calc_cost_basis(index, array)} />
-                        <Label2 name="NQuantity" value={calc_dca(index, array).toLocaleString()} />
-                        <Label2 name="" value="" />
-                      </Flex>
-
+                    <Flex>
+                      <Label2 
+                        name="Dca" 
+                        value={calc_cost_basis(index, array)}
+                      />
+                      <Label2 
+                        name="NQuantity" 
+                        value={calc_dca(index, array).toLocaleString()} 
+                      />
+                      <Label2 
+                        name="" 
+                        value=""
+                      />
+                    </Flex>
+                    
                   </>
                 }
 

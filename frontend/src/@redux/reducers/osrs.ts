@@ -2,6 +2,7 @@ import { ACTIONS, TYPES, INITIALSTATE } from '@redux/types/osrs';
 
 const initialState: INITIALSTATE = {
     latest: [],
+    timeseries: [],
 };
 
 export const reducer = (state = initialState, action: ACTIONS) => {
@@ -12,6 +13,11 @@ export const reducer = (state = initialState, action: ACTIONS) => {
             return{
                 ...state,
                 latest: payload
+            };
+        case TYPES.OSRS_GE_TIMESERIES:
+            return{
+                ...state,
+                timeseries: payload
             };
         default: 
             return state;

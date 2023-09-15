@@ -94,17 +94,8 @@ const CreateIndex = () => {
         onClick={v => onSetValue({side: v})}
       />
 
-      <Input 
-        label1="Buy Price"
-        label2={errors.price}
-        error={errors.price}
-        name="price"
-        placeholder='...'
-        value={values.price || ""} 
-        onChange={onChange} 
-      />
-
       <Input
+        type="number"
         label1="Quantity"
         label2={errors.quantity}
         error={errors.quantity}
@@ -115,6 +106,18 @@ const CreateIndex = () => {
       />
 
       <Input 
+        type="number"
+        label1="Buy Price"
+        label2={errors.price}
+        error={errors.price}
+        name="price"
+        placeholder='...'
+        value={values.price || ""} 
+        onChange={onChange} 
+      />
+
+      <Input 
+        type="number"
         label1="Sell Price"
         label2={errors.sold}
         error={errors.sold}
