@@ -78,6 +78,7 @@ const CreateIndex = () => {
         label1="Item"
         label2={customErrors.name}
         error={errors.name}
+        onClear={() => onSetValue({name: ""})} 
         placeholder="..."
         name="name"
         value={values.name} 

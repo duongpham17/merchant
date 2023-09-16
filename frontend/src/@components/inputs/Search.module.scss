@@ -55,6 +55,15 @@
         border: 1px solid var(--clr-red);
     }
 
+    .inputArea{
+        position: relative;
+        .clear{
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+        }
+    }
+
     .search{
         background: var(--clr-dark-light);
         border: 1px solid var(--clr-main);

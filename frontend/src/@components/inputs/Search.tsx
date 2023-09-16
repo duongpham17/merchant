@@ -7,13 +7,13 @@ interface Props extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLIn
     label2?: string | number | React.ReactNode,
     error?: boolean,
     borderBottom?: boolean,
-
     data: any,
     value: string,
-    onSelectValue: (a: any) => void 
+    onSelectValue: (a: any) => void,
+    onClear?: () => void,
 };
 
-const Search = ({color, label1, label2, error, borderBottom, data, value, onSelectValue, ...props}:Props) => {
+const Search = ({color, label1, label2, error, borderBottom, data, value, onSelectValue, onClear, ...props}:Props) => {
 
     const [isSelected, setIsSelected] = useState(false);
 
@@ -45,11 +45,15 @@ const Search = ({color, label1, label2, error, borderBottom, data, value, onSele
                 </label>
             }
 
-            <input 
-                {...props} 
-                className={`${styles[color ? color : "plain"]} ${borderBottom ? styles.borderBottom : styles.border} ${error ? styles.errorInput : ""}` } 
-                value={value.toLowerCase()}
-            />
+            <div className={styles.inputArea}>
+                <input 
+                    {...props} 
+                    className={`${styles[color ? color : "plain"]} ${borderBottom ? styles.borderBottom : styles.border} ${error ? styles.errorInput : ""}` } 
+                    value={value.toLowerCase()}
+                />
+
+                {(onClear && value) ? <button type="button" className={styles.clear} onClick={onClear}> x </button> : ""}
+            </div>
 
             {
                 !!results.length && !isSelected && <div className={styles.search}>

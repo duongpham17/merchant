@@ -21,7 +21,13 @@ const EditIndex = ({data}: {data: IItems}) => {
 
     return (
         <form onSubmit={onSubmit}>
-            <Input label1={`Item name - ID: ${values.id}`} name="name" value={values.name} onChange={() => ""} />
+            <Input 
+                label1={`Item`} 
+                label2={`ID ${values.id}`}
+                name="name" 
+                value={values.name} 
+                onChange={() => ""} 
+            />
 
             <Choice 
                 value={values.side} 

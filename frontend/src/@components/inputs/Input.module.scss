@@ -27,6 +27,15 @@
         border: 1px solid var(--clr-light-light);
         border-radius: 5px;
     }
+    .inputArea{
+        position: relative;
+        .clear{
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+        }
+    }
+
 
     label{
         width: 100%;
@@ -36,7 +45,6 @@
             color: var(--clr-text-light)
         }
     }
-
     .double{
         display: flex;
         align-items: center;
