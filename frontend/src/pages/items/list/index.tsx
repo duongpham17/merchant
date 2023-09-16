@@ -1,7 +1,6 @@
 import styles from './List.module.scss';
 import { IItems } from '@redux/types/items';
 import { firstcaps } from '@utils/functions';
-import { gp } from '@utils/osrs';
 import { MdOutlineUnfoldMoreDouble } from 'react-icons/md';
 
 import SlideIn from '@components/slidein/Style1';
@@ -35,12 +34,6 @@ const ListIndex = ({itemsFiltered, items}: Props) => {
         onOpenLocalSaved(list);
     };
 
-    const totalValue = () => {
-        let total = 0;
-        items.forEach(item => total += item.quantity * item.price);
-        return total;
-    };
-
     const sortItemsFiltered = () => {
         const saved: string[] = openLocalSaved.split(",");
         const removed = itemsFiltered.filter(el => !saved.includes(el.id.toString()));
@@ -66,7 +59,7 @@ const ListIndex = ({itemsFiltered, items}: Props) => {
                 <SlideIn
                     width={300} 
                     icon={<button className={styles.button}><MdOutlineUnfoldMoreDouble /></button>} 
-                    iconOpen={`[${itemsFiltered.length}] ${gp(totalValue())}`}
+                    iconOpen={`${itemsFiltered.length}`}
                 >
                     <div className={styles.items}>
                     {itemsFiltered.map(el => 
