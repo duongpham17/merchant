@@ -6,6 +6,7 @@ import { useAppSelector } from '@redux/hooks/useRedux';
 import { Context } from 'themes'; 
 
 import { FaWater } from 'react-icons/fa';
+import { BiCalculator } from 'react-icons/bi';
 import { BsSunFill, BsFillMoonFill } from 'react-icons/bs';
 import { AiFillHome, AiFillFileAdd, AiOutlineUser } from 'react-icons/ai';
 import { FaSitemap } from 'react-icons/fa';
@@ -15,6 +16,7 @@ import Message from '@components/hover/Message';
 import SlideIn from '@components/slidein/Style1';
 
 import CreateComp from './create';
+import CalculatorComp from './calculator'
 
 const Navbar = () => {
 
@@ -26,14 +28,32 @@ const Navbar = () => {
     <div className={styles.container}>
 
       <nav>
-        <Message message='Home'><Link className={styles.button}  to="/"><AiFillHome/></Link></Message>
-        {isLoggedIn && <Message message='Items'><Link className={styles.button} to="/items"><FaSitemap/></Link></Message>}
+        <Message message='Home'>
+          <Link className={styles.button}  to="/"><AiFillHome/></Link>
+        </Message>
+        {isLoggedIn && 
+          <Message message='Items'>
+            <Link className={styles.button} to="/items"><FaSitemap/></Link>
+          </Message>
+        }
       </nav>
 
       <nav>
         {isLoggedIn && 
-          <SlideIn width={350} icon={<Message message='Transaction'><button className={styles.button}><AiFillFileAdd/></button> </Message>}>
+          <SlideIn 
+            width={350} 
+            icon={<Message message='Transaction'><button className={styles.button}><AiFillFileAdd/></button> </Message>}
+          >
             <CreateComp />
+          </SlideIn>
+        }
+        {isLoggedIn && 
+          <SlideIn 
+            width={350} 
+            iconOpen="Calculator"
+            icon={<Message message='Calculator'><button className={styles.button}><BiCalculator/></button> </Message>}
+          >
+            <CalculatorComp />
           </SlideIn>
         }
 

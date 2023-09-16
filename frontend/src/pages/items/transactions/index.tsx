@@ -66,55 +66,59 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
 
   const ProfitNLoss = (item: IItems) => {
     if(item.side === "sell"){
-      const at_total = item.price * item.quantity;
-      const current_total = item.quantity * item.sold;
+      const buy_total = item.price * item.quantity;
+      const sell_total = item.quantity * item.sold;
       return {
-        total: current_total,
-        pnl: Math.floor((current_total - at_total) * 0.99),
-        tax: getax(item.price).tax * item.quantity
+        total: sell_total,
+        pnl: (sell_total - buy_total) -  (getax(item.sold).tax * item.quantity),
+        tax: getax(item.sold).tax * item.quantity
       };
     } else {
-      const at_total = item.price * item.quantity;
+      const buy_total = item.price * item.quantity;
       const current_total = item.quantity * average_cost;
       return {
         total: current_total,
-        pnl: Math.floor((current_total - at_total) * 0.99),
+        pnl: Math.floor(current_total - buy_total),
         tax: 0
       }
     }
   };
-
+ 
+  // 592,130 - 2950
   const TotalDataSets = (item: IItems[]) => {
     let [buy, sell, quantity, tax] = [0, 0, 0, 0];
-    let [unrealised_pnl, realised_pnl, liquidation] = [0, 0, 0];
+    let [unrealised_pnl, realised_pnl] = [0, 0];
+    let [net, spend ] = [0, 0]
     for(let x of item){
       if(x.side === "sell"){
         const at_total = x.price * x.quantity;
         const current_total = x.quantity * x.sold;
-        realised_pnl += current_total - at_total
-        tax += Math.floor(current_total * 0.01);
-      } else {
-        const at_total = x.price * x.quantity;
-        const current_total = x.quantity * average_cost;
-        unrealised_pnl+=current_total - at_total;
-      };
-      if(x.side === "buy"){
+        realised_pnl += (current_total - at_total) - getax(x.sold, x.quantity).total_tax;
+        net -= getax(x.sold, x.quantity).total_tax;
         buy += (x.quantity*x.price);
         quantity += x.quantity;
-      } else {
+        tax += getax(x.sold, x.quantity).total_tax;
+        spend -= (ProfitNLoss(x).total + getax(x.sold, x.quantity).total_tax);
+      };
+      if(x.side === "buy"){
+        const at_total = x.price * x.quantity;
+        const current_total = x.quantity * average_cost;
+        unrealised_pnl += current_total - at_total;
+        net += (x.quantity * latest[x.id].high);
         sell += (x.quantity*x.sold);
+        spend += (x.quantity * x.price);
       };
     };
-    liquidation = buy + sell;
     return {
+      spend,
+      tax,
+      net,
       quantity,
       buy, 
       sell, 
       pnl: buy - sell,
-      liquidation,
       unrealised_pnl,
       realised_pnl,
-      tax
     }
   };
 
@@ -130,7 +134,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
         total_spent += x.price * x.quantity;
       }
     };
-    return (total_spent / accumulation).toFixed(2);
+    return (total_spent / accumulation);
   };
 
   const calc_dca = (index: number, array: IItems[]) => {
@@ -146,7 +150,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
       const index = Number(i) 
       if(index === 0){
         COST = Number(calc_cost_basis(index, data.items));
-        DCA = Number(calc_dca(index, data.items));
+        DCA = Number(calc_dca(index, data.items).toLocaleString());
         break
       }
     }
@@ -176,7 +180,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     <Container style={{padding: "0.5rem 0"}}>
 
         <Label3 
-          name={`[${data.items.length}] ${firstcaps(data.name)}`} 
+          name={`[${methods.dca.toLocaleString()}] ${firstcaps(data.name)}`} 
           value={<Message message="copy"><Button label1={<MdContentCopy/>} onClick={onCopy} color="dark" margin /></Message>} 
           size="1.2rem"
         />
@@ -184,65 +188,51 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
         <Line />
 
         <Container style={{padding: "0.5rem 0"}}>
-
-          <Label1 color="light" 
-            name="High Price" 
-            value={latest[data.id].high.toLocaleString()} 
-          />
-          <Label1 color="light" 
-            name="Avg Price" 
-            value={(Math.floor((latest[data.id].low + latest[data.id].high) / 2)).toLocaleString()} 
-          />
-          <Label1 color="light" 
-            name="Low Price" 
-            value={(latest[data.id].low).toLocaleString()} 
-          />
-          
+          <Flex>
+            <Label2
+              name="Dca" 
+              value={methods.costBasis.toLocaleString()} 
+            />
+            <Label2
+              name="High Price" 
+              value={latest[data.id].high.toLocaleString()} 
+            />
+            <Label2
+              name="Low Price" 
+              value={(latest[data.id].low).toLocaleString()} 
+            />
+            </Flex>
           <Line />
-
-          <Label1 color="light" 
-            name="Quantity" 
-            value={methods.dca.toLocaleString()} 
-          />
-          <Label1 color="light" 
-            name="Dca" 
-            value={methods.costBasis.toLocaleString()} 
-          />
-          <Label1 color="light" name="Break Even" 
-            value={(Number(methods.costBasis) * 1.01).toLocaleString()} 
-          />
-
-          <Line /> 
-
-          <Label1 color="light" 
-            name="Buy" 
-            value={total.buy.toLocaleString()} 
-          />
-          <Label1 color="light" 
-            name="Sell" 
-            value={total.sell.toLocaleString()} 
-          />
-
+            <Flex>
+              <Label2
+                name="Net Worth" 
+                value={total.net.toLocaleString()} 
+              />
+              <Label2 color={total.unrealised_pnl >= 0 ? "green" : "red"} 
+                name={"Unrealised PNL"}
+                value={(total.unrealised_pnl - total.tax).toLocaleString()}
+              />
+              <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
+                name="Realised PNL"
+                value={total.realised_pnl.toLocaleString()} 
+              />
+            </Flex>
           <Line />
-          
-          <Label1 color="light" 
-            name="Liquidation" 
-            value={(Math.floor(total.liquidation * 0.99)).toLocaleString()}
-          />
-          <Label1 color="light" 
-            name="Realised Tax" 
-            value={total.tax.toLocaleString()}
-          />
-          <Line />
-          <Label3 color="light" valueColor={total.unrealised_pnl >= 0 ? "green" : "red"} 
-            name="Unrealised PNL"
-            value={total.unrealised_pnl.toLocaleString()} 
-          />
-          <Label3 color="light" valueColor={total.realised_pnl >= 0 ? "green" : "red"} 
-            name="Realised PNL"
-            value={total.realised_pnl.toLocaleString()} 
-          />
-          <Line />
+          <Flex>
+              <Label2
+                name="Net Spend" 
+                value={total.spend.toLocaleString()} 
+              />
+              <Label2 color={total.unrealised_pnl >= 0 ? "green" : "red"} 
+                name={""}
+                value={""}
+              />
+              <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
+                name=""
+                value={""} 
+              />
+            </Flex>
+            <Line />
         </Container>
 
         <Pagination data={data.items} show={25}>
@@ -329,7 +319,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                     <Flex>
                       <Label2 
                         name="Dca" 
-                        value={calc_cost_basis(index, array)} 
+                        value={calc_cost_basis(index, array).toLocaleString()} 
                       />
                       <Label2 
                         name="NQuantity" 
@@ -365,7 +355,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                     <Flex>
                       <Label2 
                         name="Dca" 
-                        value={calc_cost_basis(index, array)}
+                        value={calc_cost_basis(index, array).toLocaleString()}
                       />
                       <Label2 
                         name="NQuantity" 

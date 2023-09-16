@@ -1,8 +1,12 @@
 .container{
+    position:sticky;
+    top: 0;
     padding: 0.5rem 0.2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: var(--clr-background);
+    z-index: 1000;
 
     nav{
         display: flex;
