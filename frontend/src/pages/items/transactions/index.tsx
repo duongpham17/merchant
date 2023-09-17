@@ -137,7 +137,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     return (total_spent / accumulation);
   };
 
-  const calc_dca = (index: number, array: IItems[]) => {
+  const calc_new_quantity = (index: number, array: IItems[]) => {
     return array
       .slice(index)
       .map(el => el.side === "buy" ? el.quantity : -el.quantity)
@@ -145,18 +145,18 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
   };
 
   const Methods = () => {
-    let [COST, DCA] = [0, 0];
+    let [COST, NEW] = [0, 0];
     for(let i in data.items){
       const index = Number(i) 
       if(index === 0){
-        COST = Number(calc_cost_basis(index, data.items));
-        DCA = Number(calc_dca(index, data.items).toLocaleString());
+        COST =  Math.floor(calc_cost_basis(index, data.items));
+        NEW = Number(calc_new_quantity(index, data.items));
         break
       }
     }
     return {
       costBasis: COST,
-      dca: DCA,
+      newQuatntiy: NEW,
     }
   };
 
@@ -167,7 +167,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
   const onCopy = () => {
     navigator.clipboard.writeText(JSON.stringify({
       cost_basis: methods.costBasis,
-      dca: methods.dca,
+      new_quantity: methods.newQuatntiy,
       average_cost: average_cost
     }));
   };
@@ -180,7 +180,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     <Container style={{padding: "0.5rem 0"}}>
 
         <Label3 
-          name={`[${methods.dca.toLocaleString()}] ${firstcaps(data.name)}`} 
+          name={`[${methods.newQuatntiy.toLocaleString()}] ${firstcaps(data.name)}`} 
           value={<Message message="copy"><Button label1={<MdContentCopy/>} onClick={onCopy} color="dark" margin /></Message>} 
           size="1.2rem"
         />
@@ -190,7 +190,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
         <Container style={{padding: "0.5rem 0"}}>
           <Flex>
             <Label2
-              name="Dca" 
+              name="Cost Basis" 
               value={methods.costBasis.toLocaleString()} 
             />
             <Label2
@@ -208,31 +208,31 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                 name="Net Worth" 
                 value={total.net.toLocaleString()} 
               />
-              <Label2 color={total.unrealised_pnl >= 0 ? "green" : "red"} 
-                name={"Unrealised PNL"}
-                value={(total.unrealised_pnl - total.tax).toLocaleString()}
-              />
-              <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
-                name="Realised PNL"
-                value={total.realised_pnl.toLocaleString()} 
-              />
-            </Flex>
-          <Line />
-          <Flex>
               <Label2
                 name="Net Spend" 
                 value={total.spend.toLocaleString()} 
               />
-              <Label2 color={total.unrealised_pnl >= 0 ? "green" : "red"} 
-                name={""}
-                value={""}
-              />
-              <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
-                name=""
-                value={""} 
-              />
+                          <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
+              name=""
+              value={""} 
+            />
             </Flex>
-            <Line />
+          <Line />
+          <Flex>
+            <Label2 color={total.unrealised_pnl >= 0 ? "green" : "red"} 
+              name={"Unrealised PNL"}
+              value={(total.unrealised_pnl - total.tax).toLocaleString()}
+            />
+            <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
+              name="Realised PNL"
+              value={total.realised_pnl.toLocaleString()} 
+            />
+            <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
+              name=""
+              value={""} 
+            />
+          </Flex>
+          <Line />
         </Container>
 
         <Pagination data={data.items} show={25}>
@@ -323,7 +323,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                       />
                       <Label2 
                         name="NQuantity" 
-                        value={calc_dca(index, array).toLocaleString()} 
+                        value={calc_new_quantity(index, array).toLocaleString()} 
                       />
                       <Label2 
                         name="" 
@@ -359,7 +359,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                       />
                       <Label2 
                         name="NQuantity" 
-                        value={calc_dca(index, array).toLocaleString()} 
+                        value={calc_new_quantity(index, array).toLocaleString()} 
                       />
                       <Label2 
                         name="" 
