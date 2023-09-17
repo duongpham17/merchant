@@ -6,6 +6,7 @@ export interface OSRS_GE_ITEM {
     name: string,
     examine: string,
     id: number,
+    limit?: number,
     value: number,
     icon: string,
     lowalch: number

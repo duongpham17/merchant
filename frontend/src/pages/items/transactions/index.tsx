@@ -1,12 +1,14 @@
 import { IItems } from '@redux/types/items'
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Item from '@redux/actions/items';
+import Alert from '@redux/actions/alert';
 import { OSRS_GE_LATEST } from '@redux/types/osrs';
+import OSRS_GE_ITEM from '@data/osrs-ge';
 
 import { UK } from '@utils/time';
 import { getax, gp, gemargin } from '@utils/osrs';
 import { firstcaps } from '@utils/functions';
-import { MdKeyboardArrowRight, MdContentCopy } from 'react-icons/md';
+import { MdKeyboardArrowRight } from 'react-icons/md';
 
 import Button from '@components/buttons/Button';
 import Message from '@components/hover/Message';
@@ -172,6 +174,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
       new_quantity: methods.newQuatntiy,
       average_cost: average_cost
     }));
+    dispatch(Alert.set("Copied data"))
   };
 
   const onDelete = (id: string) => {
@@ -182,14 +185,14 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     <Container style={{padding: "0.5rem 0"}}>
 
         <Label3 
-          name={`${firstcaps(data.name)}`} 
-          value={<Message message="copy"><Button label1={<MdContentCopy/>} onClick={onCopy} color="dark" margin /></Message>} 
+          name={`${firstcaps(data.name)} ${data.id}`} 
+          value={`Limit [${OSRS_GE_ITEM.find(el => el.id === data.id)?.limit || "?"}]`} 
           size="1.2rem"
         />
 
         <Line />
 
-        <Container style={{padding: "0.5rem 0"}}>
+        <Container style={{padding: "0.5rem 0"}} onClick={onCopy}>
           <Flex>
             <Label2 
               color={gemargin(highest_cost, lowest_cost) >= 0 ? "green" : "red"}

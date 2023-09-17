@@ -5,6 +5,7 @@ import { store } from '@redux/store';
 import Themes from 'themes';
 import Global from '@global';
 import Navbar from 'layout/navbar';
+import Alert from 'layout/alert';
 import Pages from 'pages';
 
 export const App = () => (
@@ -12,6 +13,7 @@ export const App = () => (
     <BrowserRouter>
       <Themes>
         <Global/>
+        <Alert/>
         <Navbar/>
         <Pages/>
       </Themes>

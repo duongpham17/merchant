@@ -1,0 +1,39 @@
+@mixin color($color, $border) {
+    color: $color;
+    background-color: var(--clr-background);
+    border: 1px solid $border;
+    text-align: center;
+  }
+  
+.container {
+    position: fixed;
+    z-index: 10;
+    top: 3rem;
+    .alert {
+        margin-top: 0.2rem;
+        padding: 0.4rem;
+        min-width: 80px;
+        animation: Slide 0.5s ease-in-out;
+        border: 1px solid var(--clr-light-transparent);
+        font-size: 0.8rem;
+    }
+
+    @keyframes Slide {
+        0% {
+            transform: translateX(-5rem);
+        }
+    }
+
+    .normal {
+        @include color(white, var(--clr-main));
+    }
+
+    .red {
+        @include color(white, var(--clr-red));
+    }
+
+    .green {
+        @include color(white, var(--clr-green));
+    }
+
+}
