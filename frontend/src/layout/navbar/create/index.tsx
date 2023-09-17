@@ -1,6 +1,7 @@
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Items from '@redux/actions/items';
 import OSRSGrandExchange from '@data/osrs-ge';
+import {gp} from '@utils/osrs';
 import {FaPaste} from 'react-icons/fa';
 
 import Button from '@components/buttons/Button';
@@ -98,7 +99,7 @@ const CreateIndex = () => {
       <Input
         type="number"
         label1="Quantity"
-        label2={errors.quantity}
+        label2={errors.quantity ? errors.quantity : gp(values.quantity)}
         error={errors.quantity}
         name="quantity"
         placeholder='...'
@@ -109,7 +110,7 @@ const CreateIndex = () => {
       <Input 
         type="number"
         label1="Buy Price"
-        label2={errors.price}
+        label2={errors.quantity ? errors.price : gp(values.price)}
         error={errors.price}
         name="price"
         placeholder='...'
@@ -121,7 +122,7 @@ const CreateIndex = () => {
         <Input 
           type="number"
           label1="Sell Price"
-          label2={errors.sold}
+          label2={errors.quantity ? errors.sold : gp(values.sold)}
           error={errors.sold}
           name="sold"
           placeholder='...'

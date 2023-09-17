@@ -4,7 +4,7 @@ import Item from '@redux/actions/items';
 import { OSRS_GE_LATEST } from '@redux/types/osrs';
 
 import { UK } from '@utils/time';
-import { getax, gp } from '@utils/osrs';
+import { getax, gp, gemargin } from '@utils/osrs';
 import { firstcaps } from '@utils/functions';
 import { MdKeyboardArrowRight, MdContentCopy } from 'react-icons/md';
 
@@ -51,10 +51,12 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     </Container>
   }
 
-  let average_cost = 0;
+  let [average_cost, highest_cost, lowest_cost] = [0, 0, 0];
 
   try{
     average_cost = (latest[data.id].high + latest[data.id].low) / 2;
+    highest_cost = latest[data.id].high;
+    lowest_cost  = latest[data.id].low;
   } catch(_){
     return <Container>
       <Label1 color='red' name="Invalid item"/>
@@ -123,18 +125,18 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
   };
 
   const calc_cost_basis = (index: number, array: IItems[]) => {
-    let [total_spent, accumulation] = [0, 0];
+    let [pnl, nqty] = [0, 0];
     for(let x of array.slice(index)){
       if(x.side === "sell") {
-        accumulation -= x.quantity;
-        total_spent -= x.price * x.quantity;
-      }
+        nqty -= x.quantity;
+        pnl -= x.sold * x.quantity;
+      };
       if(x.side === "buy") {
-        accumulation += x.quantity;
-        total_spent += x.price * x.quantity;
-      }
+        nqty += x.quantity;
+        pnl += x.price * x.quantity;
+      };
     };
-    return (total_spent / accumulation);
+    return Number((pnl / nqty).toFixed(2));
   };
 
   const calc_new_quantity = (index: number, array: IItems[]) => {
@@ -180,7 +182,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     <Container style={{padding: "0.5rem 0"}}>
 
         <Label3 
-          name={`[${methods.newQuatntiy.toLocaleString()}] ${firstcaps(data.name)}`} 
+          name={`${firstcaps(data.name)}`} 
           value={<Message message="copy"><Button label1={<MdContentCopy/>} onClick={onCopy} color="dark" margin /></Message>} 
           size="1.2rem"
         />
@@ -189,18 +191,34 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
 
         <Container style={{padding: "0.5rem 0"}}>
           <Flex>
-            <Label2
-              name="Cost Basis" 
-              value={methods.costBasis.toLocaleString()} 
+            <Label2 
+              color={gemargin(highest_cost, lowest_cost) >= 0 ? "green" : "red"}
+              name={`Margin [ Tax ${getax(highest_cost).tax} ]`}
+              value={`${gemargin(highest_cost, lowest_cost).toLocaleString()}`}
             />
             <Label2
-              name="High Price" 
+              name="High" 
               value={latest[data.id].high.toLocaleString()} 
             />
             <Label2
-              name="Low Price" 
+              name="Low" 
               value={(latest[data.id].low).toLocaleString()} 
             />
+          </Flex>
+          <Line />
+          <Flex>
+              <Label2
+                name="Cost Basis" 
+                value={methods.costBasis.toLocaleString()} 
+              />
+              <Label2
+                name="N Quantity" 
+                value={methods.newQuatntiy.toLocaleString()} 
+              />
+              <Label2
+                name="" 
+                value="" 
+              />
             </Flex>
           <Line />
             <Flex>
@@ -212,10 +230,10 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                 name="Net Spend" 
                 value={total.spend.toLocaleString()} 
               />
-                          <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
-              name=""
-              value={""} 
-            />
+              <Label2 
+                name=""
+                value={""} 
+              />
             </Flex>
           <Line />
           <Flex>
@@ -227,7 +245,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
               name="Realised PNL"
               value={total.realised_pnl.toLocaleString()} 
             />
-            <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
+            <Label2 
               name=""
               value={""} 
             />

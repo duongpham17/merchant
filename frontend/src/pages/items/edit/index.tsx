@@ -8,6 +8,7 @@ import Input from '@components/inputs/Input';
 import Choice from '@components/inputs/Choice';
 
 import validations from './validation';
+import { gp } from '@utils/osrs';
 
 const EditIndex = ({data}: {data: IItems}) => {
 
@@ -39,6 +40,7 @@ const EditIndex = ({data}: {data: IItems}) => {
             <Input 
                 type="number" 
                 label1="Quantity" 
+                label2={gp(values.quantity)}
                 name="quantity" 
                 value={values.quantity || ""} 
                 onChange={onChange} 
@@ -47,6 +49,7 @@ const EditIndex = ({data}: {data: IItems}) => {
             <Input 
                 type="number" 
                 label1="Buy Price" 
+                label2={gp(values.price)}
                 name="price" 
                 value={values.price || ""} 
                 onChange={onChange} 
@@ -56,6 +59,7 @@ const EditIndex = ({data}: {data: IItems}) => {
                 <Input 
                     type="number" 
                     label1="Sell Price" 
+                    label2={gp(values.sold)}
                     name="sold" 
                     value={values.sold || ""} 
                     onChange={onChange} 
