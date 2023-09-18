@@ -1,7 +1,7 @@
 import styles from './List.module.scss';
 import { IItems } from '@redux/types/items';
 import { firstcaps } from '@utils/functions';
-import { gemargin, gp } from '@utils/osrs';
+import { gemargin, getax, gp } from '@utils/osrs';
 import { MdOutlineUnfoldMoreDouble } from 'react-icons/md';
 import { useAppSelector } from '@redux/hooks/useRedux';
 
@@ -90,15 +90,27 @@ const ListIndex = ({itemsFiltered}: Props) => {
     const sortedItems = sortItemsFiltered();
 
     const estimated_net_worth = () => {
-        let profit_n_loss = 0;
+        let [profit_n_loss, tax] = [0, 0];
         for(let x of itemsFiltered){
             x.items.forEach(item => {
                 if(item.side === "sell"){
-                    
-                }
+                    const calc = getax(item.sold, item.quantity);
+                    profit_n_loss += calc.total_after_tax;
+                    tax += calc.total_tax
+                } else {
+                    const calc = getax(latest[item.id].high, item.quantity)
+                    profit_n_loss += calc.total_after_tax;
+                    tax += calc.total_tax
+                };
             })
-        }
+        };
+        return {
+            profit_n_loss,
+            tax
+        };
     };
+
+    const netWorth = estimated_net_worth();
 
     return (
         <div className={styles.container}>
@@ -115,7 +127,7 @@ const ListIndex = ({itemsFiltered}: Props) => {
                 <SlideIn
                     width={300} 
                     icon={<button className={styles.button}><MdOutlineUnfoldMoreDouble /></button>} 
-                    iconOpen={`[ ${itemsFiltered.length} ]`}
+                    iconOpen={<Message message={`Tax ${gp(netWorth.tax)}`}>{gp(netWorth.profit_n_loss)} [ {itemsFiltered.length} ]</Message>}
                 >
                     <div className={styles.items}>
                     {margin.map(el => 
