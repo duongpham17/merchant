@@ -142,9 +142,11 @@ const ListIndex = ({itemsFiltered}: Props) => {
                                 <Line/>
                                 <Message message="Cost, High, Low" side="right"> 
                                 <div>
-                                    <span className={styles.cost}>{`[ ${gp(cost_basis_latest(el.items))}, `}</span>
-                                    <span className={styles.high}>{`${gp(latest[el.id].high)},`}</span>
-                                    <span className={styles.low}>{` ${gp(latest[el.id].low)} ]`}</span>
+                                    [
+                                    <span className={styles.cost}>{` ${gp(cost_basis_latest(el.items))}, `}</span>
+                                    <span className={styles.high}>{` ${gp(latest[el.id].high)},`}</span>
+                                    <span className={styles.low}>{` ${gp(latest[el.id].low)} `}</span>
+                                    ]
                                 </div>
                                 </Message>
                                 <Line/>
