@@ -185,8 +185,8 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     <Container style={{padding: "0.5rem 0"}}>
 
         <Label3 
-          name={`${firstcaps(data.name)} ${data.id}`} 
-          value={`Limit [${OSRS_GE_ITEM.find(el => el.id === data.id)?.limit || "?"}]`} 
+          name={`${firstcaps(data.name)}`} 
+          value={`[${OSRS_GE_ITEM.find(el => el.id === data.id)?.limit || "?"}]`} 
           size="1.2rem"
         />
 
@@ -196,7 +196,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
           <Flex>
             <Label2 
               color={gemargin(highest_cost, lowest_cost) >= 0 ? "green" : "red"}
-              name={`Margin [ Tax ${getax(highest_cost).tax} ]`}
+              name={`Margin [ Tax ${gp(getax(highest_cost).tax)} ]`}
               value={`${gemargin(highest_cost, lowest_cost).toLocaleString()}`}
             />
             <Label2

@@ -1,7 +1,9 @@
 import styles from './List.module.scss';
 import { IItems } from '@redux/types/items';
 import { firstcaps } from '@utils/functions';
+import { gemargin, gp } from '@utils/osrs';
 import { MdOutlineUnfoldMoreDouble } from 'react-icons/md';
+import { useAppSelector } from '@redux/hooks/useRedux';
 
 import SlideIn from '@components/slidein/Style1';
 
@@ -18,13 +20,15 @@ interface Props {
     }[],
 };
 
-const ListIndex = ({itemsFiltered, items}: Props) => {
+const ListIndex = ({itemsFiltered}: Props) => {
 
     const {onOpenLocal: onOpenLocalSaved, openLocal: openLocalSaved} = useOpen({local: "ge-item-saved"});
 
     const {onOpenLocal, openLocal} = useOpen({local: "ge-item"});
 
-    const {setQuery} = useQuery()
+    const {setQuery} = useQuery();
+
+    const {latest} = useAppSelector(state => state.osrs);
 
     const onSelectItem = (item: Props["itemsFiltered"][0]) => {
         onOpenLocal(item.id.toString());
@@ -66,8 +70,10 @@ const ListIndex = ({itemsFiltered, items}: Props) => {
                         <button key={el.id} onClick={() => onSelectItem(el)}>
                             <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
                             <div>
-                                <small>{el.id}.</small>
-                                <p>{el.name}</p>
+                                <p className={gemargin(latest[el.id].high, latest[el.id].low) >= 0 ? styles.green : styles.red}>
+                                    {gp(gemargin(latest[el.id].high, latest[el.id].low))}
+                                </p>
+                                <p>{firstcaps(el.name)}</p>
                             </div>
                         </button>
                     )}

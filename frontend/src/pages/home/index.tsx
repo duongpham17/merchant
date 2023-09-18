@@ -4,7 +4,7 @@ import { useAppSelector } from '@redux/hooks/useRedux';
 import OsrsGeItems, {OSRS_GE_ITEM} from '@data/osrs-ge';
 
 import { firstcaps } from '@utils/functions';
-import { gp, getax } from '@utils/osrs';
+import { gp, gemargin } from '@utils/osrs';
 
 import Search from '@components/search/Search';
 import Pagination from '@components/pagination/Style1';
@@ -48,7 +48,7 @@ const Home = () => {
       for(let x of OsrsGeItems){
         const highest = latest[x.id]?.high || 0;
         const lowest = latest[x.id]?.low || 0;
-        const margin = (highest - lowest) - getax(highest).tax;
+        const margin = gemargin(highest, lowest);
         items.push({...x, margin: !margin ? 0 : margin})
       };
       return items;

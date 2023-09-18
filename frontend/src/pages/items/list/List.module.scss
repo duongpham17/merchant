@@ -65,6 +65,15 @@
                     border-color: var(--clr-main);
                 }
             }
+            .img{
+                display: block;
+            }
+            .green{
+                color: var(--clr-green)
+            }
+            .red{
+                color: var(--clr-red)
+            }
             div{
                 width: 100%;
                 text-align: right;
