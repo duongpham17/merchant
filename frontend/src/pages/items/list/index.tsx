@@ -7,6 +7,7 @@ import { useAppSelector } from '@redux/hooks/useRedux';
 
 import SlideIn from '@components/slidein/Style1';
 import Message from '@components/hover/Message';
+import Line from '@components/line/Style1';
 
 import useOpen from '@hooks/useOpen';
 import useQuery from '@hooks/useQuery';
@@ -138,10 +139,16 @@ const ListIndex = ({itemsFiltered}: Props) => {
                             </div>
                             <div className={styles.information}>
                                 <b>{firstcaps(el.name)}</b>
-                                <Message message="cost basis" side="right"> 
-                                    <p className={styles.cost}>{gp(cost_basis_latest(el.items))}</p>
+                                <Line/>
+                                <Message message="Cost, High, Low" side="right"> 
+                                <div>
+                                    <span className={styles.cost}>{`[ ${gp(cost_basis_latest(el.items))}, `}</span>
+                                    <span className={styles.high}>{`${gp(latest[el.id].high)},`}</span>
+                                    <span className={styles.low}>{` ${gp(latest[el.id].low)} ]`}</span>
+                                </div>
                                 </Message>
-                                <Message message="margin" side="right"> 
+                                <Line/>
+                                <Message message="Margin" side="right"> 
                                      <p className={el.margin >= 0 ? styles.green : styles.red}>{gp(el.margin)}</p>
                                 </Message>
                             </div>

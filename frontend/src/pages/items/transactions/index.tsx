@@ -72,10 +72,11 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     if(item.side === "sell"){
       const buy_total = item.price * item.quantity;
       const sell_total = item.quantity * item.sold;
+      const taxes = getax(item.sold);
       return {
         total: sell_total,
-        pnl: (sell_total - buy_total) -  (getax(item.sold).tax * item.quantity),
-        tax: getax(item.sold).tax * item.quantity
+        pnl: (sell_total - buy_total) -  (taxes.tax * item.quantity),
+        tax: taxes.tax * item.quantity
       };
     } else {
       const buy_total = item.price * item.quantity;
@@ -94,14 +95,15 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     let [net, spend ] = [0, 0]
     for(let x of item){
       if(x.side === "sell"){
+        const taxes = getax(x.sold, x.quantity)
         const at_total = x.price * x.quantity;
         const current_total = x.quantity * x.sold;
-        realised_pnl += (current_total - at_total) - getax(x.sold, x.quantity).total_tax;
-        net -= getax(x.sold, x.quantity).total_tax;
+        realised_pnl += (current_total - at_total) - taxes.total_tax;
+        net -= taxes.total_tax;
         buy += (x.quantity*x.price);
         quantity += x.quantity;
-        tax += getax(x.sold, x.quantity).total_tax;
-        spend -= (ProfitNLoss(x).total + getax(x.sold, x.quantity).total_tax);
+        tax += taxes.total_tax;
+        spend -= (ProfitNLoss(x).total + taxes.total_tax);
       };
       if(x.side === "buy"){
         const at_total = x.price * x.quantity;
