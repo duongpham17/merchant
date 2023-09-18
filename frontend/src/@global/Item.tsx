@@ -1,16 +1,19 @@
 import { useEffect } from 'react';
-import { useAppDispatch } from '@redux/hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '@redux/hooks/useRedux';
 import Items from '@redux/actions/items';
 
 const Osrs = () => {
 
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        dispatch(Items.find("empty"));
-      }, [dispatch]);
+  const {isLoggedIn} = useAppSelector(state => state.authentication)
 
-    return null
+  useEffect(() => {
+      if(!isLoggedIn) return;
+      dispatch(Items.find("empty"));
+  }, [dispatch, isLoggedIn]);
+
+  return null
 }
 
 export default Osrs;

@@ -39,14 +39,14 @@ const Authentication = () => {
             {
                 authState.status.login === "success" 
                 ?
-                <Form onSubmit={onSubmit} width={280} buttonClr={values.code ? "main" : "none"} button={false}>
+                <Form onSubmit={onSubmit} buttonClr={values.code ? "main" : "none"} button={false} width={300}>
                     <p>Check your email for the code</p>
                     <Codes amount={6} callback={(code: string) => onSetValue({code}) } />
                     {authState.errors && <small>{authState.errors.code}</small>}
                     <Button type="submit" label1={<span>&#x2192;</span>} loading={loading} color="main" />
                 </Form>
                 :
-                <Form onSubmit={onSubmit} button={false} >
+                <Form onSubmit={onSubmit} button={false} width={300}>
                     <Input label1="Email Address" label2={errors.email} error={errors.email} placeholder="..." name="email" value={values.email} onChange={onChange} />
                     {authState.errors && <small>{authState.errors.login}</small>}
                     <Button type="submit" label1={<span>&#x2192;</span>} loading={loading} color="main" />

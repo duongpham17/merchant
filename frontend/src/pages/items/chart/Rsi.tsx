@@ -3,6 +3,7 @@ import { Context } from 'themes';
 import { OSRS_GE_TIMESERIES } from '@redux/types/osrs';
 import { AreaChart, XAxis, YAxis, Area, Tooltip, ResponsiveContainer} from 'recharts';
 import { UK } from '@utils/time';
+import { gp } from '@utils/osrs';
 import Label3 from '@components/labels/Style3';
 
 interface Props {
@@ -70,7 +71,7 @@ const CustomToolTips = ({ active, payload }: {active?: any, payload: any}) => {
         <div>
           <p>{UK(new Date(data.time*1000))}</p>
           <p>RSI {data.rsi.toFixed(2)}</p>
-          <p>Price {data.price.toFixed(2)}</p>
+          <p>Price {gp(data.price.toFixed(2))}</p>
           {data.rsi >= 70 ? <Label3 name={data.rsi >= 70 ? "Over Bought" : ""} color="green" /> : ""}
           {data.rsi <= 30 ? <Label3 name={data.rsi <= 30 ? "Over Sold" : ""} color="red" /> : ""}
         </div>

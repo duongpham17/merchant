@@ -15,15 +15,21 @@ import Line from '@components/line/Style1';
 import Input from '@components/inputs/Input';
 import Button from '@components/buttons/Button';
 import Spinner from '@components/loading/Spinner';
-
-import useForm from '@hooks/useForm';
 import Summary from '@components/summary/Style1';
+import Openarrow from '@components/buttons/Openarrows';
+
+import useOpen from '@hooks/useOpen';
+import useForm from '@hooks/useForm';
+
+import Chart from './chart';
 
 interface ExtendedOsrsGeItems extends OSRS_GE_ITEM {
   margin: number;
 };
 
 const Home = () => {
+
+  const { openItems, onOpenItems } = useOpen({initialState: ""});
 
   const {latest} = useAppSelector(state => state.osrs);
 
@@ -49,7 +55,11 @@ const Home = () => {
         const highest = latest[x.id]?.high || 0;
         const lowest = latest[x.id]?.low || 0;
         const margin = gemargin(highest, lowest);
-        items.push({...x, margin: !margin ? 0 : margin})
+        items.push({
+          ...x, 
+          margin: !margin ? 0 : margin,
+          limit: OsrsGeItems.find(el => el.id === x.id)?.limit || 0
+        })
       };
       return items;
     };
@@ -107,15 +117,28 @@ const Home = () => {
             <Pagination data={data} show={100} top>
               {(item, index) => 
                 <div className={styles.element} key={item.id}>
-                  <div className={styles.image}>
-                    <img src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
-                    <Label3 name={`${index+1}. ${item.name}`} value={<button></button>} />
+                  <div className={styles.image} onClick={() => onOpenItems((item.id).toString())}>
+                    <img 
+                      src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} 
+                      alt="osrs"
+                    />
+                    <Label3 
+                      name={`${index+1}. ${firstcaps(item.name)} [ ${item.limit} ]`} 
+                      value={<Openarrow onClick={() => onOpenItems((item.id).toString())} 
+                      open={openItems.includes(item.id.toString())} />} 
+                    />
                   </div>
                   <Line/>
+                  {openItems.includes(item.id.toString()) &&
+                    <Chart
+                      item={item} 
+                      index={index} 
+                    />
+                  }
                   <Flex>
-                    <Label2 name="Price" value={gp((latest[item.id]?.high + latest[item.id]?.low) / 2) || 0} />
-                    <Label2 name="Highest" value={`${gp(latest[item.id]?.high)}`} color="green" />
-                    <Label2 name="Lowest" value={`${gp(latest[item.id]?.low)}`} color="red" />
+                    <Label2 name="GP" value={gp((latest[item.id]?.high + latest[item.id]?.low) / 2) || 0} />
+                    <Label2 name="High" value={`${gp(latest[item.id]?.high)}`} color="green" />
+                    <Label2 name="Low" value={`${gp(latest[item.id]?.low)}`} color="red" />
                     <Label2 name="Margin" value={gp(item.margin)} color={item.margin >= 0 ? "green" : "red" }/>
                   </Flex>
                 </div>
