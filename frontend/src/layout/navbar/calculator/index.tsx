@@ -67,21 +67,21 @@ const IndexCalc = () => {
             {values.side === "sell" &&
                 <div>
                     <Input 
-                        label1="Bought Price"
+                        label1="Sell Price"
                         type="number" 
                         name="old_price"
                         value={values.old_price || ""}
                         onChange={onChange}
                     />
                     <Input 
-                        label1="Bought Quantity"
+                        label1="Sell Quantity"
                         type="number" 
                         name="old_quantity"
                         value={values.old_quantity || ""}
                         onChange={onChange}
                     />
                     <Input 
-                        label1="Intended Sell Price"
+                        label1="Intended Buy Price"
                         type="number" 
                         name="new_price"
                         value={values.new_price || ""}
@@ -89,10 +89,13 @@ const IndexCalc = () => {
                     />
                 </div>
             }
+
             <Line />
             <Label name={`Cost`} value={calc_buy_side().total.toLocaleString() || 0} />
+
             <Line />
             <Label name={`New Quantity`} value={calc_buy_side().quantity.toLocaleString() || 0} />
+            
         </form>
     )
 }

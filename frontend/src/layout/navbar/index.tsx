@@ -31,32 +31,6 @@ const Navbar = () => {
         <Message message='Home'>
           <Link className={styles.button}  to="/"><AiFillHome/></Link>
         </Message>
-        {isLoggedIn && 
-          <Message message='Items'>
-            <Link className={styles.button} to="/items"><FaSitemap/></Link>
-          </Message>
-        }
-      </nav>
-
-      <nav>
-        {isLoggedIn && 
-          <SlideIn 
-            width={350} 
-            icon={<Message message='Transaction'><button className={styles.button}><AiFillFileAdd/></button> </Message>}
-          >
-            <CreateComp />
-          </SlideIn>
-        }
-        {isLoggedIn && 
-          <SlideIn 
-            width={350} 
-            iconOpen="Calculator"
-            icon={<Message message='Calculator'><button className={styles.button}><BiCalculator/></button> </Message>}
-          >
-            <CalculatorComp />
-          </SlideIn>
-        }
-
         {theme.name === "light" && 
           <Message message='Light'>
             <button className={styles.button} onClick={onSetTheme}><BsSunFill/></button> 
@@ -81,6 +55,31 @@ const Navbar = () => {
           <Message message='Thunder'>
             <button className={styles.button} onClick={onSetTheme}><AiFillThunderbolt/></button>
           </Message>
+        }
+      </nav>
+
+      <nav>
+      {isLoggedIn &&
+        <>
+          <Message message='Items'>
+            <Link className={styles.button} to="/items"><FaSitemap/></Link>
+          </Message>
+
+          <SlideIn 
+            width={350} 
+            icon={<Message message='Transaction'><button className={styles.button}><AiFillFileAdd/></button> </Message>}
+          >
+            <CreateComp />
+          </SlideIn>
+          
+          <SlideIn 
+            width={350} 
+            iconOpen="Calculator"
+            icon={<Message message='Calculator'><button className={styles.button}><BiCalculator/></button> </Message>}
+          >
+            <CalculatorComp />
+          </SlideIn>
+        </> 
         }
 
         { !isLoggedIn ?
