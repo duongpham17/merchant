@@ -44,7 +44,20 @@ const ListIndex = ({itemsFiltered}: Props) => {
         const find = itemsFiltered.filter(el => saved.includes(el.id.toString()));
         const newest = [...find, ...removed];
         return newest;
-    }
+    };
+
+    const marginItems = () => {
+        const items = [];
+        for(let x of itemsFiltered){
+            items.push({
+                ...x,
+                margin: gemargin(latest[x.id].high, latest[x.id].low)
+            })
+        };
+        return items.sort((a,b) => b.margin - a.margin);
+    };
+
+    const margin = marginItems();
 
     const sortedItems = sortItemsFiltered();
 
@@ -63,16 +76,14 @@ const ListIndex = ({itemsFiltered}: Props) => {
                 <SlideIn
                     width={300} 
                     icon={<button className={styles.button}><MdOutlineUnfoldMoreDouble /></button>} 
-                    iconOpen={`${itemsFiltered.length}`}
+                    iconOpen={`[ ${itemsFiltered.length} ]`}
                 >
                     <div className={styles.items}>
-                    {itemsFiltered.map(el => 
+                    {margin.map(el => 
                         <button key={el.id} onClick={() => onSelectItem(el)}>
                             <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
                             <div>
-                                <p className={gemargin(latest[el.id].high, latest[el.id].low) >= 0 ? styles.green : styles.red}>
-                                    {gp(gemargin(latest[el.id].high, latest[el.id].low))}
-                                </p>
+                                <p className={el.margin >= 0 ? styles.green : styles.red}>{(gp(el.margin))}</p>
                                 <p>{firstcaps(el.name)}</p>
                             </div>
                         </button>
