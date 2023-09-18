@@ -87,8 +87,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
       }
     }
   };
- 
-  // 592,130 - 2950
+
   const TotalDataSets = (item: IItems[]) => {
     let [buy, sell, quantity, tax] = [0, 0, 0, 0];
     let [unrealised_pnl, realised_pnl] = [0, 0];

@@ -3,12 +3,13 @@ import React from 'react';
 
 interface Props {
   children: React.ReactNode,
-  message: string
+  side?: "left" | "right" | "center" 
+  message: string,
 }
 
-const Message = ({children, message}: Props) => {
+const Message = ({children, message, side="center"}: Props) => {
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${styles[side]}`}>
       <div className={styles.children}>{children}</div>
       <div className={styles.message}>{message}</div>
     </div>

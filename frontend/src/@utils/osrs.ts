@@ -27,4 +27,4 @@ export const getax = (item_price: number, quantity=0) => {
 
 export const gemargin = (highest: number, lowest: number) => {
   return (highest - lowest) - getax(highest).tax;
-}
+};

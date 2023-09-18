@@ -6,6 +6,7 @@ import { MdOutlineUnfoldMoreDouble } from 'react-icons/md';
 import { useAppSelector } from '@redux/hooks/useRedux';
 
 import SlideIn from '@components/slidein/Style1';
+import Message from '@components/hover/Message';
 
 import useOpen from '@hooks/useOpen';
 import useQuery from '@hooks/useQuery';
@@ -29,6 +30,33 @@ const ListIndex = ({itemsFiltered}: Props) => {
     const {setQuery} = useQuery();
 
     const {latest} = useAppSelector(state => state.osrs);
+
+    const calc_cost_basis = (index: number, array: IItems[]) => {
+        let [pnl, nqty] = [0, 0];
+        for(let x of array.slice(index)){
+          if(x.side === "sell") {
+            nqty -= x.quantity;
+            pnl -= x.sold * x.quantity;
+          };
+          if(x.side === "buy") {
+            nqty += x.quantity;
+            pnl += x.price * x.quantity;
+          };
+        };
+        return Number((pnl / nqty).toFixed(2));
+    };
+
+    const cost_basis_latest = (items: IItems[]) => {
+        let cost = 0;
+        for(let i in items){
+            const index = Number(i) 
+            if(index === 0){
+                cost =  Math.floor(calc_cost_basis(index, items));
+                break
+            }
+        }
+        return cost
+    };
 
     const onSelectItem = (item: Props["itemsFiltered"][0]) => {
         onOpenLocal(item.id.toString());
@@ -61,6 +89,17 @@ const ListIndex = ({itemsFiltered}: Props) => {
 
     const sortedItems = sortItemsFiltered();
 
+    const estimated_net_worth = () => {
+        let profit_n_loss = 0;
+        for(let x of itemsFiltered){
+            x.items.forEach(item => {
+                if(item.side === "sell"){
+                    
+                }
+            })
+        }
+    };
+
     return (
         <div className={styles.container}>
 
@@ -81,11 +120,20 @@ const ListIndex = ({itemsFiltered}: Props) => {
                     <div className={styles.items}>
                     {margin.map(el => 
                         <button key={el.id} onClick={() => onSelectItem(el)}>
-                            <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
-                            <div>
-                                <p className={el.margin >= 0 ? styles.green : styles.red}>{(gp(el.margin))}</p>
-                                <p>{firstcaps(el.name)}</p>
+
+                            <div className={styles.image}>
+                                <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
                             </div>
+                            <div className={styles.information}>
+                                <b>{firstcaps(el.name)}</b>
+                                <Message message="cost basis" side="right"> 
+                                    <p className={styles.cost}>{gp(cost_basis_latest(el.items))}</p>
+                                </Message>
+                                <Message message="margin" side="right"> 
+                                     <p className={el.margin >= 0 ? styles.green : styles.red}>{gp(el.margin)}</p>
+                                </Message>
+                            </div>
+
                         </button>
                     )}
                     </div>
