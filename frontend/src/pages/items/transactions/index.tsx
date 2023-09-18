@@ -20,6 +20,7 @@ import Container from '@components/containers/Style1';
 import Flex from '@components/flex/Style1';
 import SlideIn from '@components/slidein/Style1';
 import Pagination from '@components/pagination/Style1';
+import Observer from '@components/observer/Observer';
 
 import useQuery from '@hooks/useQuery';
 
@@ -259,7 +260,8 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
 
         <Pagination data={data.items} show={25}>
           {(item, index, array) => 
-            <Container background="dark" key={item._id}>
+          <Observer key={item._id}>
+            <Container background="dark">
 
                 <Flex>
                   <Label1 
@@ -393,6 +395,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                 }
 
             </Container>
+          </Observer>
           }
         </Pagination>
     </Container>

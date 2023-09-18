@@ -15,7 +15,6 @@ import Rsi from './Rsi';
 
 interface Props {
     item: OSRS_GE_ITEM,
-    index: number
 };
 
 const CustomToolTips = ({ active, payload }: {active?: any, payload: any}) => {
@@ -35,7 +34,7 @@ const CustomToolTips = ({ active, payload }: {active?: any, payload: any}) => {
     return null;
   };
 
-const Chart = ({item, index}: Props) => {
+const Chart = ({item}: Props) => {
 
     const [timeseries, setTimeseries] = useState<OSRS_GE_TIMESERIES[]>([]);
 

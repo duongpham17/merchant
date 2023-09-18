@@ -17,6 +17,7 @@ import Button from '@components/buttons/Button';
 import Spinner from '@components/loading/Spinner';
 import Summary from '@components/summary/Style1';
 import Openarrow from '@components/buttons/Openarrows';
+import Observer from '@components/observer/Observer';
 
 import useOpen from '@hooks/useOpen';
 import useForm from '@hooks/useForm';
@@ -116,7 +117,8 @@ const Home = () => {
           {(data) => 
             <Pagination data={data} show={100} top>
               {(item, index) => 
-                <div className={styles.element} key={item.id}>
+              <Observer key={item.id}>
+                <div className={styles.element}>
                   <div className={styles.image} onClick={() => onOpenItems((item.id).toString())}>
                     <img 
                       src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} 
@@ -130,10 +132,7 @@ const Home = () => {
                   </div>
                   <Line/>
                   {openItems.includes(item.id.toString()) &&
-                    <Chart
-                      item={item} 
-                      index={index} 
-                    />
+                    <Chart item={item} />
                   }
                   <Flex>
                     <Label2 name="GP" value={gp((latest[item.id]?.high + latest[item.id]?.low) / 2) || 0} />
@@ -142,6 +141,7 @@ const Home = () => {
                     <Label2 name="Margin" value={gp(item.margin)} color={item.margin >= 0 ? "green" : "red" }/>
                   </Flex>
                 </div>
+              </Observer>
               }
             </Pagination>
           }
