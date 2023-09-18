@@ -139,7 +139,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
         pnl += x.price * x.quantity;
       };
     };
-    return Number((pnl / nqty).toFixed(2));
+    return Number((pnl / nqty).toFixed(0));
   };
 
   const calc_new_quantity = (index: number, array: IItems[]) => {
@@ -154,7 +154,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     for(let i in data.items){
       const index = Number(i) 
       if(index === 0){
-        COST =  Math.floor(calc_cost_basis(index, data.items));
+        COST =  Number(calc_cost_basis(index, data.items));
         NEW = Number(calc_new_quantity(index, data.items));
         break
       }
@@ -324,11 +324,11 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                     <Flex>
                       <Label2 
                         name="Sell Price" 
-                        value={item.sold || 0} 
+                        value={gp(item.sold) || 0} 
                       />
                       <Label2 
                         name="Tax" 
-                        value={ProfitNLoss(item).tax} 
+                        value={gp(ProfitNLoss(item).tax)} 
                       />
                       <Label2 
                         name="Sell Valuation" 
@@ -340,7 +340,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
 
                     <Flex>
                       <Label2 
-                        name="Dca" 
+                        name="Cost Basis" 
                         value={calc_cost_basis(index, array).toLocaleString()} 
                       />
                       <Label2 
@@ -376,7 +376,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
 
                     <Flex>
                       <Label2 
-                        name="Dca" 
+                        name="Cost Basis" 
                         value={calc_cost_basis(index, array).toLocaleString()}
                       />
                       <Label2 

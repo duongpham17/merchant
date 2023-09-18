@@ -91,23 +91,26 @@ const ListIndex = ({itemsFiltered}: Props) => {
     const sortedItems = sortItemsFiltered();
 
     const estimated_net_worth = () => {
-        let [profit_n_loss, tax] = [0, 0];
+        let [profit_n_loss, taxes] = [0, 0];
         for(let x of itemsFiltered){
+            let [_profit_n_loss, _taxes] = [0, 0]
             x.items.forEach(item => {
                 if(item.side === "sell"){
                     const calc = getax(item.sold, item.quantity);
-                    profit_n_loss += calc.total_after_tax;
-                    tax += calc.total_tax
+                    _profit_n_loss += calc.total_after_tax;
+                    _taxes += calc.total_tax
                 } else {
                     const calc = getax(latest[item.id].high, item.quantity)
-                    profit_n_loss += calc.total_after_tax;
-                    tax += calc.total_tax
+                    _profit_n_loss += calc.total_after_tax;
+                    _taxes += calc.total_tax
                 };
-            })
+            });
+            profit_n_loss = _profit_n_loss;
+            taxes = _taxes;
         };
         return {
             profit_n_loss,
-            tax
+            taxes
         };
     };
 
@@ -128,7 +131,7 @@ const ListIndex = ({itemsFiltered}: Props) => {
                 <SlideIn
                     width={300} 
                     icon={<button className={styles.button}><MdOutlineUnfoldMoreDouble /></button>} 
-                    iconOpen={<Message message={`Tax ${gp(netWorth.tax)}`}>{gp(netWorth.profit_n_loss)} [ {itemsFiltered.length} ]</Message>}
+                    iconOpen={<Message message={`Tax ${gp(netWorth.taxes)}`}>{gp(netWorth.profit_n_loss)} [ {itemsFiltered.length} ]</Message>}
                 >
                     <div className={styles.items}>
                     {margin.map(el => 
