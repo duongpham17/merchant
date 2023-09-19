@@ -10,7 +10,7 @@ import Input from '@components/inputs/Input';
 import Choice from '@components/inputs/Choice';
 import Label from '@components/labels/Style1';
 import Line from '@components/line/Style1';
-import Flex from '@components/flex/Style1';
+import Flex from '@components/flex/Between';
 import Message from '@components/hover/Message';
 
 import useQuery from '@hooks/useQuery';
@@ -34,8 +34,8 @@ const CreateIndex = () => {
     side: "buy",
     id: id,
     quantity: 0,
-    price: 0,
-    sold: 0,
+    buy: 0,
+    sell: 0,
   };
 
   const {values, onChange, onSubmit, onSetValue, errors, customErrors, setCustomErrors, onClear, loading} = useForm(initialState, callback, validation);
@@ -44,9 +44,12 @@ const CreateIndex = () => {
     const isExist = OSRSGrandExchange.find(el => el.name.toLowerCase() === values.name.toLowerCase());
     if(!isExist) return setCustomErrors({name: "invalid id"});
     const index = OSRSGrandExchange.findIndex(el => el.name === values.name);
-    const id = OSRSGrandExchange[index].id;
-    const icon = OSRSGrandExchange[index].icon
-    await dispatch(Items.create({...values, id, icon}));
+    await dispatch(Items.create({
+      ...values, 
+      id: OSRSGrandExchange[index].id,
+      icon: OSRSGrandExchange[index].icon,
+      sell: values.sell ? values.sell : 0
+    }));
     setCustomErrors({});
     onClear();
   };
@@ -56,7 +59,7 @@ const CreateIndex = () => {
       const value = await navigator.clipboard.readText();
       const parsed = JSON.parse(value);
       if (typeof parsed === 'object' && parsed !== null) {
-          onSetValue({ price: parsed.cost_basis, sold: parsed.average_cost });
+          onSetValue({ buy: parsed.cost_basis, sell: parsed.average_cost });
       } else {
         console.error('Invalid clipboard data: Not a valid JSON object.');
       }
@@ -110,11 +113,11 @@ const CreateIndex = () => {
       <Input 
         type="number"
         label1="Buy Price"
-        label2={errors.quantity ? errors.price : gp(values.price) || ""}
-        error={errors.price}
-        name="price"
+        label2={errors.quantity ? errors.buy : gp(values.buy) || ""}
+        error={errors.buy}
+        name="buy"
         placeholder='...'
-        value={values.price || ""} 
+        value={values.buy || ""} 
         onChange={onChange} 
       />
 
@@ -122,11 +125,11 @@ const CreateIndex = () => {
         <Input 
           type="number"
           label1="Sell Price"
-          label2={errors.quantity ? errors.sold : gp(values.sold) || ""}
-          error={errors.sold}
-          name="sold"
+          label2={errors.quantity ? errors.sell : gp(values.sell) || ""}
+          error={errors.sell}
+          name="sell"
           placeholder='...'
-          value={values.sold || ""} 
+          value={values.sell || ""} 
           onChange={onChange} 
         />
       }

@@ -1,8 +1,9 @@
 import styles from './List.module.scss';
-import { IItems } from '@redux/types/items';
+import { useContext, useMemo } from 'react';
+import { Context } from '../Context';
 import { firstcaps } from '@utils/functions';
 import { gemargin, getax, gp, calc_cost_basis_latest } from '@utils/osrs';
-import { MdOutlineUnfoldMoreDouble } from 'react-icons/md';
+import { MdOutlineUnfoldMore } from 'react-icons/md';
 import { useAppSelector } from '@redux/hooks/useRedux';
 
 import SlideIn from '@components/slidein/Style1';
@@ -11,19 +12,10 @@ import Line from '@components/line/Style1';
 
 import useOpen from '@hooks/useOpen';
 import useQuery from '@hooks/useQuery';
-import { useMemo } from 'react';
 
-interface Props {
-    items: IItems[],
-    itemsFiltered: {
-        id: number;
-        icon: string,
-        name: string,
-        items: IItems[];
-    }[],
-};
+const ListIndex = () => {
 
-const ListIndex = ({itemsFiltered}: Props) => {
+    const {filtered} = useContext(Context);
 
     const {onOpenLocal: onOpenLocalSaved, openLocal: openLocalSaved} = useOpen({local: "ge-item-saved"});
 
@@ -33,7 +25,7 @@ const ListIndex = ({itemsFiltered}: Props) => {
 
     const {latest} = useAppSelector(state => state.osrs);
 
-    const onSelectItem = (item: Props["itemsFiltered"][0]) => {
+    const onSelectItem = (item: typeof filtered[0]) => {
         onOpenLocal(item.id.toString());
         setQuery("id", item.id.toString());
         const saved: string[] = openLocalSaved.split(",");
@@ -43,26 +35,25 @@ const ListIndex = ({itemsFiltered}: Props) => {
 
     const margin = useMemo(() => {
         const items = [];
-        for(let x of itemsFiltered){
+        for(let x of filtered){
             items.push({
                 ...x,
                 margin: gemargin(latest[x.id].high, latest[x.id].low)
-            })
+            });
         };
         return items.sort((a,b) => b.margin - a.margin);
-    }, [itemsFiltered, latest]);
+    }, [filtered, latest]);
 
     const sortedItems = useMemo(() => {
         const saved: string[] = openLocalSaved.split(",");
-        const removed = itemsFiltered.filter(el => !saved.includes(el.id.toString()));
-        const find = itemsFiltered.filter(el => saved.includes(el.id.toString()));
+        const removed = filtered.filter(el => !saved.includes(el.id.toString()));
+        const find = filtered.filter(el => saved.includes(el.id.toString()));
         const newest = [...find, ...removed];
         return newest;
-    }, [itemsFiltered, openLocalSaved]);
+    }, [filtered, openLocalSaved]);
 
-    const estimated_item_analytics = () => {
+    const analytics = useMemo(() => {
 
-        // Initialize an empty object for each item ID
         const itemsObject: {
             data: {
                 [key: number]: {
@@ -80,14 +71,14 @@ const ListIndex = ({itemsFiltered}: Props) => {
             taxes: 0
         };
 
-        for (let x of itemsFiltered) {
+        for (let x of filtered) {
             x.items.forEach(item => {
                 const itemId = item.id;
                 if (!itemsObject.data[itemId]) {
                     itemsObject.data[itemId] = { networth: 0, taxes: 0, nquantity: 0, spend: 0, unrealised_pnl: 0 };
                 };
                 if (item.side === "sell") {
-                    const ge = getax(item.sold, item.quantity);
+                    const ge = getax(item.sell, item.quantity);
                     itemsObject.data[itemId].networth -= ge.total_after_tax;
                     itemsObject.data[itemId].taxes += ge.total_tax_amount;
                     itemsObject.data[itemId].nquantity -= item.quantity;
@@ -99,7 +90,7 @@ const ListIndex = ({itemsFiltered}: Props) => {
                     itemsObject.data[itemId].networth += (item.quantity * latest[item.id].high);
                     itemsObject.data[itemId].nquantity += item.quantity;
                     itemsObject.data[itemId].spend += ge.total_after_tax;
-                    itemsObject.data[itemId].unrealised_pnl += ge.total_after_tax - (item.price * item.quantity);
+                    itemsObject.data[itemId].unrealised_pnl += ge.total_after_tax - (item.buy * item.quantity);
                     total.networth += ge.total_after_tax;
                 };
             });
@@ -108,10 +99,8 @@ const ListIndex = ({itemsFiltered}: Props) => {
         return {
             items: itemsObject.data,
             total
-        }
-    };
-
-    const analytics = estimated_item_analytics()
+        };
+    }, [filtered, latest]);
 
     return (
         <div className={styles.container}>
@@ -127,30 +116,33 @@ const ListIndex = ({itemsFiltered}: Props) => {
             <div className={styles.slide}>
                 <SlideIn
                     width={300} 
-                    icon={<button className={styles.button}><MdOutlineUnfoldMoreDouble /></button>} 
-                    iconOpen={<Message message={`Tax ${gp(analytics.total.taxes)}`}>{gp(analytics.total.networth)} [ {itemsFiltered.length} ]</Message>}
+                    icon={<button className={styles.button}><MdOutlineUnfoldMore /></button>} 
+                    iconOpen={<Message message={`Tax ${gp(analytics.total.taxes)}`}>{gp(analytics.total.networth)} [ {filtered.length} ]</Message>}
                 >
                     <div className={styles.items}>
                     {margin.map(el => 
                         <button key={el.id} onClick={() => onSelectItem(el)}>
+
                             <div className={styles.image}>
-                                <Message message="N Quantity" side="left"> 
-                                    <b>[ {gp(analytics.items[el.id].nquantity)} ] {firstcaps(el.name)}</b>
-                                </Message>
+                                <b>{firstcaps(el.name)}</b>
                                 <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
                             </div>
+
                             <Line/>
+
                             <div className={styles.information}>
-                                <Message message={`Net Worth`} side="left"> 
-                                <div className={styles.hover}>
-                                    <span>{` ${gp(analytics.items[el.id].networth)} `}</span>
-                                </div>
+                                <Message message={`Net Worth, N Quantity`} side="left"> 
+                                    <div className={styles.hover}>
+                                        <span>{`${gp(analytics.items[el.id].networth)} [ ${gp(analytics.items[el.id].nquantity)} ]`}</span>
+                                    </div>
                                 </Message>
                                 <Message message="Unrealised" side="right"> 
                                     <span className={`${analytics.items[el.id].unrealised_pnl >= 0 ? styles.green : styles.red}`}>{gp(analytics.items[el.id].unrealised_pnl)}</span>
                                 </Message>
                             </div>
+
                             <Line/>
+
                             <div className={styles.information}>
                                 <Message message="[ Cost, High, Low ]" side="left"> 
                                     <div className={styles.hover}>
@@ -167,6 +159,7 @@ const ListIndex = ({itemsFiltered}: Props) => {
                                     <p className={el.margin >= 0 ? styles.green : styles.red}>{gp(el.margin)}</p>
                                 </Message>
                             </div>
+                            
                         </button>
                     )}
                     </div>

@@ -1,8 +1,8 @@
 import Select from '@components/options/Style1';
 
 interface Props {
-    onOpenLocalTimeseries: (value: string, clear?: boolean) => void,
-    openLocalTimeseries: any
+  onOpenLocalTimeseries: (value: string, clear?: boolean) => void,
+  openLocalTimeseries: any
 }
 
 const ChartIndex = ({onOpenLocalTimeseries, openLocalTimeseries} : Props) => {

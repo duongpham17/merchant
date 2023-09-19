@@ -25,7 +25,7 @@ const ChartIndex = () => {
   const item_id = getQueryValue("id");
 
   useEffect(() => {
-    dispatch(Osrs.timeseries(item_id || openLocalGeItem || "", openLocalTimeseries || "5min"));
+    dispatch(Osrs.timeseries(item_id || openLocalGeItem || "", openLocalTimeseries || "5m"));
   }, [dispatch, item_id, openLocalGeItem, openLocalTimeseries]);
 
   useEffect(() => {
@@ -50,6 +50,7 @@ const ChartIndex = () => {
       <Rsi 
         timeseries={timeseries} 
       />
+
     </>
   )
 }

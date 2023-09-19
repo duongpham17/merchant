@@ -6,8 +6,8 @@ export interface IItems extends Document {
     id: number,
     side: "buy" | "sell",
     quantity: number,
-    price: number,
-    sold: number,
+    buy: number,
+    sell: number
     icon: string,
     timestamp: Number
 };
@@ -28,20 +28,18 @@ const itemsSchema = new Schema<IItems>({
         enum: ["buy", "sell"],
         default: "buy"
     },
+    buy: {
+        type: Number,
+    },
+    sell: {
+        type: Number
+    },
     quantity: {
         type: Number
     },
     icon:{
         type: String,
         default: ""
-    },
-    sold: {
-        type: Number,
-        default: 0
-    },
-    price: {
-        type: Number,
-        default: 0
     },
     timestamp: {
         type: Number,

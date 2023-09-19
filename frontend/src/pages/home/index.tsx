@@ -10,7 +10,7 @@ import Search from '@components/search/Search';
 import Pagination from '@components/pagination/Style1';
 import Label3 from '@components/labels/Style3'
 import Label2 from '@components/labels/Style2'
-import Flex from '@components/flex/Style1';
+import Flex from '@components/flex/Between';
 import Line from '@components/line/Style1';
 import Input from '@components/inputs/Input';
 import Button from '@components/buttons/Button';

@@ -6,8 +6,8 @@ export interface IItems {
     name: string,
     side: "buy" | "sell" | string,
     quantity: number,
-    price: number,
-    sold: number,
+    buy: number,
+    sell: number,
     icon: string,
     timestamp: Number
 };

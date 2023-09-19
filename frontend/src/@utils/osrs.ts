@@ -31,8 +31,8 @@ export interface Items {
   [key: string]: any, 
   side: string, 
   quantity: number, 
-  sold: number, 
-  price: number
+  sell: number, 
+  buy: number
 };
 
 export const calc_cost_basis = (index: number, items: Items[]) => {
@@ -40,11 +40,11 @@ export const calc_cost_basis = (index: number, items: Items[]) => {
   for(let x of items.slice(index)){
     if(x.side === "sell") {
       nqty -= x.quantity;
-      pnl -= x.sold * x.quantity;
+      pnl -= x.sell * x.quantity;
     };
     if(x.side === "buy") {
       nqty += x.quantity;
-      pnl += x.price * x.quantity;
+      pnl += x.buy * x.quantity;
     };
   };
   return Number((pnl / nqty).toFixed(2));
@@ -77,9 +77,9 @@ export const calc_n_quantity_latest = (items: Items[]) => {
 
 export const calc_profit_n_loss = (item: Items, current_price: number) => {
   if(item.side === "sell"){
-    const ge = getax(item.sold, item.quantity);
-    const buy_total = item.price * item.quantity;
-    const sell_total = item.quantity * item.sold;
+    const ge = getax(item.sell, item.quantity);
+    const buy_total = item.buy * item.quantity;
+    const sell_total = item.quantity * item.sell;
     return {
       pnl_with_tax: ge.total_after_tax - buy_total,
       pnl_no_tax: sell_total - buy_total,
@@ -87,7 +87,7 @@ export const calc_profit_n_loss = (item: Items, current_price: number) => {
     };
   } else {
     const ge = getax(current_price, item.quantity);
-    const buy_total = item.price * item.quantity;
+    const buy_total = item.buy * item.quantity;
     const current_total = item.quantity * current_price;
     return {
       pnl_with_tax: ge.total_after_tax - buy_total,

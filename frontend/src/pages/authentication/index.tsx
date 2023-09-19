@@ -7,7 +7,7 @@ import useForm from '@hooks/useForm';
 import Input from '@components/inputs/Input';
 import Form from '@components/form/Form';
 import Codes from '@components/inputs/Codes';
-import Flex from '@components/flex/Style1';
+import Flex from '@components/flex/Between';
 import Button from '@components/buttons/Button';
 
 import validation from './validation';

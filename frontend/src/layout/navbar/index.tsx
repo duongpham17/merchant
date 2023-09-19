@@ -31,6 +31,11 @@ const Navbar = () => {
         <Message message='Home'>
           <Link className={styles.button}  to="/"><AiFillHome/></Link>
         </Message>
+        { !isLoggedIn ?
+          <Message message={"Login"}><Link className={styles.button} to="/login"><MdLogin/></Link></Message>
+          :
+          <Message message={"Profile"}><Link className={styles.button} to="/profile"><AiOutlineUser/></Link></Message>
+        }
         {theme.name === "light" && 
           <Message message='Light'>
             <button className={styles.button} onClick={onSetTheme}><BsSunFill/></button> 
@@ -80,12 +85,6 @@ const Navbar = () => {
             <CalculatorComp />
           </SlideIn>
         </> 
-        }
-
-        { !isLoggedIn ?
-          <Message message={"Login"}><Link className={styles.button} to="/login"><MdLogin/></Link></Message>
-          :
-          <Message message={"Profile"}><Link className={styles.button} to="/profile"><AiOutlineUser/></Link></Message>
         }
       </nav>
 
