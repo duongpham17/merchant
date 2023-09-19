@@ -48,7 +48,9 @@ const CreateIndex = () => {
       ...values, 
       id: OSRSGrandExchange[index].id,
       icon: OSRSGrandExchange[index].icon,
-      sell: values.sell ? values.sell : 0
+      sell: values.sell ? values.sell : 0,
+      buy: values.buy ? values.buy : 0,
+      quantity: values.quantity ? values.quantity : 0
     }));
     setCustomErrors({});
     onClear();
@@ -102,8 +104,7 @@ const CreateIndex = () => {
       <Input
         type="number"
         label1="Quantity"
-        label2={errors.quantity ? errors.quantity : gp(values.quantity) || ""}
-        error={errors.quantity}
+        label2={gp(values.quantity)}
         name="quantity"
         placeholder='...'
         value={values.quantity || ""} 
@@ -113,8 +114,7 @@ const CreateIndex = () => {
       <Input 
         type="number"
         label1="Buy Price"
-        label2={errors.quantity ? errors.buy : gp(values.buy) || ""}
-        error={errors.buy}
+        label2={gp(values.buy)}
         name="buy"
         placeholder='...'
         value={values.buy || ""} 
@@ -125,8 +125,7 @@ const CreateIndex = () => {
         <Input 
           type="number"
           label1="Sell Price"
-          label2={errors.quantity ? errors.sell : gp(values.sell) || ""}
-          error={errors.sell}
+          label2={gp(values.sell)}
           name="sell"
           placeholder='...'
           value={values.sell || ""} 
