@@ -1,7 +1,7 @@
 import styles from './List.module.scss';
 import { IItems } from '@redux/types/items';
 import { firstcaps } from '@utils/functions';
-import { gemargin, getax, gp } from '@utils/osrs';
+import { gemargin, getax, gp, calc_cost_basis_latest } from '@utils/osrs';
 import { MdOutlineUnfoldMoreDouble } from 'react-icons/md';
 import { useAppSelector } from '@redux/hooks/useRedux';
 
@@ -11,6 +11,7 @@ import Line from '@components/line/Style1';
 
 import useOpen from '@hooks/useOpen';
 import useQuery from '@hooks/useQuery';
+import { useMemo } from 'react';
 
 interface Props {
     items: IItems[],
@@ -32,33 +33,6 @@ const ListIndex = ({itemsFiltered}: Props) => {
 
     const {latest} = useAppSelector(state => state.osrs);
 
-    const calc_cost_basis = (index: number, array: IItems[]) => {
-        let [pnl, nqty] = [0, 0];
-        for(let x of array.slice(index)){
-          if(x.side === "sell") {
-            nqty -= x.quantity;
-            pnl -= x.sold * x.quantity;
-          };
-          if(x.side === "buy") {
-            nqty += x.quantity;
-            pnl += x.price * x.quantity;
-          };
-        };
-        return Number((pnl / nqty).toFixed(2));
-    };
-
-    const cost_basis_latest = (items: IItems[]) => {
-        let cost = 0;
-        for(let i in items){
-            const index = Number(i) 
-            if(index === 0){
-                cost =  Math.floor(calc_cost_basis(index, items));
-                break
-            }
-        }
-        return cost
-    };
-
     const onSelectItem = (item: Props["itemsFiltered"][0]) => {
         onOpenLocal(item.id.toString());
         setQuery("id", item.id.toString());
@@ -67,15 +41,7 @@ const ListIndex = ({itemsFiltered}: Props) => {
         onOpenLocalSaved(list);
     };
 
-    const sortItemsFiltered = () => {
-        const saved: string[] = openLocalSaved.split(",");
-        const removed = itemsFiltered.filter(el => !saved.includes(el.id.toString()));
-        const find = itemsFiltered.filter(el => saved.includes(el.id.toString()));
-        const newest = [...find, ...removed];
-        return newest;
-    };
-
-    const marginItems = () => {
+    const margin = useMemo(() => {
         const items = [];
         for(let x of itemsFiltered){
             items.push({
@@ -84,37 +50,68 @@ const ListIndex = ({itemsFiltered}: Props) => {
             })
         };
         return items.sort((a,b) => b.margin - a.margin);
-    };
+    }, [itemsFiltered, latest]);
 
-    const margin = marginItems();
+    const sortedItems = useMemo(() => {
+        const saved: string[] = openLocalSaved.split(",");
+        const removed = itemsFiltered.filter(el => !saved.includes(el.id.toString()));
+        const find = itemsFiltered.filter(el => saved.includes(el.id.toString()));
+        const newest = [...find, ...removed];
+        return newest;
+    }, [itemsFiltered, openLocalSaved]);
 
-    const sortedItems = sortItemsFiltered();
+    const estimated_item_analytics = () => {
 
-    const estimated_net_worth = () => {
-        let [profit_n_loss, taxes] = [0, 0];
-        for(let x of itemsFiltered){
-            let [_profit_n_loss, _taxes] = [0, 0]
+        // Initialize an empty object for each item ID
+        const itemsObject: {
+            data: {
+                [key: number]: {
+                    nquantity: number,
+                    networth: number;
+                    taxes: number;
+                    spend: number;
+                    unrealised_pnl: number,
+                };
+            };
+        } = { data: {} };
+
+        const total = {
+            networth: 0,
+            taxes: 0
+        };
+
+        for (let x of itemsFiltered) {
             x.items.forEach(item => {
-                if(item.side === "sell"){
-                    const calc = getax(item.sold, item.quantity);
-                    _profit_n_loss += calc.total_after_tax;
-                    _taxes += calc.total_tax
+                const itemId = item.id;
+                if (!itemsObject.data[itemId]) {
+                    itemsObject.data[itemId] = { networth: 0, taxes: 0, nquantity: 0, spend: 0, unrealised_pnl: 0 };
+                };
+                if (item.side === "sell") {
+                    const ge = getax(item.sold, item.quantity);
+                    itemsObject.data[itemId].networth -= ge.total_after_tax;
+                    itemsObject.data[itemId].taxes += ge.total_tax_amount;
+                    itemsObject.data[itemId].nquantity -= item.quantity;
+                    itemsObject.data[itemId].spend += ge.total_no_tax;
+                    total.networth += ge.total_after_tax;
+                    total.taxes += ge.total_tax_amount;
                 } else {
-                    const calc = getax(latest[item.id].high, item.quantity)
-                    _profit_n_loss += calc.total_after_tax;
-                    _taxes += calc.total_tax
+                    const ge = getax(latest[itemId].high, item.quantity);
+                    itemsObject.data[itemId].networth += (item.quantity * latest[item.id].high);
+                    itemsObject.data[itemId].nquantity += item.quantity;
+                    itemsObject.data[itemId].spend += ge.total_after_tax;
+                    itemsObject.data[itemId].unrealised_pnl += ge.total_after_tax - (item.price * item.quantity);
+                    total.networth += ge.total_after_tax;
                 };
             });
-            profit_n_loss = _profit_n_loss;
-            taxes = _taxes;
         };
+
         return {
-            profit_n_loss,
-            taxes
-        };
+            items: itemsObject.data,
+            total
+        }
     };
 
-    const netWorth = estimated_net_worth();
+    const analytics = estimated_item_analytics()
 
     return (
         <div className={styles.container}>
@@ -131,33 +128,45 @@ const ListIndex = ({itemsFiltered}: Props) => {
                 <SlideIn
                     width={300} 
                     icon={<button className={styles.button}><MdOutlineUnfoldMoreDouble /></button>} 
-                    iconOpen={<Message message={`Tax ${gp(netWorth.taxes)}`}>{gp(netWorth.profit_n_loss)} [ {itemsFiltered.length} ]</Message>}
+                    iconOpen={<Message message={`Tax ${gp(analytics.total.taxes)}`}>{gp(analytics.total.networth)} [ {itemsFiltered.length} ]</Message>}
                 >
                     <div className={styles.items}>
                     {margin.map(el => 
                         <button key={el.id} onClick={() => onSelectItem(el)}>
-
                             <div className={styles.image}>
+                                <Message message="N Quantity" side="left"> 
+                                    <b>[ {gp(analytics.items[el.id].nquantity)} ] {firstcaps(el.name)}</b>
+                                </Message>
                                 <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
                             </div>
+                            <Line/>
                             <div className={styles.information}>
-                                <b>{firstcaps(el.name)}</b>
-                                <Line/>
-                                <Message message="Cost, High, Low" side="right"> 
-                                <div>
-                                    [
-                                    <span className={styles.cost}>{` ${gp(cost_basis_latest(el.items))}, `}</span>
-                                    <span className={styles.high}>{` ${gp(latest[el.id].high)},`}</span>
-                                    <span className={styles.low}>{` ${gp(latest[el.id].low)} `}</span>
-                                    ]
+                                <Message message={`Net Worth`} side="left"> 
+                                <div className={styles.hover}>
+                                    <span>{` ${gp(analytics.items[el.id].networth)} `}</span>
                                 </div>
                                 </Message>
-                                <Line/>
-                                <Message message="Margin" side="right"> 
-                                     <p className={el.margin >= 0 ? styles.green : styles.red}>{gp(el.margin)}</p>
+                                <Message message="Unrealised" side="right"> 
+                                    <span className={`${analytics.items[el.id].unrealised_pnl >= 0 ? styles.green : styles.red}`}>{gp(analytics.items[el.id].unrealised_pnl)}</span>
                                 </Message>
                             </div>
-
+                            <Line/>
+                            <div className={styles.information}>
+                                <Message message="[ Cost, High, Low ]" side="left"> 
+                                    <div className={styles.hover}>
+                                        [
+                                        <span className={`${styles.cost} ${calc_cost_basis_latest(el.items) <= latest[el.id].high ? styles.green : styles.red}`}>
+                                            {` ${gp(calc_cost_basis_latest(el.items))} `}
+                                        </span>,
+                                        <span className={styles.high}>{` ${gp(latest[el.id].high)}`}</span>,
+                                        <span className={styles.low}>{` ${gp(latest[el.id].low)} `}</span>
+                                        ]
+                                    </div>
+                                </Message>
+                                <Message message="Margin" side="right"> 
+                                    <p className={el.margin >= 0 ? styles.green : styles.red}>{gp(el.margin)}</p>
+                                </Message>
+                            </div>
                         </button>
                     )}
                     </div>

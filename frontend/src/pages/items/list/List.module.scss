@@ -55,9 +55,6 @@
                 border: 1px solid var(--clr-light);
                 width: 100%;
                 margin-bottom: 0.5rem;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
                 &:hover{
                     border-color: var(--clr-main);
                 }
@@ -72,23 +69,55 @@
                     }
                 }
 
-                .cost{
-                    color: var(--clr-text-light);
+                .image, .information{
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
                 }
-                .high{
-                    color: var(--clr-green);
+
+                .image{
+                    position: relative;
+                    &:hover p{
+                        display: block;
+                    }
+                    p{
+                        display: none;
+                        position: absolute;
+                        right: -0.6rem;
+                        top: -0.7rem;
+                        background-color: var(--clr-background);
+                        border: 1px solid var(--clr-main);
+                        padding: 0.5rem;
+                    }
+                    b{
+                        text-align: left;
+                        margin-right: 1.7rem;
+                    }
                 }
-                .low{
-                    color: var(--clr-red);
-                }
-                .green{
-                    color: var(--clr-green);
-                }
-                .red{
-                    color: var(--clr-red);
+                .information{
+                    .hover{
+                        text-align: left;
+                        width: 170px;
+                    }
+                    .cost{
+                        color: var(--clr-text);
+                    }
+                    .high{
+                        color: var(--clr-text);
+                    }
+                    .low{
+                        color: var(--clr-text-light);
+                    }
+                    .green{
+                        color: var(--clr-green);
+                    }
+                    .red{
+                        color: var(--clr-red);
+                    }
                 }
             }
         }
+
     }
     
 }

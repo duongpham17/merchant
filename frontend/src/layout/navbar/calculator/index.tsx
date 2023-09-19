@@ -41,17 +41,17 @@ const IndexCalc = () => {
             {values.side === "buy" &&
                 <div>
                     <Input 
-                        label1="Bought Price"
-                        type="number" 
-                        name="old_price"
-                        value={values.old_price || ""}
-                        onChange={onChange}
-                    />
-                    <Input 
                         label1="Bought Quantity"
                         type="number" 
                         name="old_quantity"
                         value={values.old_quantity || ""}
+                        onChange={onChange}
+                    />
+                    <Input 
+                        label1="Bought Price"
+                        type="number" 
+                        name="old_price"
+                        value={values.old_price || ""}
                         onChange={onChange}
                     />
                     <Input 
@@ -67,17 +67,17 @@ const IndexCalc = () => {
             {values.side === "sell" &&
                 <div>
                     <Input 
-                        label1="Sell Price"
-                        type="number" 
-                        name="old_price"
-                        value={values.old_price || ""}
-                        onChange={onChange}
-                    />
-                    <Input 
                         label1="Sell Quantity"
                         type="number" 
                         name="old_quantity"
                         value={values.old_quantity || ""}
+                        onChange={onChange}
+                    />
+                    <Input 
+                        label1="Sell Price"
+                        type="number" 
+                        name="old_price"
+                        value={values.old_price || ""}
                         onChange={onChange}
                     />
                     <Input 

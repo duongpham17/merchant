@@ -99,7 +99,7 @@ const CreateIndex = () => {
       <Input
         type="number"
         label1="Quantity"
-        label2={errors.quantity ? errors.quantity : gp(values.quantity)}
+        label2={errors.quantity ? errors.quantity : gp(values.quantity) || ""}
         error={errors.quantity}
         name="quantity"
         placeholder='...'
@@ -110,7 +110,7 @@ const CreateIndex = () => {
       <Input 
         type="number"
         label1="Buy Price"
-        label2={errors.quantity ? errors.price : gp(values.price)}
+        label2={errors.quantity ? errors.price : gp(values.price) || ""}
         error={errors.price}
         name="price"
         placeholder='...'
@@ -122,7 +122,7 @@ const CreateIndex = () => {
         <Input 
           type="number"
           label1="Sell Price"
-          label2={errors.quantity ? errors.sold : gp(values.sold)}
+          label2={errors.quantity ? errors.sold : gp(values.sold) || ""}
           error={errors.sold}
           name="sold"
           placeholder='...'

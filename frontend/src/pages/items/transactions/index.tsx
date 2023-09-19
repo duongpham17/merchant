@@ -6,7 +6,7 @@ import { OSRS_GE_LATEST } from '@redux/types/osrs';
 import OSRS_GE_ITEM from '@data/osrs-ge';
 
 import { UK } from '@utils/time';
-import { getax, gp, gemargin } from '@utils/osrs';
+import { getax, gp, gemargin, calc_cost_basis, calc_n_quantity, calc_cost_basis_latest, calc_n_quantity_latest, calc_profit_n_loss } from '@utils/osrs';
 import { firstcaps } from '@utils/functions';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 
@@ -69,111 +69,46 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
     </Container>
   };
 
-  const ProfitNLoss = (item: IItems) => {
-    if(item.side === "sell"){
-      const buy_total = item.price * item.quantity;
-      const sell_total = item.quantity * item.sold;
-      const taxes = getax(item.sold);
-      return {
-        total: sell_total,
-        pnl: (sell_total - buy_total) -  (taxes.tax * item.quantity),
-        tax: taxes.tax * item.quantity
-      };
-    } else {
-      const buy_total = item.price * item.quantity;
-      const current_total = item.quantity * average_cost;
-      return {
-        total: current_total,
-        pnl: Math.floor(current_total - buy_total),
-        tax: 0
-      }
-    }
-  };
-
-  const TotalDataSets = (item: IItems[]) => {
-    let [buy, sell, quantity, tax] = [0, 0, 0, 0];
+  const total = (() => {
+    let [quantity, tax] = [0, 0];
     let [unrealised_pnl, realised_pnl] = [0, 0];
-    let [net, spend ] = [0, 0]
-    for(let x of item){
-      if(x.side === "sell"){
-        const taxes = getax(x.sold, x.quantity)
-        const at_total = x.price * x.quantity;
-        const current_total = x.quantity * x.sold;
-        realised_pnl += (current_total - at_total) - taxes.total_tax;
-        net -= taxes.total_tax;
-        buy += (x.quantity*x.price);
-        quantity += x.quantity;
-        tax += taxes.total_tax;
-        spend -= (ProfitNLoss(x).total + taxes.total_tax);
+    let [networth, spend ] = [0, 0]
+    for(let item of data.items){
+      if(item.side === "sell"){
+        const ge = getax(item.sold, item.quantity)
+        realised_pnl += (item.price * item.quantity) - ge.total_after_tax;
+        networth -= ge.total_after_tax;
+        quantity += item.quantity;
+        tax += ge.total_after_tax;
+        spend -= calc_profit_n_loss(item, item.price).pnl_with_tax;
       };
-      if(x.side === "buy"){
-        const at_total = x.price * x.quantity;
-        const current_total = x.quantity * average_cost;
-        unrealised_pnl += current_total - at_total;
-        net += (x.quantity * latest[x.id].high);
-        sell += (x.quantity*x.sold);
-        spend += (x.quantity * x.price);
+      if(item.side === "buy"){
+        const highest_price = latest[item.id].high;
+        spend += calc_profit_n_loss(item, item.price).pnl_with_tax;
+        unrealised_pnl += calc_profit_n_loss(item, highest_price).pnl_with_tax;
+        networth += (item.quantity * highest_price);
+        spend += (item.quantity * item.price);
       };
     };
     return {
       spend,
       tax,
-      net,
+      networth,
       quantity,
-      buy, 
-      sell, 
-      pnl: buy - sell,
-      unrealised_pnl: unrealised_pnl - tax,
+      unrealised_pnl,
       realised_pnl,
     }
+  })();
+
+  const latest_analytics = {
+    cost_basis: calc_cost_basis_latest(data.items),
+    n_quantiy: calc_n_quantity_latest(data.items)
   };
-
-  const calc_cost_basis = (index: number, array: IItems[]) => {
-    let [pnl, nqty] = [0, 0];
-    for(let x of array.slice(index)){
-      if(x.side === "sell") {
-        nqty -= x.quantity;
-        pnl -= x.sold * x.quantity;
-      };
-      if(x.side === "buy") {
-        nqty += x.quantity;
-        pnl += x.price * x.quantity;
-      };
-    };
-    return Number((pnl / nqty).toFixed(0));
-  };
-
-  const calc_new_quantity = (index: number, array: IItems[]) => {
-    return array
-      .slice(index)
-      .map(el => el.side === "buy" ? el.quantity : -el.quantity)
-      .reduce((acc,cur) => acc+cur);
-  };
-
-  const Methods = () => {
-    let [COST, NEW] = [0, 0];
-    for(let i in data.items){
-      const index = Number(i) 
-      if(index === 0){
-        COST =  Number(calc_cost_basis(index, data.items));
-        NEW = Number(calc_new_quantity(index, data.items));
-        break
-      }
-    }
-    return {
-      costBasis: COST,
-      newQuatntiy: NEW,
-    }
-  };
-
-  const methods = Methods();
-
-  const total = TotalDataSets(data.items);
 
   const onCopy = () => {
     navigator.clipboard.writeText(JSON.stringify({
-      cost_basis: methods.costBasis,
-      new_quantity: methods.newQuatntiy,
+      cost_basis: latest_analytics.cost_basis,
+      new_quantity: latest_analytics.n_quantiy,
       average_cost: average_cost
     }));
     dispatch(Alert.set("Copied data"))
@@ -199,7 +134,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
             <Label2 
               name={`Margin`}
               value={
-                <Message side="left" message={`Tax ${gp(getax(highest_cost).tax)}`}>
+                <Message side="left" message={`Tax ${gp(getax(highest_cost).total_after_tax)}`}>
                   <Label2 
                     name="" 
                     value={gemargin(highest_cost, lowest_cost).toLocaleString()} 
@@ -221,11 +156,11 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
           <Flex>
               <Label2
                 name="Cost Basis" 
-                value={<Message side="left" message={`${methods.costBasis.toLocaleString()}`}>{gp(methods.costBasis)}</Message>} 
+                value={<Message side="left" message={`${latest_analytics.cost_basis.toLocaleString()}`}>{gp(latest_analytics.cost_basis)}</Message>} 
               />
               <Label2
                 name="N Quantity" 
-                value={<Message side="left" message={`${methods.newQuatntiy.toLocaleString()}`}>{gp(methods.newQuatntiy)}</Message>}
+                value={<Message side="left" message={`${latest_analytics.n_quantiy.toLocaleString()}`}>{gp(latest_analytics.n_quantiy)}</Message>}
               />
               <Label2
                 name="" 
@@ -236,7 +171,7 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
             <Flex>
               <Label2
                 name="Net Worth" 
-                value={<Message side="left" message={`${total.net.toLocaleString()}`}>{gp(total.net)}</Message>}
+                value={<Message side="left" message={`${total.networth.toLocaleString()}`}>{gp(total.networth)}</Message>}
               />
               <Label2
                 name="Net Spend" 
@@ -286,23 +221,24 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                 <Line />
 
                 <Flex>
-                  <Label3 color={item.side === "buy" ? "green" : "red"} 
+                  <Label3 
+                    color={item.side === "buy" ? "green" : "red"} 
                     name="" 
                     value={item.side.toUpperCase()} 
                   />
 
                   {item.side === "sell" && 
-                    <Message message={(ProfitNLoss(item).pnl).toLocaleString()}>
-                      <Label3 color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} 
-                        name={item.sold ? gp(ProfitNLoss(item).pnl) : "unknown"}
+                    <Message message={(calc_profit_n_loss(item, item.sold).pnl_with_tax).toLocaleString()}>
+                      <Label3 color={calc_profit_n_loss(item, item.sold).pnl_with_tax <= 0 ? "red" : "green"} 
+                        name={item.sold ? gp(calc_profit_n_loss(item, item.sold).pnl_with_tax) : "unknown"}
                       />
                     </Message>
                   }
 
                   {item.side === "buy" && 
-                    <Message message={(ProfitNLoss(item).pnl).toLocaleString()}>
-                      <Label3 color={ProfitNLoss(item).pnl <= 0 ? "red" : "green"} 
-                        name={gp(ProfitNLoss(item).pnl)}
+                    <Message message={(calc_profit_n_loss(item, highest_cost).pnl_with_tax).toLocaleString()}>
+                      <Label3 color={calc_profit_n_loss(item, highest_cost).pnl_with_tax <= 0 ? "red" : "green"} 
+                        name={gp(calc_profit_n_loss(item, highest_cost).pnl_with_tax)}
                       />
                     </Message>
                   }
@@ -339,11 +275,11 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                       />
                       <Label2 
                         name="Tax" 
-                        value={<Message side="left" message={`${ProfitNLoss(item).tax.toLocaleString()}`}>{gp(ProfitNLoss(item).tax)}</Message>}
+                        value={<Message side="left" message={`${getax(item.sold, item.quantity).total_tax_amount.toLocaleString()}`}>{gp(getax(item.sold, item.quantity).total_tax_amount)}</Message>}
                       />
                       <Label2 
                         name="Sell Valuation" 
-                        value={<Message side="left" message={`${ProfitNLoss(item).total.toLocaleString()}`}>{gp(ProfitNLoss(item).total)}</Message>}
+                        value={<Message side="left" message={`${(item.quantity * item.sold).toLocaleString()}`}>{gp(item.quantity * item.sold)}</Message>}
                       />
                     </Flex>
                   </>
@@ -358,17 +294,14 @@ const TransactionsIndex = ({itemsFiltered, latest}: Props) => {
                   />
                   <Label2 
                     name="NQuantity" 
-                    value={<Message side="left" message={calc_new_quantity(index, array).toLocaleString()}>{gp(calc_new_quantity(index, array))}</Message>}
+                    value={<Message side="left" message={calc_n_quantity(index, array).toLocaleString()}>{gp(calc_n_quantity(index, array))}</Message>}
                   />
                   <Label2 
                     name="" 
                     value="" 
                   />
                 </Flex>
-  
-              
-
-                
+    
             </Container>
           </Observer>
           }
