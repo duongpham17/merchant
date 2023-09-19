@@ -35,6 +35,8 @@ const Transactions = ({data, prices}: Props) => {
         dispatch(Item.remove(id))
     };
 
+    console.log(data);
+
     return (
         <Pagination data={data.items} show={25}>
             {(item, index, array) => 
@@ -57,7 +59,7 @@ const Transactions = ({data, prices}: Props) => {
                                 width={350} 
                                 icon={
                                     <Flex>
-                                        <Label1 color="light" size="0.8rem" name={`${UK(new Date(Number(item.timestamp)))}`} style={{"width": "140px"}} />
+                                        <Label1 color="light" size="0.8rem" name={`${UK(new Date(Number(item.timestamp)))}`} style={{"width": "150px"}} />
                                         <MdKeyboardArrowRight/>
                                     </Flex>
                                 } 
@@ -100,15 +102,15 @@ const Transactions = ({data, prices}: Props) => {
                         <Flex>
                             <Label2 
                                 name="Buy Price" 
-                                value={<Message side="left" message={`${item.buy.toLocaleString()}`}>{gp(item.buy)}</Message>}
+                                value={<Message side="left" message={`${item.buy ? item.buy.toLocaleString() : 0}`}>{gp(item.buy) || 0}</Message>}
                             />
                             <Label2 
                                 name="Quantity" 
-                                value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
+                                value={<Message side="left" message={`${item.quantity ? item.quantity.toLocaleString() : 0}`}>{gp(item.quantity) || 0}</Message>}
                             />
                             <Label2 
                                 name="Buy Valuation" 
-                                value={<Message side="left" message={`${(item.quantity * item.buy).toLocaleString()}`}>{gp(item.quantity * item.buy)}</Message>}
+                                value={<Message side="left" message={`${(item.quantity * item.buy).toLocaleString()}`}>{gp(item.quantity * item.buy) || 0}</Message>}
                             />
                             </Flex>
 
@@ -119,15 +121,15 @@ const Transactions = ({data, prices}: Props) => {
                                 <Flex>
                                     <Label2 
                                         name="Sell Price" 
-                                        value={<Message side="left" message={`${item.sell.toLocaleString()}`}>{gp(item.sell)}</Message>}
+                                        value={<Message side="left" message={`${item.sell ? item.sell.toLocaleString() : 0}`}>{gp(item.sell) || 0}</Message>}
                                     />
                                     <Label2 
                                         name="Tax" 
-                                        value={<Message side="left" message={`${getax(item.sell, item.quantity).total_tax_amount.toLocaleString()}`}>{gp(getax(item.sell, item.quantity).total_tax_amount)}</Message>}
+                                        value={<Message side="left" message={`${getax(item.sell, item.quantity).total_tax_amount.toLocaleString()}`}>{gp(getax(item.sell, item.quantity).total_tax_amount) || 0}</Message>}
                                     />
                                     <Label2 
                                         name="Sell Valuation" 
-                                        value={<Message side="left" message={`${(item.quantity * item.sell).toLocaleString()}`}>{gp(item.quantity * item.sell)}</Message>}
+                                        value={<Message side="left" message={`${(item.quantity * item.sell).toLocaleString()}`}>{gp(item.quantity * item.sell) || 0}</Message>}
                                     />
                                 </Flex>
                             </>
