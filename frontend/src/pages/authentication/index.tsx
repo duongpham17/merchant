@@ -35,7 +35,7 @@ const Authentication = () => {
     }, [authState.isLoggedIn, navigate]);
 
     return (
-        <Flex center style={{margin: "8rem"}}>
+        <Flex center style={{margin: "5rem 1rem"}}>
             {
                 authState.status.login === "success" 
                 ?
