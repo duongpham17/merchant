@@ -41,38 +41,44 @@ const Chart = ({timeseries}: Props) => {
   return (
     <>
       <Flex style={{padding: "0.5rem 0"}}>
-          <Label2 
-              name={`Margin`}
-              value={
-                  <Message side="left" message={`Tax ${gp(getax(prices.highest).total_after_tax)}`}>
-                      <Label2 
-                        name="" 
-                        value={gemargin(prices.highest, prices.lowest).toLocaleString()} 
-                        color={gemargin(prices.highest, prices.lowest) >= 0 ? "green" : "red"}
-                      />
-                  </Message>
-              }
-          />
-          <Label2
-            name="High" 
-            value={<Message side="left" message={`${prices.highest.toLocaleString()}`}>{gp(prices.highest)}</Message>} 
-          />
-          <Label2
-            name="Low" 
-            value={<Message side="left" message={`${prices.lowest.toLocaleString()}`}>{gp(prices.lowest)}</Message>} 
-          />
-          <Label2
-            name="Vol High" 
-            value={<Message side="left" message={`Volume ${prices.highestV.toLocaleString()}`}>{gp(prices.highestV)}</Message>} 
-          />
-          <Label2
-            name="Vol Low" 
-            value={<Message side="left" message={`Volume ${prices.lowestV.toLocaleString()}`}>{gp(prices.lowestV)}</Message>} 
-          />
+          <Flex style={{gap: "1rem"}}>
+            <Label2
+              name="High" 
+              value={<Message side="left" message={`${prices.highest.toLocaleString()}`}>{gp(prices.highest)}</Message>} 
+            />
+            <Label2
+              name="Low" 
+              value={<Message side="left" message={`${prices.lowest.toLocaleString()}`}>{gp(prices.lowest)}</Message>} 
+            />
+            <Label2
+              name="VHigh" 
+              value={<Message side="left" message={`Volume ${prices.highestV.toLocaleString()}`}>{gp(prices.highestV)}</Message>} 
+            />
+            <Label2
+              name="VLow" 
+              value={<Message side="left" message={`Volume ${prices.lowestV.toLocaleString()}`}>{gp(prices.lowestV)}</Message>} 
+            />
+          </Flex>
+
+          <Flex>
+            <div></div>
+            <Label2 
+                name={`Margin`}
+                value={
+                    <Message side="left" message={`Tax ${gp(getax(prices.highest).tax_per_item)}`}>
+                        <Label2 
+                          name="" 
+                          value={gemargin(prices.highest, prices.lowest).toLocaleString()} 
+                          color={gemargin(prices.highest, prices.lowest) >= 0 ? "green" : "red"}
+                        />
+                    </Message>
+                }
+            /> 
+          </Flex>
       </Flex>
 
-      <ResponsiveContainer width="100%" height={350}>
-        <LineChart data={timeseries} margin={{top: 30, right: 0, left: -35, bottom: 20}}>
+      <ResponsiveContainer width="100%" height={230}>
+        <LineChart data={timeseries} margin={{top: 10, right: 0, left: -30, bottom: 10}}>
           <XAxis dataKey="timestamp" tickFormatter={(time: number) => UK(new Date(time*1000))} minTickGap={50} fontSize={12} padding={{right: 20}}/>
           <YAxis domain={["auto", "auto"]} fontSize={12} tickFormatter={(price: number) => gp(price) } />
           <Tooltip content={<CustomToolTips payload={timeseries}/>}/>

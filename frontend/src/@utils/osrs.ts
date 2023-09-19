@@ -18,7 +18,7 @@ export const getax = (item_price: number, quantity=0) => {
   return {
     total_no_tax: item_price * quantity,
     total_after_tax: tax_filter * quantity,
-    tax_per_item: tax_filter,
+    tax_per_item: tax_amount,
     total_tax_amount: tax_amount * quantity
   }
 }
