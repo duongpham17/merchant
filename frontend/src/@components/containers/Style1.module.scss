@@ -4,10 +4,7 @@
     border-radius: 5px;
     position: relative;
     width: 100%;
-
-    &:hover{
-        border-color: var(--clr-light-light);
-    }
+    border: 1px solid transparent;
 }
 
 .light{
@@ -25,6 +22,12 @@
 .selected{
     border-color: var(--clr-main);
 
+    &:hover{
+        border-color: var(--clr-main);
+    }
+}
+
+.hover{
     &:hover{
         border-color: var(--clr-main);
     }

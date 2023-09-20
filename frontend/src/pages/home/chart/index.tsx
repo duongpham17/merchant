@@ -71,7 +71,7 @@ const Chart = ({item}: Props) => {
             />
 
             <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={timeseries} margin={{top: 30, right: 0, left: -20, bottom: 20}}>
+                <LineChart data={timeseries} margin={{top: 30, right: 0, left: -10, bottom: 20}}>
                 <XAxis dataKey="timestamp" tickFormatter={(time: number) => UK(new Date(time*1000))} minTickGap={50} fontSize={12} padding={{right: 20}}/>
                 <YAxis domain={["auto", "auto"]} fontSize={12} tickFormatter={(price: number) => gp(price) } />
                 <Tooltip content={<CustomToolTips payload={timeseries}/>}/>

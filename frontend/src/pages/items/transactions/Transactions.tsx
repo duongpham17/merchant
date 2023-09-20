@@ -68,24 +68,24 @@ const Transactions = ({data, prices}: Props) => {
 
                     <Line color="main" />
 
-                    {dated.items.map((item, index, array) => 
+                    {dated.items.map((item, index) => 
                     <Container background="dark" key={item._id}>
                         
                         <Flex>
                             <Label1
                                 name={
                                     <Flex>
-                                        <Message side="center" message={`Cost Basis ${calc_cost_basis(index, array).toLocaleString()}`}>
+                                        <Message side="center" message={`Cost Basis ${calc_cost_basis(index, data.items).toLocaleString()}`}>
                                             <Label1 
                                                 color='light' 
-                                                name={`[ ${gp(calc_cost_basis(index, array))} ]`} 
+                                                name={`[ ${gp(calc_cost_basis(index, data.items))} ]`} 
                                                 size="0.8rem"
                                             />
                                         </Message>
-                                        <Message side="center" message={`N Quantity ${calc_n_quantity(index, array).toLocaleString()}`}>
+                                        <Message side="center" message={`N Quantity ${calc_n_quantity(index, data.items).toLocaleString()}`}>
                                             <Label1 
                                                 color='light' 
-                                                name={`[ ${gp(calc_n_quantity(index, array))} ]`} 
+                                                name={`[ ${gp(calc_n_quantity(index, data.items))} ]`} 
                                                 size="0.8rem"
                                             />
                                         </Message>

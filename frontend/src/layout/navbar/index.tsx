@@ -8,7 +8,7 @@ import { Context } from 'themes';
 import { FaWater } from 'react-icons/fa';
 import { BiCalculator } from 'react-icons/bi';
 import { BsSunFill, BsFillMoonFill, BsSunsetFill } from 'react-icons/bs';
-import { AiFillHome, AiFillFileAdd, AiOutlineUser, AiFillThunderbolt } from 'react-icons/ai';
+import { AiFillHome, AiFillFileAdd, AiOutlineUser, AiFillThunderbolt, AiOutlineSearch } from 'react-icons/ai';
 import { FaSitemap } from 'react-icons/fa';
 import { MdLogin} from 'react-icons/md';
 
@@ -16,7 +16,8 @@ import Message from '@components/hover/Message';
 import SlideIn from '@components/slidein/Style1';
 
 import CreateComp from './create';
-import CalculatorComp from './calculator'
+import CalculatorComp from './calculator';
+import ItemsComp from './items';
 
 const Navbar = () => {
 
@@ -64,6 +65,12 @@ const Navbar = () => {
       </nav>
 
       <nav>
+        <SlideIn 
+            width={350} 
+            icon={<Message message='Search'><button className={styles.button}><AiOutlineSearch/></button> </Message>}
+          >
+            <ItemsComp />
+        </SlideIn>
       {isLoggedIn &&
         <>
           <Message message='Items'>
