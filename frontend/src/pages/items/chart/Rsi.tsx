@@ -94,7 +94,7 @@ const Rsi = ({timeseries}: Props) => {
         <div>
           <Label3 color="light" name="RSI" value={`[ ${latest.join(", ")} ]`}  style={{paddingBottom: "0.5rem"}}/>
           <ResponsiveContainer width="100%" height={130}>
-            <AreaChart data={rsi} margin={{top: 10, right: 0, left: -30, bottom: 10}}>
+            <AreaChart data={rsi} margin={{top: 10, right: 0, left: -20, bottom: 10}}>
               <XAxis dataKey="time" tickFormatter={(time) => UK(new Date(time*1000))} minTickGap={50} fontSize={12} padding={{right: 20}}/>
               <YAxis dataKey="rsi" tickFormatter={(el) => el.toFixed(0)} domain={[0, 100]} fontSize={12}/>
               <Area dataKey="rsi" opacity={0.5} stroke={selected[0]} fill={selected[1]} />

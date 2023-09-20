@@ -40,7 +40,7 @@ const Chart = ({timeseries}: Props) => {
 
   return (
     <>
-      <Flex style={{padding: "0.5rem 0"}}>
+      <Flex style={{padding: "1rem 0"}}>
           <Flex style={{gap: "1rem"}}>
             <Label2
               name="High" 
@@ -78,7 +78,7 @@ const Chart = ({timeseries}: Props) => {
       </Flex>
 
       <ResponsiveContainer width="100%" height={230}>
-        <LineChart data={timeseries} margin={{top: 10, right: 0, left: -30, bottom: 10}}>
+        <LineChart data={timeseries} margin={{top: 10, right: 0, left: -20, bottom: 10}}>
           <XAxis dataKey="timestamp" tickFormatter={(time: number) => UK(new Date(time*1000))} minTickGap={50} fontSize={12} padding={{right: 20}}/>
           <YAxis domain={["auto", "auto"]} fontSize={12} tickFormatter={(price: number) => gp(price) } />
           <Tooltip content={<CustomToolTips payload={timeseries}/>}/>

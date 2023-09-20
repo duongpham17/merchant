@@ -9,6 +9,7 @@ import { gemargin, getax, gp } from '@utils/osrs';
 import Label2 from '@components/labels/Style2';
 import Select from '@components/options/Style1';
 import Flex from '@components/flex/Between';
+import Line1 from '@components/line/Style1';
 
 import {Line, LineChart, XAxis, YAxis, ResponsiveContainer, Tooltip} from 'recharts';
 
@@ -72,49 +73,55 @@ const Chart = ({item}: Props) => {
         <Label2 name="Could not find any data" color="red" />
        :
         <>
+
+            <Flex style={{gap: "1rem"}}>
+                <Label2
+                    name="High" 
+                    value={<Message side="left" message={`${prices.highest.toLocaleString()}`}>{gp(prices.highest)}</Message>} 
+                />
+                <Label2
+                    name="Low" 
+                    value={<Message side="left" message={`${prices.lowest.toLocaleString()}`}>{gp(prices.lowest)}</Message>} 
+                />
+                <Label2 
+                    name={`Margin`}
+                    value={
+                        <Message side="left" message={`Tax ${gp(getax(prices.highest).tax_per_item)}`}>
+                            <Label2 
+                                name="" 
+                                value={(gemargin(prices.highest, prices.lowest).toLocaleString())} 
+                                color={gemargin(prices.highest, prices.lowest) >= 0 ? "green" : "red"}
+                            />
+                        </Message>
+                    }
+                /> 
+            </Flex>
+
+            <Line1 />
+
+            <Flex>
+                <Label2
+                    name="High Vol" 
+                    value={<Message side="left" message={`${prices.highestV.toLocaleString()}`}>{gp(prices.highestV)}</Message>} 
+                    />
+                <Label2
+                    name="Low Vol" 
+                    value={<Message side="left" message={`${prices.lowestV.toLocaleString()}`}>{gp(prices.lowestV)}</Message>} 
+                />
+                <Label2
+                    name="" 
+                    value=""
+                />
+            </Flex>
+
+            <Line1/>
+
             <Select 
                 items={["5m","1h", "6h", "24h"]}
                 onClick={(time) => setTimeInterval(time.toString())}
                 selected={`Time Interval ${timeInterval}`}
                 color="plain"
             />
-
-            <Flex style={{padding: "0.5rem 0"}}>
-                <Flex style={{gap: "1rem"}}>
-                    <Label2
-                        name="High" 
-                        value={<Message side="left" message={`${prices.highest.toLocaleString()}`}>{gp(prices.highest)}</Message>} 
-                    />
-                    <Label2
-                        name="Low" 
-                        value={<Message side="left" message={`${prices.lowest.toLocaleString()}`}>{gp(prices.lowest)}</Message>} 
-                    />
-                    <Label2
-                    name="VHigh" 
-                        value={<Message side="left" message={`Volume ${prices.highestV.toLocaleString()}`}>{gp(prices.highestV)}</Message>} 
-                        />
-                    <Label2
-                        name="VLow" 
-                        value={<Message side="left" message={`Volume ${prices.lowestV.toLocaleString()}`}>{gp(prices.lowestV)}</Message>} 
-                    />
-                </Flex>
-
-                <Flex>
-                    <div></div>
-                    <Label2 
-                        name={`Margin`}
-                        value={
-                            <Message side="left" message={`Tax ${gp(getax(prices.highest).tax_per_item)}`}>
-                                <Label2 
-                                    name="" 
-                                    value={(gemargin(prices.highest, prices.lowest).toLocaleString())} 
-                                    color={gemargin(prices.highest, prices.lowest) >= 0 ? "green" : "red"}
-                                />
-                            </Message>
-                        }
-                    /> 
-                </Flex>
-            </Flex>
 
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={timeseries} margin={{top: 30, right: 0, left: -10, bottom: 20}}>
