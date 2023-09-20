@@ -1,7 +1,7 @@
 import styles from './Style1.module.scss';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-    color?: "light" | "dark" | "grey" | "white" | "lighty" | "black"
+    color?: "light" | "dark" | "grey" | "white" | "lighty" | "black" | "main"
 }
 
 const Line1 = ({color, ...props}: Props ) => (

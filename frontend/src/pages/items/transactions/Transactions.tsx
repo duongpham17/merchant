@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Item from '@redux/actions/items';
 import { Filtered } from '../Context';
@@ -35,23 +36,59 @@ const Transactions = ({data, prices}: Props) => {
         dispatch(Item.remove(id))
     };
 
-    console.log(data);
+    const FitleredByDate = useMemo(() => {
+        const dates = [];
+        for(let x of data.items){
+            const itemDate = new Date(Number(x.timestamp)).toDateString();
+            const dateIndex = dates.findIndex(el => el.date === itemDate);
+            if(dateIndex === -1){
+                dates.push({
+                    date: itemDate,
+                    items: [ x ]
+                })
+            } else {
+                dates[dateIndex].items = [...dates[dateIndex].items, x]
+            };
+        };
+        return dates;
+    }, [data]);
 
     return (
-        <Pagination data={data.items} show={25}>
-            {(item, index, array) => 
-                <Observer key={item._id}>
+        <Pagination data={FitleredByDate} show={25}>
+            {(dated) => 
+                <Observer key={dated.date}>
 
-                    <Container background="dark">
+                    <Label1 
+                        name={dated.date === new Date().toDateString() ? `Today` : dated.date} 
+                        value={`[ ${dated.items.length} ]`} 
+                        color='light'
+                        valueColor='light'
+                        style={{padding: "0.5rem 0"}}
+                    />
+
+                    <Line color="main" />
+
+                    {dated.items.map((item, index, array) => 
+                    <Container background="dark" key={item._id}>
                         
                         <Flex>
                             <Label1
-                                color='light'
                                 name={
                                     <Flex>
-                                        <span>{index+1}.</span>
-                                        <Message side="center" message={`Cost Basis ${calc_cost_basis(index, array).toLocaleString()}`}>[{gp(calc_cost_basis(index, array))}]</Message>
-                                        <Message side="center" message={`N Quantity ${calc_n_quantity(index, array).toLocaleString()}`}>[{gp(calc_n_quantity(index, array))}]</Message>
+                                        <Message side="center" message={`Cost Basis ${calc_cost_basis(index, array).toLocaleString()}`}>
+                                            <Label1 
+                                                color='light' 
+                                                name={`[ ${gp(calc_cost_basis(index, array))} ]`} 
+                                                size="0.8rem"
+                                            />
+                                        </Message>
+                                        <Message side="center" message={`N Quantity ${calc_n_quantity(index, array).toLocaleString()}`}>
+                                            <Label1 
+                                                color='light' 
+                                                name={`[ ${gp(calc_n_quantity(index, array))} ]`} 
+                                                size="0.8rem"
+                                            />
+                                        </Message>
                                     </Flex>
                                 }
                             />
@@ -59,7 +96,12 @@ const Transactions = ({data, prices}: Props) => {
                                 width={350} 
                                 icon={
                                     <Flex>
-                                        <Label1 color="light" size="0.8rem" name={`${UK(new Date(Number(item.timestamp)))}`} style={{"width": "150px"}} />
+                                        <Label1 
+                                            color="light"
+                                            size="0.8rem" 
+                                            name={`${UK(new Date(Number(item.timestamp))).split(",")[1]}`} 
+                                            style={{"width": "80px"}} 
+                                        />
                                         <MdKeyboardArrowRight/>
                                     </Flex>
                                 } 
@@ -109,7 +151,7 @@ const Transactions = ({data, prices}: Props) => {
                                 value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
                             />
                             <Label2 
-                                name="Buy Valuation" 
+                                name="Buy Total" 
                                 value={<Message side="left" message={`${(item.quantity * item.buy).toLocaleString()}`}>{gp(item.quantity * item.buy)}</Message>}
                             />
                             </Flex>
@@ -128,7 +170,7 @@ const Transactions = ({data, prices}: Props) => {
                                         value={<Message side="left" message={`${getax(item.sell, item.quantity).total_tax_amount.toLocaleString()}`}>{gp(getax(item.sell, item.quantity).total_tax_amount)}</Message>}
                                     />
                                     <Label2 
-                                        name="Sell Valuation" 
+                                        name="Sell Total" 
                                         value={<Message side="left" message={`${(item.quantity * item.sell).toLocaleString()}`}>{gp(item.quantity * item.sell)}</Message>}
                                     />
                                 </Flex>
@@ -136,10 +178,15 @@ const Transactions = ({data, prices}: Props) => {
                         }
 
                     </Container>
+                )}
             </Observer>
-        }
+            }
     </Pagination>
   )
 }
+/* 
+
+ 
+*/
 
 export default Transactions
