@@ -17,8 +17,14 @@ export const reducer = (state = initialState, action: ACTIONS) => {
         case TYPES.OSRS_GE_TIMESERIES:
             return{
                 ...state,
-                timeseries: payload
-            };
+                timeseries: (() => {
+                    const updated_timeseries = [];
+                    for(let x of payload){
+                        if(x.avgHighPrice && x.avgLowPrice) updated_timeseries.push({...x})
+                    };
+                    return updated_timeseries
+                })()
+            }
         default: 
             return state;
     }

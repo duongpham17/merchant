@@ -1,5 +1,6 @@
 import styles from './index.module.scss';
 import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { useAppSelector } from '@redux/hooks/useRedux';
 import OsrsGeItems, {OSRS_GE_ITEM} from '@data/osrs-ge';
 
@@ -119,11 +120,13 @@ const Home = () => {
               {(item, index) => 
               <Observer key={item.id}>
                 <div className={styles.element}>
-                  <div className={styles.image} onClick={() => onOpenItems((item.id).toString())}>
-                    <img 
-                      src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} 
-                      alt="osrs"
-                    />
+                  <div className={styles.image}>
+                    <Link to={`/item/${item.id}`}>
+                      <img 
+                        src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} 
+                        alt="osrs"
+                      />
+                    </Link>
                     <Label3 
                       name={`${index+1}. ${firstcaps(item.name)} [ ${item.limit} ]`} 
                       value={<Openarrow onClick={() => onOpenItems((item.id).toString())} 

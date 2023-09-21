@@ -2,13 +2,14 @@ import styles from './List.module.scss';
 import { useContext, useMemo } from 'react';
 import { Context } from '../Context';
 import { firstcaps } from '@utils/functions';
-import { gemargin, getax, gp, calc_cost_basis_latest } from '@utils/osrs';
+import { gemargin, getax, gp, calc_cost_basis_latest, calc_profit_n_loss } from '@utils/osrs';
 import { MdOutlineUnfoldMore } from 'react-icons/md';
 import { useAppSelector } from '@redux/hooks/useRedux';
 
 import SlideIn from '@components/slidein/Style1';
 import Message from '@components/hover/Message';
 import Line from '@components/line/Style1';
+import Label1 from '@components/labels/Style1';
 
 import useOpen from '@hooks/useOpen';
 import useQuery from '@hooks/useQuery';
@@ -52,6 +53,17 @@ const ListIndex = () => {
         return newest;
     }, [filtered, openLocalSaved]);
 
+    const totalUnrealisedPnl = useMemo(() => {
+        let total = 0;
+        for(let item of filtered){
+            const latest_price = latest[item.id].high;
+            for(let x of item.items){
+                total += calc_profit_n_loss(x, latest_price).pnl_with_tax;
+            };
+        };
+        return total;
+    }, [filtered, latest]);
+
     const analytics = useMemo(() => {
 
         const itemsObject: {
@@ -92,6 +104,7 @@ const ListIndex = () => {
                     itemsObject.data[itemId].spend += ge.total_after_tax;
                     itemsObject.data[itemId].unrealised_pnl += ge.total_after_tax - (item.buy * item.quantity);
                     total.networth += ge.total_after_tax;
+                    total.taxes += ge.total_tax_amount;
                 };
             });
         };
@@ -120,50 +133,62 @@ const ListIndex = () => {
                     iconOpen={<Message message={`Tax ${gp(analytics.total.taxes)}`}>{gp(analytics.total.networth)} [ {filtered.length} ]</Message>}
                 >
                     <div className={styles.items}>
-                    {margin.map(el => 
-                        <button key={el.id} onClick={() => onSelectItem(el)}>
 
-                            <div className={styles.image}>
-                                <b>{firstcaps(el.name)}</b>
-                                <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
-                            </div>
+                        <Line/>
 
-                            <Line/>
+                        <Label1 
+                            weight={200}
+                                                        size="0.9rem"
+                            name={"Unrealised PNL"}
+                            value={<Message message={totalUnrealisedPnl.toLocaleString() || "0"}>{gp(totalUnrealisedPnl)}</Message>}
+                        />
 
-                            <div className={styles.information}>
-                                <Message message={`Net Worth, N Quantity`} side="left"> 
-                                    <div className={styles.hover}>
-                                        <span>{`${gp(analytics.items[el.id].networth)} [ ${gp(analytics.items[el.id].nquantity)} ]`}</span>
-                                    </div>
-                                </Message>
-                                <Message message="Unrealised" side="right"> 
-                                    <span className={`${analytics.items[el.id].unrealised_pnl >= 0 ? styles.green : styles.red}`}>{gp(analytics.items[el.id].unrealised_pnl)}</span>
-                                </Message>
-                            </div>
+                        <Line/>
 
-                            <Line/>
+                        {margin.map(el => 
+                            <button key={el.id} onClick={() => onSelectItem(el)}>
 
-                            <div className={styles.information}>
-                                <Message message="[ Cost, High, Low ]" side="left"> 
-                                    <div className={styles.hover}>
-                                        [
-                                        <span className={`${styles.cost} ${calc_cost_basis_latest(el.items) <= latest[el.id].high ? styles.green : styles.red}`}>
-                                            {` ${gp(calc_cost_basis_latest(el.items))} `}
-                                        </span>,
-                                        <span className={styles.high}>{` ${gp(latest[el.id].high)}`}</span>,
-                                        <span className={styles.low}>{` ${gp(latest[el.id].low)} `}</span>
-                                        ]
-                                    </div>
-                                </Message>
-                                <Message message="Margin" side="right"> 
-                                    <p className={el.margin >= 0 ? styles.green : styles.red}>{gp(el.margin)}</p>
-                                </Message>
-                            </div>
-                            
-                        </button>
-                    )}
-                    </div>
-                </SlideIn>
+                                <div className={styles.image}>
+                                    <p>{firstcaps(el.name)}</p>
+                                    <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
+                                </div>
+
+                                <Line/>
+
+                                <div className={styles.information}>
+                                    <Message message={`Net Worth, N Quantity`} side="left"> 
+                                        <div className={styles.hover}>
+                                            <span>{`${gp(analytics.items[el.id].networth)} [ ${gp(analytics.items[el.id].nquantity)} ]`}</span>
+                                        </div>
+                                    </Message>
+                                    <Message message="Unrealised PNL" side="right"> 
+                                        <span className={`${analytics.items[el.id].unrealised_pnl >= 0 ? styles.green : styles.red}`}>{gp(analytics.items[el.id].unrealised_pnl)}</span>
+                                    </Message>
+                                </div>
+
+                                <Line/>
+
+                                <div className={styles.information}>
+                                    <Message message="[ Cost, High, Low ]" side="left"> 
+                                        <div className={styles.hover}>
+                                            [
+                                            <span className={`${styles.cost} ${calc_cost_basis_latest(el.items) <= latest[el.id].high ? styles.green : styles.red}`}>
+                                                {` ${gp(calc_cost_basis_latest(el.items))} `}
+                                            </span>,
+                                            <span className={styles.high}>{` ${gp(latest[el.id].high)}`}</span>,
+                                            <span className={styles.low}>{` ${gp(latest[el.id].low)} `}</span>
+                                            ]
+                                        </div>
+                                    </Message>
+                                    <Message message="Margin" side="right"> 
+                                        <p className={el.margin >= 0 ? styles.green : styles.red}>{gp(el.margin)}</p>
+                                    </Message>
+                                </div>
+                                
+                            </button>
+                        )}
+                        </div>
+                    </SlideIn>
             </div>
 
         </div>

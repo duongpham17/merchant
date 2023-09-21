@@ -49,7 +49,11 @@ const Chart = ({item}: Props) => {
         try{
             (async () => {
                 const timeseries = await Osrs.timeseriesId(item.id.toString(), timeInterval);
-                setTimeseries(timeseries);
+                const updated_timeseries = [];
+                for(let x of timeseries){
+                    if(x.avgHighPrice && x.avgLowPrice) updated_timeseries.push({...x})
+                };
+                setTimeseries(updated_timeseries);
                 setError(false);
             })();
         } catch(err){

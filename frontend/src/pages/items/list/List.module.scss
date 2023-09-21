@@ -52,7 +52,7 @@
             button{
                 background-color: var(--clr-dark);
                 padding: 0.5rem;
-                border: 1px solid var(--clr-light);
+                border: 1px solid var(--clr-dark-light);
                 width: 100%;
                 margin-bottom: 0.5rem;
                 &:hover{
@@ -77,22 +77,6 @@
 
                 .image{
                     position: relative;
-                    &:hover p{
-                        display: block;
-                    }
-                    p{
-                        display: none;
-                        position: absolute;
-                        right: -0.6rem;
-                        top: -0.7rem;
-                        background-color: var(--clr-background);
-                        border: 1px solid var(--clr-main);
-                        padding: 0.5rem;
-                    }
-                    b{
-                        text-align: left;
-                        margin-right: 1.7rem;
-                    }
                 }
                 .information{
                     .hover{

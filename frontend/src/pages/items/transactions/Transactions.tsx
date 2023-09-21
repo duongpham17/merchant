@@ -53,39 +53,44 @@ const Transactions = ({data, prices}: Props) => {
         return dates;
     }, [data]);
 
+    const ItemsList = data.items.map(el => el).flat();
+
+    const findIndex = (id: string) => ItemsList.findIndex((item) => item._id ===  id); 
+
     return (
         <Pagination data={FitleredByDate} show={25}>
             {(dated) => 
                 <Observer key={dated.date}>
 
+                    
                     <Label1 
                         name={dated.date === new Date().toDateString() ? `Today` : dated.date} 
                         value={`[ ${dated.items.length} ]`} 
                         color='light'
                         valueColor='light'
                         style={{padding: "0.5rem 0"}}
-                    />
+                    /> 
 
-                    <Line color="main" />
+                    <Line color="main" />        
 
-                    {dated.items.map((item, index) => 
-                    <Container background="dark" key={item._id}>
+                    { dated.items.map((item) => 
+                     <Container background="dark" key={item._id}>
                         
                         <Flex>
                             <Label1
                                 name={
                                     <Flex>
-                                        <Message side="center" message={`Cost Basis ${calc_cost_basis(index, data.items).toLocaleString()}`}>
+                                        <Message message={`Cost Basis ${calc_cost_basis(findIndex(item._id), ItemsList).toLocaleString()}`}>
                                             <Label1 
                                                 color='light' 
-                                                name={`[ ${gp(calc_cost_basis(index, data.items))} ]`} 
+                                                name={`[ ${gp(calc_cost_basis(findIndex(item._id), ItemsList))} ]`} 
                                                 size="0.8rem"
                                             />
                                         </Message>
-                                        <Message side="center" message={`N Quantity ${calc_n_quantity(index, data.items).toLocaleString()}`}>
+                                        <Message message={`N Quantity ${calc_n_quantity(findIndex(item._id), ItemsList).toLocaleString()}`}>
                                             <Label1 
                                                 color='light' 
-                                                name={`[ ${gp(calc_n_quantity(index, data.items))} ]`} 
+                                                name={`[ ${gp(calc_n_quantity(findIndex(item._id), ItemsList))} ]`} 
                                                 size="0.8rem"
                                             />
                                         </Message>
@@ -178,15 +183,14 @@ const Transactions = ({data, prices}: Props) => {
                         }
 
                     </Container>
-                )}
+                    )
+                        
+                    }
+                
             </Observer>
             }
     </Pagination>
   )
 }
-/* 
-
- 
-*/
 
 export default Transactions
