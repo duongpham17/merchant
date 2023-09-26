@@ -4,7 +4,7 @@ import {useLocation} from 'react-router-dom';
 const Title = () => {
     const location = useLocation();
 
-    const name = "Merchant";
+    const name = "GeMerchants";
 
     useEffect(() => {
         const title = location.pathname.slice(1).replace(/\//g, "-").split("-").splice(0, 2);
