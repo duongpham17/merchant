@@ -129,8 +129,8 @@ const Transactions = ({data, prices}: Props) => {
                             {item.side === "sell" && 
                                 <Message message={(calc_profit_n_loss(item, item.sell).pnl_with_tax).toLocaleString()}>
                                     <Label3 
-                                        color={calc_profit_n_loss(item, item.sell).pnl_with_tax <= 0 ? "red" : "green"} 
-                                        name={item.sell ? gp(calc_profit_n_loss(item, item.sell).pnl_with_tax) : "....."}
+                                        color={calc_profit_n_loss(item, item.sell).pnl_no_tax <= 0 ? "red" : "green"} 
+                                        name={item.sell ? gp(calc_profit_n_loss(item, item.sell).pnl_no_tax) : "....."}
                                     />
                                 </Message>
                             }
@@ -171,8 +171,8 @@ const Transactions = ({data, prices}: Props) => {
                                         value={<Message side="left" message={`${item.sell.toLocaleString()}`}>{gp(item.sell)}</Message>}
                                     />
                                     <Label2 
-                                        name="Tax" 
-                                        value={<Message side="left" message={`${getax(item.sell, item.quantity).total_tax_amount.toLocaleString()}`}>{gp(getax(item.sell, item.quantity).total_tax_amount)}</Message>}
+                                        name="" 
+                                        value=""
                                     />
                                     <Label2 
                                         name="Sell Total" 
