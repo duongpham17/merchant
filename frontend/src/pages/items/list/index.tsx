@@ -58,7 +58,11 @@ const ListIndex = () => {
         for(let item of filtered){
             const latest_price = latest[item.id].high;
             for(let x of item.items){
-                total += calc_profit_n_loss(x, latest_price).pnl_with_tax;
+                if(x.side === "sell"){
+                    total -= calc_profit_n_loss(x, x.sell).pnl_no_tax;
+                } else {
+                    total += calc_profit_n_loss(x, latest_price).pnl_with_tax;
+                }
             };
         };
         return total;
@@ -80,10 +84,12 @@ const ListIndex = () => {
 
         const total = {
             networth: 0,
-            taxes: 0
+            unrealised: 0,
         };
 
         for (let x of filtered) {
+            const cost_basis = calc_cost_basis_latest(x.items);
+
             x.items.forEach(item => {
                 const itemId = item.id;
                 if (!itemsObject.data[itemId]) {
@@ -95,18 +101,17 @@ const ListIndex = () => {
                     itemsObject.data[itemId].taxes += ge.total_tax_amount;
                     itemsObject.data[itemId].nquantity -= item.quantity;
                     itemsObject.data[itemId].spend += ge.total_no_tax;
-                    total.networth += ge.total_after_tax;
-                    total.taxes += ge.total_tax_amount;
                 } else {
                     const ge = getax(latest[itemId].high, item.quantity);
                     itemsObject.data[itemId].networth += (item.quantity * latest[item.id].high);
                     itemsObject.data[itemId].nquantity += item.quantity;
                     itemsObject.data[itemId].spend += ge.total_after_tax;
-                    itemsObject.data[itemId].unrealised_pnl += ge.total_after_tax - (item.buy * item.quantity);
-                    total.networth += ge.total_after_tax;
-                    total.taxes += ge.total_tax_amount;
                 };
+                itemsObject.data[itemId].unrealised_pnl = itemsObject.data[itemId].nquantity * ( latest[itemId].high - ( 0 >= cost_basis ? 0 : cost_basis));
             });
+
+            total.unrealised += itemsObject.data[x.id].nquantity * (latest[x.id].high - ( 0 >= cost_basis ? 0 : cost_basis));
+            total.networth += itemsObject.data[x.id].nquantity * latest[x.id].high
         };
 
         return {
@@ -130,7 +135,7 @@ const ListIndex = () => {
                 <SlideIn
                     width={300} 
                     icon={<button className={styles.button}><MdOutlineUnfoldMore /></button>} 
-                    iconOpen={<Message message={`Tax ${gp(analytics.total.taxes)}`}>{gp(analytics.total.networth)} [ {filtered.length} ]</Message>}
+                    iconOpen={<Message message={`${analytics.total.networth.toLocaleString()}`}>{gp(analytics.total.networth)} [ {filtered.length} ]</Message>}
                 >
                     <div className={styles.items}>
 
@@ -138,9 +143,9 @@ const ListIndex = () => {
 
                         <Label1 
                             weight={200}
-                                                        size="0.9rem"
+                            size="0.9rem"
                             name={"Unrealised PNL"}
-                            value={<Message message={totalUnrealisedPnl.toLocaleString() || "0"}>{gp(totalUnrealisedPnl)}</Message>}
+                            value={<Message message={analytics.total.unrealised.toLocaleString() || "0"}>{gp(analytics.total.unrealised)}</Message>}
                         />
 
                         <Line/>
@@ -162,7 +167,9 @@ const ListIndex = () => {
                                         </div>
                                     </Message>
                                     <Message message="Unrealised PNL" side="right"> 
-                                        <span className={`${analytics.items[el.id].unrealised_pnl >= 0 ? styles.green : styles.red}`}>{gp(analytics.items[el.id].unrealised_pnl)}</span>
+                                        <span className={`${analytics.items[el.id].nquantity >= 0 ? styles.green : styles.red}`}>
+                                            { analytics.items[el.id].nquantity === 0 ? 0 : gp(analytics.items[el.id].unrealised_pnl)}
+                                        </span>
                                     </Message>
                                 </div>
 

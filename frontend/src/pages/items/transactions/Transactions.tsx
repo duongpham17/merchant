@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Item from '@redux/actions/items';
 import { Filtered } from '../Context';
-import { getax, gp, calc_cost_basis, calc_n_quantity, calc_profit_n_loss } from '@utils/osrs';
+import { gp, calc_cost_basis, calc_n_quantity, calc_profit_n_loss } from '@utils/osrs';
 import { UK } from '@utils/time';
 import Button from '@components/buttons/Button';
 import Message from '@components/hover/Message';
@@ -80,14 +80,14 @@ const Transactions = ({data, prices}: Props) => {
                             <Label1
                                 name={
                                     <Flex>
-                                        <Message message={`Cost Basis ${calc_cost_basis(findIndex(item._id), ItemsList).toLocaleString()}`}>
+                                        <Message message={`Cost_Basis ${calc_cost_basis(findIndex(item._id), ItemsList).toLocaleString()}`}>
                                             <Label1 
                                                 color='light' 
                                                 name={`[ ${gp(calc_cost_basis(findIndex(item._id), ItemsList))} ]`} 
                                                 size="0.8rem"
                                             />
                                         </Message>
-                                        <Message message={`N Quantity ${calc_n_quantity(findIndex(item._id), ItemsList).toLocaleString()}`}>
+                                        <Message message={`N_Quantity ${calc_n_quantity(findIndex(item._id), ItemsList).toLocaleString()}`}>
                                             <Label1 
                                                 color='light' 
                                                 name={`[ ${gp(calc_n_quantity(findIndex(item._id), ItemsList))} ]`} 
@@ -127,7 +127,7 @@ const Transactions = ({data, prices}: Props) => {
                                 value={item.side.toUpperCase()} 
                             />
                             {item.side === "sell" && 
-                                <Message message={(calc_profit_n_loss(item, item.sell).pnl_with_tax).toLocaleString()}>
+                                <Message message={(calc_profit_n_loss(item, item.sell).pnl_no_tax).toLocaleString()}>
                                     <Label3 
                                         color={calc_profit_n_loss(item, item.sell).pnl_no_tax <= 0 ? "red" : "green"} 
                                         name={item.sell ? gp(calc_profit_n_loss(item, item.sell).pnl_no_tax) : "....."}
@@ -135,7 +135,7 @@ const Transactions = ({data, prices}: Props) => {
                                 </Message>
                             }
                             {item.side === "buy" && 
-                                <Message message={(calc_profit_n_loss(item, prices.highest).pnl_with_tax).toLocaleString()}>
+                                <Message message={`Unrealised_PNL ${(calc_profit_n_loss(item, prices.highest).pnl_with_tax).toLocaleString()}`}>
                                     <Label3 
                                         color={calc_profit_n_loss(item, prices.highest).pnl_with_tax <= 0 ? "red" : "green"} 
                                         name={gp(calc_profit_n_loss(item, prices.highest).pnl_with_tax)}
@@ -171,8 +171,8 @@ const Transactions = ({data, prices}: Props) => {
                                         value={<Message side="left" message={`${item.sell.toLocaleString()}`}>{gp(item.sell)}</Message>}
                                     />
                                     <Label2 
-                                        name="" 
-                                        value=""
+                                        name="Difference" 
+                                        value={<Message side="left" message={`${(item.sell - item.buy).toLocaleString()}`}>{gp(item.sell - item.buy)}</Message>}
                                     />
                                     <Label2 
                                         name="Sell Total" 

@@ -1,5 +1,5 @@
 export const gp = (total: number) => {
-    const t = Math.abs(Number(total));
+    const t = (Number(total));
     let format = "";
     if(t < 1_000_000){
       format = `${t.toLocaleString()}`
@@ -19,7 +19,8 @@ export const getax = (item_price: number, quantity=0) => {
     total_no_tax: item_price * quantity,
     total_after_tax: tax_filter * quantity,
     tax_per_item: tax_amount,
-    total_tax_amount: tax_amount * quantity
+    tax_per_item_value: item_price - tax_amount,
+    total_tax_amount: tax_amount * quantity,
   }
 }
 
@@ -47,7 +48,7 @@ export const calc_cost_basis = (index: number, items: Items[]) => {
       pnl += x.buy * x.quantity;
     };
   };
-  return Number((pnl / nqty).toFixed(2));
+  return (pnl / nqty);
 };
 
 export const calc_cost_basis_latest = (items: Items[]) => {

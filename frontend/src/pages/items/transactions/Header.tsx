@@ -24,47 +24,47 @@ interface Props {
 const Header = ({prices, data}: Props) => {
   
     const dispatch = useAppDispatch();
+
+    const latest_analytics = useMemo(() => ({
+      cost_basis: calc_cost_basis_latest(data.items),
+      n_quantity: calc_n_quantity_latest(data.items)
+    }), [data.items]);
   
     const total = useMemo(() => {
       let [quantity, tax] = [0, 0];
       let [unrealised_pnl, realised_pnl] = [0, 0];
-      let [networth, spend ] = [0, 0]
+      let [spend, cash] = [0, 0]
       for(let item of data.items){
         if(item.side === "sell"){
           const ge = getax(item.sell, item.quantity)
-          realised_pnl += (item.buy * item.quantity) - ge.total_after_tax;
-          networth -= ge.total_after_tax;
+          realised_pnl +=  ge.total_no_tax - (item.buy * item.quantity);
           quantity += item.quantity;
           tax += ge.total_after_tax;
-          spend -= calc_profit_n_loss(item, item.buy).pnl_with_tax;
+          cash += item.quantity * item.sell
         };
         if(item.side === "buy"){
-          const highest_price = prices.highest;
-          spend += calc_profit_n_loss(item, item.buy).pnl_with_tax;
-          unrealised_pnl += calc_profit_n_loss(item, highest_price).pnl_with_tax;
-          networth += (item.quantity * highest_price);
+          const ge = getax(prices.highest, item.quantity)
           spend += (item.quantity * item.buy);
+          cash -= item.quantity * item.buy
         };
       };
+
+      unrealised_pnl = latest_analytics.n_quantity * ( prices.highest- ( 0 >= latest_analytics.cost_basis ? 0 : latest_analytics.cost_basis));
+
       return {
+        cash,
         spend,
         tax,
-        networth,
         quantity,
         unrealised_pnl,
         realised_pnl,
       }
-    }, [data.items, prices]);
-  
-    const latest_analytics = {
-      cost_basis: calc_cost_basis_latest(data.items),
-      n_quantiy: calc_n_quantity_latest(data.items)
-    };
+    }, [data.items, prices, latest_analytics]);
   
     const onCopy = () => {
       navigator.clipboard.writeText(JSON.stringify({
         cost_basis: latest_analytics.cost_basis,
-        new_quantity: latest_analytics.n_quantiy,
+        new_quantity: latest_analytics.n_quantity,
         average_cost: prices.average
       }));
       dispatch(Alert.set("Copied data"))
@@ -87,11 +87,11 @@ const Header = ({prices, data}: Props) => {
                   value={<Message side="left" message={`${latest_analytics.cost_basis.toLocaleString()}`}>{gp(latest_analytics.cost_basis)}</Message>} 
                 />
                 <Label2
-                  name="Net Worth" 
-                  value={<Message side="left" message={`${total.networth.toLocaleString()}`}>{gp(total.networth)}</Message>}
+                  name="Cash" 
+                  value={<Message side="left" message={`${(total.cash).toLocaleString()}`}>{gp(total.cash)}</Message>}
                 />
                 <Label2
-                  name="Net Spend" 
+                  name="Spent" 
                   value={<Message side="left" message={`${total.spend.toLocaleString()}`}>{gp(total.spend)}</Message>}
                 />
             </Flex>
@@ -101,12 +101,12 @@ const Header = ({prices, data}: Props) => {
             <Flex>
                 <Label2
                   name="N Quantity" 
-                  value={<Message side="left" message={`${latest_analytics.n_quantiy.toLocaleString()}`}>{gp(latest_analytics.n_quantiy)}</Message>}
+                  value={<Message side="left" message={`${latest_analytics.n_quantity.toLocaleString()}`}>{gp(latest_analytics.n_quantity)}</Message>}
                 />
                 <Label2 
                   color={total.unrealised_pnl >= 0 ? "green" : "red"} 
                   name={"Unrealised PNL"}
-                  value={<Message side="left" message={`${(total.unrealised_pnl).toLocaleString()}`}>{gp(total.unrealised_pnl)}</Message>}
+                  value={<Message side="left" message={`${total.unrealised_pnl.toLocaleString()}`}>{gp(total.unrealised_pnl)}</Message>}
                 />
                 <Label2 color={total.realised_pnl >= 0 ? "green" : "red"} 
                   name="Realised PNL"
