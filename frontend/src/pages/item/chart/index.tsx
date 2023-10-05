@@ -1,4 +1,4 @@
-import { OSRS_GE_ITEM } from '@data/osrs-ge';
+import items, { OSRS_GE_ITEM } from '@data/osrs-ge';
 import { useEffect, useState } from 'react';
 import { OSRS_GE_TIMESERIES } from '@redux/types/osrs';
 import Osrs from '@redux/actions/osrs';
@@ -38,6 +38,8 @@ const CustomToolTips = ({ active, payload }: {active?: any, payload: any}) => {
   };
 
 const Chart = ({item}: Props) => {
+
+    const GeItem = items.find(el => el.id === item.id)
 
     const [timeseries, setTimeseries] = useState<OSRS_GE_TIMESERIES[]>([]);
 
@@ -113,8 +115,8 @@ const Chart = ({item}: Props) => {
                     value={<Message side="left" message={`${prices.lowestV.toLocaleString()}`}>{gp(prices.lowestV)}</Message>} 
                 />
                 <Label2
-                    name="" 
-                    value=""
+                    name="High Alch" 
+                    value={GeItem?.highalch.toLocaleString() || 0}
                 />
             </Flex>
 

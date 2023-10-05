@@ -84,7 +84,7 @@ const Rsi = ({timeseries}: Props) => {
 
     const {selected} = useContext(Context)
 
-    const prices: [number, number][] = timeseries.map(el => [el.timestamp,  Math.floor((el.avgHighPrice + el.avgLowPrice) / 2)]);
+    const prices: [number, number][] = timeseries.map(el => [el.timestamp, el.avgHighPrice]);
 
     const rsi = calculateRSI(prices, 14);
 

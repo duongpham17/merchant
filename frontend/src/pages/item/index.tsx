@@ -32,9 +32,7 @@ const ItemIndex = () => {
         value={item.name}
       />
 
-      <Line 
-        color='main' 
-      />
+      <Line color="lighty"/>
 
       <Chart
         item={item}

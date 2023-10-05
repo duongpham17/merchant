@@ -134,15 +134,18 @@ const Home = () => {
                     />
                   </div>
                   <Line/>
-                  {openItems.includes(item.id.toString()) &&
-                    <Chart item={item} />
-                  }
                   <Flex>
                     <Label2 name="GP" value={gp((latest[item.id]?.high + latest[item.id]?.low) / 2) || 0} />
                     <Label2 name="High" value={`${gp(latest[item.id]?.high)}`} color="green" />
                     <Label2 name="Low" value={`${gp(latest[item.id]?.low)}`} color="red" />
                     <Label2 name="Margin" value={gp(item.margin)} color={item.margin >= 0 ? "green" : "red" }/>
                   </Flex>
+                  {openItems.includes(item.id.toString()) &&
+                    <>
+                      <Line/>
+                      <Chart item={item} />
+                    </>
+                  }
                 </div>
               </Observer>
               }
