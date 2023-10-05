@@ -3,8 +3,8 @@ import { Context } from 'themes';
 import { OSRS_GE_TIMESERIES } from '@redux/types/osrs';
 import { AreaChart, XAxis, YAxis, Area, Tooltip, ResponsiveContainer} from 'recharts';
 import { UK } from '@utils/time';
-import Label3 from '@components/labels/Style3';
 import { gp } from '@utils/osrs';
+import Label3 from '@components/labels/Style3';
 
 interface Props {
     timeseries: OSRS_GE_TIMESERIES[]

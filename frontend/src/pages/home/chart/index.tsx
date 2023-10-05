@@ -4,7 +4,7 @@ import { OSRS_GE_TIMESERIES } from '@redux/types/osrs';
 import Osrs from '@redux/actions/osrs';
 
 import { UK } from '@utils/time';
-import { gp } from '@utils/osrs';
+import { gp, gemargin } from '@utils/osrs';
 
 import Label from '@components/labels/Style2';
 import Select from '@components/options/Style1';
@@ -23,7 +23,7 @@ const CustomToolTips = ({ active, payload }: {active?: any, payload: any}) => {
       return (
         <div>
           <p>{UK(new Date(data.timestamp*1000))}</p>
-          <Label name="Margin" value={gp(data.avgHighPrice - data.avgLowPrice)} color={(data.avgHighPrice - data.avgLowPrice) >= 0 ? "green" : "red"} />
+          <Label name="Margin" value={gp(gemargin(data.avgHighPrice, data.avgLowPrice))} color={(data.avgHighPrice - data.avgLowPrice) >= 0 ? "green" : "red"} />
           <Label name="Avg High Price" value={gp(data.avgHighPrice)}  />
           <Label name="Avg Low Price" value={gp(data.avgLowPrice)} />
           <Label name="High Price Vol" value={gp(data.highPriceVolume)} />

@@ -18,7 +18,7 @@ const CustomToolTips = ({ active, payload }: {active?: any, payload: any}) => {
     return (
       <div>
         <p>{UK(new Date(data.timestamp*1000))}</p>
-        <Label2 name="Margin" value={gp(data.avgHighPrice - data.avgLowPrice)} color={(data.avgHighPrice - data.avgLowPrice) >= 0 ? "green" : "red"} />
+        <Label2 name="Margin" value={gp(gemargin(data.avgHighPrice, data.avgLowPrice))} color={(data.avgHighPrice - data.avgLowPrice) >= 0 ? "green" : "red"} />
         <Label2 name="Avg High Price" value={gp(data.avgHighPrice)}  />
         <Label2 name="Avg Low Price" value={gp(data.avgLowPrice)} />
         <Label2 name="High Price Vol" value={gp(data.highPriceVolume)} />
