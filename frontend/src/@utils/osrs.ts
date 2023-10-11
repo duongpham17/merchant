@@ -39,14 +39,18 @@ export interface Items {
 export const calc_cost_basis = (index: number, items: Items[]) => {
   let [pnl, nqty] = [0, 0];
   for(let x of items.slice(index)){
-    if(x.side === "sell") {
-      nqty -= x.quantity;
-      pnl -= x.sell * x.quantity;
-    };
-    if(x.side === "buy") {
-      nqty += x.quantity;
-      pnl += x.buy * x.quantity;
-    };
+    if(nqty === 0){
+      pnl += 0
+    } else {
+      if(x.side === "sell") {
+        nqty -= x.quantity;
+        pnl -= x.sell * x.quantity;
+      };
+      if(x.side === "buy") {
+        nqty += x.quantity;
+        pnl += x.buy * x.quantity;
+      };
+    }
   };
   return (pnl / nqty);
 };
