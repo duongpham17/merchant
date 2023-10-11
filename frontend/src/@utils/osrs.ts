@@ -37,10 +37,11 @@ export interface Items {
 };
 
 export const calc_cost_basis = (index: number, items: Items[]) => {
-  let [pnl, nqty] = [0, 0];
+  let [pnl, nqty] = [0, 0.0001];
   for(let x of items.slice(index)){
-    if(nqty === 0){
+    if(nqty === 0.0001){
       pnl += 0
+      nqty += 0
     } else {
       if(x.side === "sell") {
         nqty -= x.quantity;
