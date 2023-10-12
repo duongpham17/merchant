@@ -8,7 +8,7 @@ import Container from '@components/containers/Style1';
 import useOpen from '@hooks/useOpen';
 import useQuery from '@hooks/useQuery';
 
-import Header from './Header';
+import Analytics from './Analytics';
 import Transactions from './Transactions';
 
 const TransactionsIndex = () => {
@@ -62,7 +62,7 @@ const TransactionsIndex = () => {
   return (
     <Container style={{padding: "0.5rem 0"}}>
 
-      <Header 
+      <Analytics 
         prices={prices}
         data={data}
       />

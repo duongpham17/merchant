@@ -67,15 +67,17 @@ const EditIndex = ({data}: {data: IItems}) => {
                 onChange={onChange} 
             />
 
-            <Input 
-                type="number"
-                label1="Buy Price"
-                label2={gp(values.buy) || ""}
-                name="buy"
-                placeholder='...'
-                value={values.buy || ""} 
-                onChange={onChange} 
-            />
+            {values.side === "buy" &&
+                <Input 
+                    type="number"
+                    label1="Buy Price"
+                    label2={gp(values.buy) || ""}
+                    name="buy"
+                    placeholder='...'
+                    value={values.buy || ""} 
+                    onChange={onChange} 
+                />
+            }
 
             {values.side === "sell" &&
                 <Input 

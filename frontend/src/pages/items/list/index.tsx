@@ -59,44 +59,48 @@ const ListIndex = () => {
             data: {
                 [key: number]: {
                     nquantity: number,
-                    networth: number;
-                    taxes: number;
-                    spend: number;
-                    unrealised_pnl: number,
+                    buy_total: number;
+                    sell_total: number,
+                    profit_n_loss: number,
+                    liquidation: number
                 };
             };
         } = { data: {} };
 
         const total = {
             networth: 0,
-            unrealised: 0,
+            pnl: 0,
         };
 
         for (let x of filtered) {
-            const cost_basis = calc_cost_basis_latest(x.items);
-
+            
             x.items.forEach(item => {
                 const itemId = item.id;
+                const highest_price = latest[item.id].high;
                 if (!itemsObject.data[itemId]) {
-                    itemsObject.data[itemId] = { networth: 0, taxes: 0, nquantity: 0, spend: 0, unrealised_pnl: 0 };
+                    itemsObject.data[itemId] = { 
+                        nquantity: 0, 
+                        buy_total: 0, 
+                        sell_total: 0,
+                        profit_n_loss: 0, 
+                        liquidation: 0
+                    };
                 };
                 if (item.side === "sell") {
                     const ge = getax(item.sell, item.quantity);
-                    itemsObject.data[itemId].networth -= ge.total_after_tax;
-                    itemsObject.data[itemId].taxes += ge.total_tax_amount;
                     itemsObject.data[itemId].nquantity -= item.quantity;
-                    itemsObject.data[itemId].spend += ge.total_no_tax;
+                    itemsObject.data[itemId].sell_total += item.sell * item.quantity;
                 } else {
-                    const ge = getax(latest[itemId].high, item.quantity);
-                    itemsObject.data[itemId].networth += (item.quantity * latest[item.id].high);
+                    const ge = getax(highest_price, item.quantity);
                     itemsObject.data[itemId].nquantity += item.quantity;
-                    itemsObject.data[itemId].spend += ge.total_after_tax;
+                    itemsObject.data[itemId].buy_total += item.buy * item.quantity;
                 };
-                itemsObject.data[itemId].unrealised_pnl = itemsObject.data[itemId].nquantity * ( latest[itemId].high - ( 0 >= cost_basis ? 0 : cost_basis));
+                itemsObject.data[item.id].liquidation = getax(highest_price, itemsObject.data[item.id].nquantity).total_after_tax;
+                itemsObject.data[item.id].profit_n_loss = (itemsObject.data[item.id].sell_total + itemsObject.data[item.id].liquidation) - itemsObject.data[x.id].buy_total;
             });
 
-            total.unrealised += itemsObject.data[x.id].nquantity * (latest[x.id].high - ( 0 >= cost_basis ? 0 : cost_basis));
-            total.networth += itemsObject.data[x.id].nquantity * latest[x.id].high
+            total.pnl += itemsObject.data[x.id].profit_n_loss;
+            total.networth += getax(latest[x.id].high, itemsObject.data[x.id].nquantity).total_after_tax
         };
 
         return {
@@ -120,17 +124,15 @@ const ListIndex = () => {
                 <SlideIn
                     width={300} 
                     icon={<button className={styles.button}><MdOutlineUnfoldMore /></button>} 
-                    iconOpen={<Message message={`${analytics.total.networth.toLocaleString()}`}>{gp(analytics.total.networth)} [ {filtered.length} ]</Message>}
+                    iconOpen={<Message message={"Networth"}>{gp(analytics.total.networth)}</Message>}
                 >
                     <div className={styles.items}>
 
                         <Line/>
 
                         <Label1 
-                            weight={200}
-                            size="0.9rem"
-                            name={"Unrealised PNL"}
-                            value={<Message message={analytics.total.unrealised.toLocaleString() || "0"}>{gp(analytics.total.unrealised)}</Message>}
+                            name={<Message message={`Items`}>[ {filtered.length} ]</Message>}
+                            value={<Message message={"Profit/Loss"}><Label1 name={gp(analytics.total.pnl)} color={analytics.total.pnl >= 0 ? "green" : "red"} /></Message>}
                         />
 
                         <Line/>
@@ -146,14 +148,14 @@ const ListIndex = () => {
                                 <Line/>
 
                                 <div className={styles.information}>
-                                    <Message message={`Net Worth, N Quantity`} side="left"> 
+                                    <Message message={`Buy_Total, N_Quantity`} side="left"> 
                                         <div className={styles.hover}>
-                                            <span>{`${gp(analytics.items[el.id].networth)} [ ${gp(analytics.items[el.id].nquantity)} ]`}</span>
+                                            <span>{`${gp(analytics.items[el.id].buy_total)} [ ${gp(analytics.items[el.id].nquantity)} ]`}</span>
                                         </div>
                                     </Message>
-                                    <Message message="Unrealised PNL" side="right"> 
-                                        <span className={`${analytics.items[el.id].unrealised_pnl >= 0 ? styles.green : styles.red}`}>
-                                            { gp(analytics.items[el.id].unrealised_pnl) }
+                                    <Message message="PNL" side="right"> 
+                                        <span className={`${analytics.items[el.id].profit_n_loss >= 0 ? styles.green : styles.red}`}>
+                                            { gp(analytics.items[el.id].profit_n_loss) }
                                         </span>
                                     </Message>
                                 </div>

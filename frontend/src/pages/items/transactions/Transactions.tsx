@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Item from '@redux/actions/items';
 import { Filtered } from '../Context';
-import { gp, calc_cost_basis, calc_n_quantity, calc_profit_n_loss } from '@utils/osrs';
+import { gp, calc_cost_basis, calc_n_quantity } from '@utils/osrs';
 import { UK } from '@utils/time';
 import Button from '@components/buttons/Button';
 import Message from '@components/hover/Message';
@@ -80,6 +80,11 @@ const Transactions = ({data, prices}: Props) => {
                             <Label1
                                 name={
                                     <Flex>
+                                        <Label3 
+                                            color={item.side === "buy" ? "green" : "red"} 
+                                            name="" 
+                                            value={item.side.toUpperCase()} 
+                                        />
                                         <Message message={`Cost_Basis ${calc_cost_basis(findIndex(item._id), ItemsList).toLocaleString()}`}>
                                             <Label1 
                                                 color='light' 
@@ -120,66 +125,38 @@ const Transactions = ({data, prices}: Props) => {
 
                         <Line />
 
-                        <Flex>
-                            <Label3 
-                                color={item.side === "buy" ? "green" : "red"} 
-                                name="" 
-                                value={item.side.toUpperCase()} 
-                            />
-                            {item.side === "sell" && 
-                                <Message message={(calc_profit_n_loss(item, item.sell).pnl_no_tax).toLocaleString()}>
-                                    <Label3 
-                                        color={calc_profit_n_loss(item, item.sell).pnl_no_tax <= 0 ? "red" : "green"} 
-                                        name={item.sell ? gp(calc_profit_n_loss(item, item.sell).pnl_no_tax) : "....."}
-                                    />
-                                </Message>
-                            }
-                            {item.side === "buy" && 
-                                <Message message={`Unrealised_PNL ${(calc_profit_n_loss(item, prices.highest).pnl_with_tax).toLocaleString()}`}>
-                                    <Label3 
-                                        color={calc_profit_n_loss(item, prices.highest).pnl_with_tax <= 0 ? "red" : "green"} 
-                                        name={gp(calc_profit_n_loss(item, prices.highest).pnl_with_tax)}
-                                    />
-                                </Message>
-                            }
-                        </Flex>
-
-                        <Line />
-
-                        <Flex>
-                            <Label2 
-                                name="Buy Price" 
-                                value={<Message side="left" message={`${item.buy.toLocaleString()}`}>{gp(item.buy)}</Message>}
-                            />
-                            <Label2 
-                                name="Quantity" 
-                                value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
-                            />
-                            <Label2 
-                                name="Buy Total" 
-                                value={<Message side="left" message={`${(item.quantity * item.buy).toLocaleString()}`}>{gp(item.quantity * item.buy)}</Message>}
-                            />
+                        {item.side === "buy" && 
+                            <Flex>
+                                <Label2 
+                                    name="Price" 
+                                    value={<Message side="left" message={`${item.buy.toLocaleString()}`}>{gp(item.buy)}</Message>}
+                                />
+                                <Label2 
+                                    name="Quantity" 
+                                    value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
+                                />
+                                <Label2 
+                                    name="Total" 
+                                    value={<Message side="left" message={`${(item.quantity * item.buy).toLocaleString()}`}>{gp(item.quantity * item.buy)}</Message>}
+                                />
                             </Flex>
+                        }
 
-
-                            { item.side === "sell" &&
-                            <>
-                                <Line />
-                                <Flex>
-                                    <Label2 
-                                        name="Sell Price" 
-                                        value={<Message side="left" message={`${item.sell.toLocaleString()}`}>{gp(item.sell)}</Message>}
-                                    />
-                                    <Label2 
-                                        name="Difference" 
-                                        value={<Message side="left" message={`${(item.sell - item.buy).toLocaleString()}`}>{gp(item.sell - item.buy)}</Message>}
-                                    />
-                                    <Label2 
-                                        name="Sell Total" 
-                                        value={<Message side="left" message={`${(item.quantity * item.sell).toLocaleString()}`}>{gp(item.quantity * item.sell)}</Message>}
-                                    />
-                                </Flex>
-                            </>
+                        { item.side === "sell" &&
+                            <Flex>
+                                <Label2 
+                                    name="Price" 
+                                    value={<Message side="left" message={`${item.sell.toLocaleString()}`}>{gp(item.sell)}</Message>}
+                                />
+                                <Label2 
+                                    name="Quantity" 
+                                    value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
+                                />
+                                <Label2 
+                                    name="Total" 
+                                    value={<Message side="left" message={`${(item.quantity * item.sell).toLocaleString()}`}>{gp(item.quantity * item.sell)}</Message>}
+                                />
+                            </Flex>
                         }
 
                     </Container>

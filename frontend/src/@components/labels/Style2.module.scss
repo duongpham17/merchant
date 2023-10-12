@@ -8,32 +8,52 @@
     }
 }
 .default{
-    color: var(--clr-text)
+    *{
+        color: var(--clr-text)
+    }
 }
 .main{
-    color: var(--clr-main);
+    *{
+        color: var(--clr-main);
+    }
 }
 .white {
-    color: white;
+    *{
+        color: white;
+    }
 }
 .black {
-    color: black;
+    *{
+        color: black;
+    }
 }
 .light{
-    color: var(--clr-text-light);
+    *{
+        color: var(--clr-text-light);
+    }
 }
 .grey{
-    color: var(--clr-grey);
+    *{
+        color: var(--clr-grey);
+    }
 }
 .dark{
-    color: var(--clr-dark);
+    *{
+        color: var(--clr-dark);
+    }
 }
 .blue {
-    color: var(--clr-blue);
+    *{
+        color: var(--clr-blue);
+    }
 }
-.red {
-    color: var(--clr-red);
+.red{
+    *{
+        color: var(--clr-red);
+    }
 }
 .green {
-    color: var(--clr-green);
+    *{
+        color: var(--clr-green);
+    }
 }

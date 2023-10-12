@@ -1,14 +1,32 @@
 export const gp = (total: number) => {
     const t = (Number(total));
     let format = "";
-    if(t < 1_000_000){
-      format = `${t.toLocaleString()}`
-    } else if(t >= 1_000_000 && t < 1_000_000_000){
-      format = `${(t / 1_000_000).toFixed(2)}M`
-    } else if(t >= 1_000_000_000){
-      format = `${(t / 1_000_000_000).toFixed(2)}B`
+
+    if(t > 0){
+      if(t < 1_000_000){
+        format = `${t.toLocaleString()}`
+      } else if(t >= 1_000_000 && t < 1_000_000_000){
+        format = `${(t / 1_000_000).toFixed(2)}M`
+      } else if(t >= 1_000_000_000){
+        format = `${(t / 1_000_000_000).toFixed(2)}B`
+      } else {
+        format = `0`
+      }
     }
-    return format;
+
+    if(t < 0){
+      if(t > -1_000_000){
+        format = `${t.toLocaleString()}`
+      } else if(t <= -1_000_000 && t >= -1_000_000_000){
+        format = `${(t / 1_000_000).toFixed(2)}M`
+      } else if(t <= -1_000_000_000){
+        format = `${(t / 1_000_000_000).toFixed(2)}B`
+      } else{
+        format = `0`
+      }
+    }
+
+    return format || "0";
 };
 
 export const getax = (item_price: number, quantity=0) => {
@@ -37,23 +55,28 @@ export interface Items {
 };
 
 export const calc_cost_basis = (index: number, items: Items[]) => {
-  let [pnl, nqty] = [0, 0.0001];
+  let [pnl, nqty] = [0, 0];
   for(let x of items.slice(index)){
-    if(nqty === 0.0001){
-      pnl += 0
-      nqty += 0
-    } else {
-      if(x.side === "sell") {
-        nqty -= x.quantity;
-        pnl -= x.sell * x.quantity;
-      };
-      if(x.side === "buy") {
-        nqty += x.quantity;
-        pnl += x.buy * x.quantity;
-      };
-    }
+    if(x.side === "sell") {
+      const _pnl = x.sell * x.quantity;
+      nqty -= x.quantity;
+      if(_pnl <= 0){
+        pnl += 0
+      } else {
+        pnl -= _pnl
+      }
+    };
+    if(x.side === "buy") {
+      const _pnl = x.buy * x.quantity;
+      nqty += x.quantity;
+      if(_pnl <= 0){
+        pnl += 0
+      } else {
+        pnl += _pnl
+      }
+    };
   };
-  return (pnl / nqty);
+  return pnl > 0 ? Number((pnl / nqty).toFixed(2)) : 0;
 };
 
 export const calc_cost_basis_latest = (items: Items[]) => {
