@@ -16,7 +16,7 @@ const Chart = ({item}: Props) => {
 
     const [timeseries, setTimeseries] = useState<OSRS_GE_TIMESERIES[]>([]);
 
-    const [timeInterval, setTimeInterval] = useState("5m");
+    const [timeInterval, setTimeInterval] = useState("24h");
 
     const [error, setError] = useState(false);
 
