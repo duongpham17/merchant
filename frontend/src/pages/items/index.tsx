@@ -16,7 +16,7 @@ const ItemsIndex = () => {
         <Chart />
 
         <Transactions />
-
+        
       </div>
     </UseContextItems>
   )

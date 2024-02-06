@@ -14,6 +14,8 @@ import Line1 from '@components/line/Style1';
 import {Line, LineChart, XAxis, YAxis, ResponsiveContainer, Tooltip} from 'recharts';
 
 import Rsi from './Rsi';
+import Strength from './Strength';
+
 import Message from '@components/hover/Message';
 
 interface Props {
@@ -35,7 +37,7 @@ const CustomToolTips = ({ active, payload }: {active?: any, payload: any}) => {
       );
     }
     return null;
-  };
+};
 
 const Chart = ({item}: Props) => {
 
@@ -79,7 +81,6 @@ const Chart = ({item}: Props) => {
         <Label2 name="Could not find any data" color="red" />
        :
         <>
-
             <Flex style={{gap: "1rem"}}>
                 <Label2
                     name="High" 
@@ -139,9 +140,9 @@ const Chart = ({item}: Props) => {
                 </LineChart>
             </ResponsiveContainer>  
 
-            <Rsi 
-                timeseries={timeseries}
-            />
+            <Rsi timeseries={timeseries} />
+
+            <Strength timeseries={timeseries} />
         </>
         }
 

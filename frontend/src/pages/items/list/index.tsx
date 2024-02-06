@@ -87,11 +87,11 @@ const ListIndex = () => {
                     };
                 };
                 if (item.side === "sell") {
-                    const ge = getax(item.sell, item.quantity);
+                    // const ge = getax(item.sell, item.quantity);
                     itemsObject.data[itemId].nquantity -= item.quantity;
                     itemsObject.data[itemId].sell_total += item.sell * item.quantity;
                 } else {
-                    const ge = getax(highest_price, item.quantity);
+                    // const ge = getax(highest_price, item.quantity);
                     itemsObject.data[itemId].nquantity += item.quantity;
                     itemsObject.data[itemId].buy_total += item.buy * item.quantity;
                 };

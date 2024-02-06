@@ -22,7 +22,7 @@ export const Context = createContext<PropsTypes>({
 // Provider in your app
 export const Theme = ({children}: {children: ReactNode}) => {
 
-    const theme_default = {name: "light", background: "white"};
+    const theme_default = {name: "night", background: "black"};
 
     const theme_saved: ThemeTypes = localGet("theme");
 

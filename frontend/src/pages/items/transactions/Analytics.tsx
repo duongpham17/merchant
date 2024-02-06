@@ -3,7 +3,7 @@ import { Filtered } from '../Context';
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Alert from '@redux/actions/alert';
 import OSRS_GE_ITEM from '@data/osrs-ge';
-import { getax, gp, calc_cost_basis_latest, calc_n_quantity_latest, calc_profit_n_loss } from '@utils/osrs';
+import { getax, gp, calc_cost_basis_latest, calc_n_quantity_latest } from '@utils/osrs';
 import { firstcaps } from '@utils/functions';
 import Message from '@components/hover/Message';
 import Line from '@components/line/Style1';

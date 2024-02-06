@@ -4,9 +4,10 @@ import Osrs from '@redux/actions/osrs';
 import useOpen from '@hooks/useOpen';
 import useQuery from '@hooks/useQuery';
 
-import Chart from './Chart';
+import Prices from './Prices';
 import Rsi from './Rsi';
 import Time from './Time';
+import Strength from './Strength';
 
 const ChartIndex = () => {
 
@@ -43,11 +44,15 @@ const ChartIndex = () => {
         onOpenLocalTimeseries={onOpenLocalTimeseries}
       />
 
-      <Chart 
+      <Prices 
         timeseries={timeseries} 
       />
 
       <Rsi 
+        timeseries={timeseries} 
+      />
+
+      <Strength 
         timeseries={timeseries} 
       />
 

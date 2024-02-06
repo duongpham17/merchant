@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { Context } from 'themes';
 import { OSRS_GE_TIMESERIES } from '@redux/types/osrs';
 import { AreaChart, XAxis, YAxis, Area, Tooltip, ResponsiveContainer} from 'recharts';
@@ -86,7 +86,7 @@ const Rsi = ({timeseries}: Props) => {
 
     const prices: [number, number][] = timeseries.map(el => [el.timestamp, el.avgHighPrice]);
 
-    const rsi = calculateRSI(prices, 14);
+    const rsi = useMemo(() => calculateRSI(prices, 14), [prices]);
 
     const latest = rsi.length ? rsi.slice(-8).map(el => el.rsi) : [];
 

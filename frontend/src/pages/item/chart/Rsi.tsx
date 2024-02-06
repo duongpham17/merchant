@@ -7,7 +7,7 @@ import Label3 from '@components/labels/Style3';
 import { gp } from '@utils/osrs';
 
 interface Props {
-    timeseries: OSRS_GE_TIMESERIES[]
+  timeseries: OSRS_GE_TIMESERIES[]
 };
   
 const calculateRSI = (prices: [number, number][], period: number) => {
