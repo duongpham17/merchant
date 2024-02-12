@@ -39,7 +39,6 @@ const Pages = <T,>({data, onBack, max_pages, show=10, page, onPage, onNext}: Pro
     </div> : null 
 )
 
-
 const Style1 = <T,>({data, show=10, top=false, children}:Props<T>) => {
 
     const [page, setPage] = useState(1);

@@ -1,0 +1,35 @@
+.container{
+    margin: 0.5rem 0;
+    background-color: var(--clr-dark-light);
+    padding: 0.5rem;
+    border-radius: 5px;
+    width: 100%;
+    text-align: center;
+    td{
+        border-bottom: 1px solid var(--clr-dark-light);
+        padding: 1rem 0;
+        color: var(--clr-text-light);
+    }
+    .name{
+        text-align: left;
+    }
+    .profit{
+        color: var(--clr-green);
+    }
+    .loss{
+        color: var(--clr-red)
+    }
+    .image{     
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media (max-width: 500px){
+        td{
+            font-size: 0.8rem;
+        }
+}
+
+}

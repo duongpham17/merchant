@@ -11,11 +11,17 @@ const ItemsIndex = () => {
     <UseContextItems>
       <div className={styles.container}>
 
-        <List />
+        <div className={styles.list}>
+          <List />
+        </div>
 
-        <Chart />
+        <div className={styles.chart}>
+          <Chart />
+        </div>
 
-        <Transactions />
+        <div className={styles.transactions}>
+          <Transactions />
+        </div>
         
       </div>
     </UseContextItems>

@@ -42,20 +42,20 @@ const Chart = ({item}: Props) => {
     return (
         <>
 
-       { error
-       ? 
-        <Label2 name="Could not find any data" color="red" />
-       :
-        <>
-            <Time timeInterval={timeInterval} setTimeInterval={setTimeInterval}/>
+        { error
+        ? 
+            <Label2 name="Could not find any data" color="red" />
+        :
+            <>
+                <Time timeInterval={timeInterval} setTimeInterval={setTimeInterval}/>
 
-            <Prices timeseries={timeseries} />
+                <Prices timeseries={timeseries} />
 
-            <Rsi timeseries={timeseries} />
+                <Rsi timeseries={timeseries} />
 
-            <Strength timeseries={timeseries} />
-        </>
-        }
+                <Strength timeseries={timeseries} />
+            </>
+            }
 
         </>
     )

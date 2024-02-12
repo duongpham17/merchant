@@ -28,11 +28,11 @@ const ItemIndex = () => {
     <Container>
 
       <Label1 
-        name={ <img src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} alt="osrs" />}
+        name={ <img src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} width={50} alt="osrs" />}
         value={item.name}
       />
 
-      <Line color="lighty"/>
+      <Line color={undefined}/>
 
       <Chart
         item={item}

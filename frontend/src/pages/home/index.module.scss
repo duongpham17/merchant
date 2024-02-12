@@ -6,31 +6,40 @@
         background-color: var(--clr-dark-light);
         padding: 0.5rem;
         border-radius: 5px;
-        border: 1px solid transparent;
-        transition: ease-in-out 0.3s;
-
-        &:hover{
-            border-color: var(--clr-main);
-        }
     }
 
     .image{     
+        cursor: pointer;
         display: flex;
         align-items: center;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
+        justify-content: center;
+    }
 
-        img{
-            width: 30px;
-            height: 30px;
-            object-fit: contain;
-            margin-right: 1rem;
+    table{
+        width: 100%;
+        text-align: center;
+        td{
+            border-bottom: 1px solid var(--clr-dark-light);
+            padding: 1rem 0;
+            color: var(--clr-text-light);
         }
-        div{
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .name{
+            text-align: left;
+        }
+        .profit{
+            color: var(--clr-green);
+        }
+        .loss{
+            color: var(--clr-red)
         }
     }
+
+    @media (max-width: 500px){
+        table{
+            td{
+                font-size: 0.8rem;
+            }
+        }
+    }
+
 }

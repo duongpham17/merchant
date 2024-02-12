@@ -73,7 +73,15 @@ const Navbar = () => {
         </SlideIn>
       {isLoggedIn &&
         <>
-          <Message message='Items'>
+          <SlideIn 
+            width={350} 
+            iconOpen="Calculator"
+            icon={<Message message='Calculator'><button className={styles.button}><BiCalculator/></button> </Message>}
+          >
+            <CalculatorComp />
+          </SlideIn>
+
+          <Message message='Stocks'>
             <Link className={styles.button} to="/items"><FaSitemap/></Link>
           </Message>
 
@@ -84,13 +92,6 @@ const Navbar = () => {
             <CreateComp />
           </SlideIn>
           
-          <SlideIn 
-            width={350} 
-            iconOpen="Calculator"
-            icon={<Message message='Calculator'><button className={styles.button}><BiCalculator/></button> </Message>}
-          >
-            <CalculatorComp />
-          </SlideIn>
         </> 
         }
       </nav>

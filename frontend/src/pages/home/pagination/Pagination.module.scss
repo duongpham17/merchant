@@ -1,0 +1,18 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    button{
+        display: flex;
+        align-items: center;
+        background-color: var(--clr-light);
+        margin: 0.5rem 1rem;
+        padding: 0.5rem;
+        border-radius: 5px;
+
+        &:hover{
+            background-color: var(--clr-main);
+        }
+    }
+}
