@@ -128,7 +128,7 @@ const Transactions = ({data, prices}: Props) => {
                         <Flex>
                             <Label2 
                                 name="Price" 
-                                value={<Message side="left" message={`${item.price.toLocaleString()}`}>{gp(item.price)}</Message>}
+                                value={<Message side="left" message={`${item.price ? item.price.toLocaleString() : item.price}`}>{gp(item.price)}</Message>}
                             />
                             <Label2 
                                 name="Quantity" 

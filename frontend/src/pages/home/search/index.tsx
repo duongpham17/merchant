@@ -1,5 +1,5 @@
 import styles from './Search.module.scss';
-import react, {useContext} from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Context } from '../Context';

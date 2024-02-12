@@ -1,5 +1,3 @@
-import react from 'react';
-
 import UseContext from './Context';
 import Search from './search';
 import Margin from './margin';

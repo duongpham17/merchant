@@ -1,5 +1,5 @@
-import react, {useContext} from 'react';
-import { gp } from '@utils/osrs';
+import { useContext } from 'react';
+import { gp }  from '@utils/osrs';
 import { Context } from '../Context';
 
 import Flex from '@components/flex/Between';

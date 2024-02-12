@@ -1,6 +1,6 @@
 import styles from './Pagination.module.scss';
-import react, {useContext} from 'react';
-import {Context} from '../Context';
+import { useContext } from 'react';
+import { Context } from '../Context';
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md';
 
 const PaginationIndex = () => {

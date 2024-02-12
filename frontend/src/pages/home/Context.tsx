@@ -1,6 +1,5 @@
 import React, { createContext, useMemo, useState } from 'react';
 import { useAppSelector } from '@redux/hooks/useRedux';
-import { IItems } from '@redux/types/items';
 import { OSRS_GE_LATEST } from '@redux/types/osrs';
 import OsrsGeItems, {OSRS_GE_ITEM} from '@data/osrs-ge';
 import useForm from '@hooks/useForm';
