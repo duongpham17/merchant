@@ -50,33 +50,31 @@ export interface Items {
   [key: string]: any, 
   side: string, 
   quantity: number, 
-  sell: number, 
-  buy: number
+  price: number
 };
 
 export const calc_cost_basis = (index: number, items: Items[]) => {
   let [pnl, nqty] = [0, 0];
-  for(let x of items.slice(index)){
-    if(x.side === "sell") {
-      const _pnl = x.sell * x.quantity;
-      nqty -= x.quantity;
-      if(_pnl <= 0){
-        pnl += 0
-      } else {
-        pnl -= _pnl
-      }
+
+  for (let x of items.slice(index).reverse()) {
+    if(nqty === 0){
+      pnl = 0;
+      nqty = 0
     };
-    if(x.side === "buy") {
-      const _pnl = x.buy * x.quantity;
+    if (x.side === "sell") {
+      const PNL = x.price * x.quantity;
+      nqty -= x.quantity;
+      pnl -= PNL;
+    };
+    if (x.side === "buy") {
+      const PNL = x.price * x.quantity;
+      pnl += PNL
       nqty += x.quantity;
-      if(_pnl <= 0){
-        pnl += 0
-      } else {
-        pnl += _pnl
-      }
     };
   };
-  return pnl > 0 ? Number((pnl / nqty).toFixed(2)) : 0;
+  // Check if nqty is not zero before performing the division
+  const costBasis = nqty !== 0 ? Number((pnl / nqty).toFixed(2)) : 0;
+  return costBasis;
 };
 
 export const calc_cost_basis_latest = (items: Items[]) => {
@@ -106,9 +104,9 @@ export const calc_n_quantity_latest = (items: Items[]) => {
 
 export const calc_profit_n_loss = (item: Items, current_price: number) => {
   if(item.side === "sell"){
-    const ge = getax(item.sell, item.quantity);
-    const buy_total = item.buy * item.quantity;
-    const sell_total = item.quantity * item.sell;
+    const ge = getax(item.price, item.quantity);
+    const buy_total = item.price * item.quantity;
+    const sell_total = item.quantity * item.price;
     return {
       pnl_with_tax: ge.total_after_tax - buy_total,
       pnl_no_tax: sell_total - buy_total,
@@ -116,7 +114,7 @@ export const calc_profit_n_loss = (item: Items, current_price: number) => {
     };
   } else {
     const ge = getax(current_price, item.quantity);
-    const buy_total = item.buy * item.quantity;
+    const buy_total = item.price * item.quantity;
     const current_total = item.quantity * current_price;
     return {
       pnl_with_tax: ge.total_after_tax - buy_total,

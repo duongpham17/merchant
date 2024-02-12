@@ -18,10 +18,7 @@ const itemsSchema = new mongoose_1.Schema({
         enum: ["buy", "sell"],
         default: "buy"
     },
-    buy: {
-        type: Number,
-    },
-    sell: {
+    price: {
         type: Number
     },
     quantity: {

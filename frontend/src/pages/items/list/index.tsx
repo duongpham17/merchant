@@ -89,11 +89,11 @@ const ListIndex = () => {
                 if (item.side === "sell") {
                     // const ge = getax(item.sell, item.quantity);
                     itemsObject.data[itemId].nquantity -= item.quantity;
-                    itemsObject.data[itemId].sell_total += item.sell * item.quantity;
+                    itemsObject.data[itemId].sell_total += item.price * item.quantity;
                 } else {
                     // const ge = getax(highest_price, item.quantity);
                     itemsObject.data[itemId].nquantity += item.quantity;
-                    itemsObject.data[itemId].buy_total += item.buy * item.quantity;
+                    itemsObject.data[itemId].buy_total += item.price * item.quantity;
                 };
                 itemsObject.data[item.id].liquidation = getax(highest_price, itemsObject.data[item.id].nquantity).total_after_tax;
                 itemsObject.data[item.id].profit_n_loss = (itemsObject.data[item.id].sell_total + itemsObject.data[item.id].liquidation) - itemsObject.data[x.id].buy_total;

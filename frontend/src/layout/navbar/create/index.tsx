@@ -34,8 +34,7 @@ const CreateIndex = () => {
     side: "buy",
     id: id,
     quantity: 0,
-    buy: 0,
-    sell: 0,
+    price: 0,
   };
 
   const {values, onChange, onSubmit, onSetValue, errors, customErrors, setCustomErrors, onClear, loading} = useForm(initialState, callback, validation);
@@ -48,8 +47,7 @@ const CreateIndex = () => {
       ...values, 
       id: OSRSGrandExchange[index].id,
       icon: OSRSGrandExchange[index].icon,
-      sell: values.sell ? values.sell : 0,
-      buy: values.buy ? values.buy : 0,
+      price: values.price ? values.price : 0,
       quantity: values.quantity ? values.quantity : 0
     }));
     setCustomErrors({});
@@ -61,7 +59,7 @@ const CreateIndex = () => {
       const value = await navigator.clipboard.readText();
       const parsed = JSON.parse(value);
       if (typeof parsed === 'object' && parsed !== null) {
-          onSetValue({ buy: parsed.cost_basis, sell: parsed.average_cost });
+          onSetValue({ price: parsed.cost_basis });
       } else {
         console.error('Invalid clipboard data: Not a valid JSON object.');
       }
@@ -111,29 +109,15 @@ const CreateIndex = () => {
         onChange={onChange} 
       />
 
-      {values.side === "buy" &&
-        <Input 
-          type="number"
-          label1="Buy Price"
-          label2={gp(values.buy)}
-          name="buy"
-          placeholder='...'
-          value={values.buy || ""} 
-          onChange={onChange} 
-        />
-      }
-
-      {values.side === "sell" &&
-        <Input 
-          type="number"
-          label1="Sell Price"
-          label2={gp(values.sell)}
-          name="sell"
-          placeholder='...'
-          value={values.sell || ""} 
-          onChange={onChange} 
-        />
-      }
+      <Input 
+        type="number"
+        label1={values.side === "buy" ? `Buy Price` : "Sell Price"}
+        label2={gp(values.price) || ""}
+        name="price"
+        placeholder='...'
+        value={values.price || ""} 
+        onChange={onChange} 
+      />
 
       <Button
         type="submit"

@@ -125,39 +125,20 @@ const Transactions = ({data, prices}: Props) => {
 
                         <Line />
 
-                        {item.side === "buy" && 
-                            <Flex>
-                                <Label2 
-                                    name="Price" 
-                                    value={<Message side="left" message={`${item.buy.toLocaleString()}`}>{gp(item.buy)}</Message>}
-                                />
-                                <Label2 
-                                    name="Quantity" 
-                                    value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
-                                />
-                                <Label2 
-                                    name="Total" 
-                                    value={<Message side="left" message={`${(item.quantity * item.buy).toLocaleString()}`}>{gp(item.quantity * item.buy)}</Message>}
-                                />
-                            </Flex>
-                        }
-
-                        { item.side === "sell" &&
-                            <Flex>
-                                <Label2 
-                                    name="Price" 
-                                    value={<Message side="left" message={`${item.sell.toLocaleString()}`}>{gp(item.sell)}</Message>}
-                                />
-                                <Label2 
-                                    name="Quantity" 
-                                    value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
-                                />
-                                <Label2 
-                                    name="Total" 
-                                    value={<Message side="left" message={`${(item.quantity * item.sell).toLocaleString()}`}>{gp(item.quantity * item.sell)}</Message>}
-                                />
-                            </Flex>
-                        }
+                        <Flex>
+                            <Label2 
+                                name="Price" 
+                                value={<Message side="left" message={`${item.price.toLocaleString()}`}>{gp(item.price)}</Message>}
+                            />
+                            <Label2 
+                                name="Quantity" 
+                                value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
+                            />
+                            <Label2 
+                                name="Total" 
+                                value={<Message side="left" message={`${(item.quantity * item.price).toLocaleString()}`}>{gp(item.quantity * item.price)}</Message>}
+                            />
+                        </Flex>
 
                     </Container>
                     )

@@ -12,7 +12,7 @@ const check = (key: any, values: any) => key in values;
 interface Validation {
     name: string,
     quantity: number | string,
-    buy: number | string,
+    price: number | string,
 };
 
 const validations = (values: Validation) => {
@@ -34,9 +34,8 @@ const EditIndex = ({data}: {data: IItems}) => {
     async function callback(){
         await dispatch(Items.update({
             ...values,
-            sell: !values.sell ? 0 : values.sell,
+            price: !values.price ? 0 : values.price,
             quantity: !values.quantity ? 0 : values.quantity,
-            buy: !values.buy ? 0 : values.buy
         }));
     };
 
@@ -67,30 +66,16 @@ const EditIndex = ({data}: {data: IItems}) => {
                 onChange={onChange} 
             />
 
-            {values.side === "buy" &&
-                <Input 
-                    type="number"
-                    label1="Buy Price"
-                    label2={gp(values.buy) || ""}
-                    name="buy"
-                    placeholder='...'
-                    value={values.buy || ""} 
-                    onChange={onChange} 
-                />
-            }
-
-            {values.side === "sell" &&
-                <Input 
+            <Input 
                 type="number"
-                label1="Sell Price"
-                label2={gp(values.sell)}
-                name="sell"
+                label1={values.side === "buy" ? `Buy Price` : "Sell Price"}
+                label2={gp(values.price) || ""}
+                name="price"
                 placeholder='...'
-                value={values.sell || ""} 
+                value={values.price || ""} 
                 onChange={onChange} 
-                />
-            }
-
+            />
+        
             {edited && <Button type="submit" label1={"update"} loading={loading} color="blue" />}
         </form>
     )

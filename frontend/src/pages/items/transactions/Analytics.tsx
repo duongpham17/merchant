@@ -37,11 +37,11 @@ const Analytics = ({prices, data}: Props) => {
 
       for(let item of data.items){
         if(item.side === "sell"){
-          sell += item.quantity * item.sell;
+          sell += item.quantity * item.price;
           qty_sold += item.quantity;
         };
         if(item.side === "buy"){
-          buy += item.quantity * item.buy;
+          buy += item.quantity * item.price;
           qty_bought += item.quantity;
         };
       };
