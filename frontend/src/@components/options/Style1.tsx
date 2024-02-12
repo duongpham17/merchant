@@ -24,7 +24,7 @@ const Select = ({label, color, items, selected, onClick}: Props) => {
         <div className={`${styles.container} ${styles[color || "light"]}`} onClick={onPrevent}>
 
             <button className={styles.button} onClick={onPrevent}>
-                <p>{selected || items[0]}</p>
+                <p>{selected || "Sort"}</p>
                 <div>
                     {label && <span>{label}</span>}
                     <MdOutlineKeyboardArrowRight className={open ? styles.open : styles.closed}/>
