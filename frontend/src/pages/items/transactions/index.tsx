@@ -2,11 +2,10 @@ import { useContext } from 'react';
 import { Context } from '../Context';
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Item from '@redux/actions/items';
+
 import Button from '@components/buttons/Button';
 import Label1 from '@components/labels/Style1';
 import Container from '@components/containers/Style1';
-import useOpen from '@hooks/useOpen';
-import useQuery from '@hooks/useQuery';
 
 import Analytics from './Analytics';
 import Transactions from './Transactions';
@@ -15,17 +14,13 @@ const TransactionsIndex = () => {
 
   const dispatch = useAppDispatch()
 
-  const { filtered, latest } = useContext(Context);
-
-  const { openLocal } = useOpen({local: "ge-item"});
-
-  const { getQueryValue }  = useQuery()
-
-  const data = filtered.filter(item => item.id.toString() === (getQueryValue("id") || openLocal || ""))[0];
+  const { items, latest } = useContext(Context);
 
   const prices = {average: 0, highest: 0, lowest: 0};
 
-  if(!data){
+  const item = items ? items[0] : null;;
+
+  if(!item){
     return (
       <Container>
         <Label1 
@@ -37,9 +32,9 @@ const TransactionsIndex = () => {
   };
 
   try{
-    prices.average = (latest[data.id].high + latest[data.id].low) / 2;
-    prices.highest = latest[data.id].high;
-    prices.lowest  = latest[data.id].low;
+    prices.average = (latest[item.id].high + latest[item.id].low) / 2;
+    prices.highest = latest[item.id].high;
+    prices.lowest  = latest[item.id].low;
   } catch(_){
     return (
       <Container>
@@ -47,14 +42,12 @@ const TransactionsIndex = () => {
           color='red' 
           name="Invalid item, please delete"
         />
-        {data.items.map(el => 
-          <Button 
-            key={el._id} 
-            color="red" 
-            label1={`Delete ${el._id}`} 
-            onClick={() => dispatch(Item.remove(el._id))}
-          />  
-        )}
+        <Button 
+          key={item._id} 
+          color="red" 
+          label1={`Delete ${item._id}, ${item.name}`} 
+          onClick={() => dispatch(Item.remove(item._id))}
+        />  
       </Container>
     )
   };
@@ -62,15 +55,19 @@ const TransactionsIndex = () => {
   return (
     <Container style={{padding: "0.5rem 0"}}>
 
-      <Analytics 
-        prices={prices}
-        data={data}
-      />
+      {items &&
+        <>
+          <Analytics 
+            prices={prices}
+            data={items}
+          />
 
-      <Transactions
-        prices={prices}
-        data={data}
-      />
+          <Transactions
+            prices={prices}
+            data={items}
+          />
+        </>
+      }
 
     </Container>
   )

@@ -1,65 +1,68 @@
-import React, { createContext, useMemo } from 'react';
-import { useAppSelector } from '@redux/hooks/useRedux';
-import { IItems } from '@redux/types/items';
+import React, { createContext, useEffect } from 'react';
+import { useAppSelector, useAppDispatch } from '@redux/hooks/useRedux';
+import Items from '@redux/actions/items';
+import { IItems, UniqueItem } from '@redux/types/items';
 import { OSRS_GE_LATEST } from '@redux/types/osrs';
-
-export interface Filtered {
-    id: number;
-    icon: string,
-    name: string,
-    items: IItems[];
-};
+import { useLocation } from 'react-router-dom';
+import useOpen from '@hooks/useOpen';
+import useQuery from '@hooks/useQuery';
 
 export interface PropsTypes {
     items: IItems[] | null,
+    unique: UniqueItem[] | null,
     latest: OSRS_GE_LATEST[] | [],
-    filtered: Filtered[] | []
+    openLocal: any,
+    openLocalSaved: any,
+    onSelectItem: (id: string) => void
 };
 
 // for consuming in children components, initial return state
 export const Context = createContext<PropsTypes>({
     items: null,
     latest: [],
-    filtered: []
+    unique: null,
+    openLocal: null,
+    openLocalSaved: null,
+    onSelectItem: () => "",
 });
 
 const UseContextItems = ({children}: {children: React.ReactNode}) => {
 
-    const { items } = useAppSelector(state => state.items);
+    const location = useLocation();
+
+    const dispatch = useAppDispatch();
+
+    const { items, unique } = useAppSelector(state => state.items);
 
     const { latest } = useAppSelector(state => state.osrs);
 
-    const filtered = useMemo(() => {
-        const data: {
-            id: number;
-            icon: string,
-            name: string,
-            items: IItems[];
-        }[] = [];
-        if(items) {
-            for(let x of items){
-                const itemIndex = data.findIndex(el => el.id === x.id);
-                if(itemIndex === -1){
-                    data.push({
-                        id: x.id, 
-                        name: x.name, 
-                        icon: x.icon, 
-                        items: [x]
-                    });
-                } else {
-                    data[itemIndex].items.push(x);
-                };
-            };
-            return data;
-        } else {
-            return [];
-        };
-    }, [items]);
+    const { onOpenLocal: onOpenLocalSaved, openLocal: openLocalSaved } = useOpen({local: "ge-item-saved"});
+
+    const { onOpenLocal, openLocal } = useOpen({local: "ge-item"});
+
+    const { setQuery } = useQuery();
+
+    useEffect(() => {
+        const id = location.search.slice(4);
+        dispatch(Items.find(`id=${id}`));
+        dispatch(Items.unique());
+    }, [dispatch, location]);
+
+    const onSelectItem = (id: string) => {
+        onOpenLocal(id);
+        setQuery("id", id);
+        const saved: string[] = openLocalSaved.split(",");
+        const list = saved.length >= 4 ? `${id},${saved.slice(0, 3).join(",")}` : `${id},${saved.join(",")}`;
+        onOpenLocalSaved(list);
+    };
 
     const value = {
         items, 
         latest,
-        filtered
+        unique,
+        openLocal,
+        onSelectItem,
+        openLocalSaved
     };
 
     return (

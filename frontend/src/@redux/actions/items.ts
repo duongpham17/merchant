@@ -51,11 +51,24 @@ const remove = (id: string) => async (dispatch: Dispatch<ACTIONS>) => {
     }
 };
 
-const many = () => async (dispatch: Dispatch<ACTIONS>) => {
+const destroy = (id: string) => async (dispatch: Dispatch<ACTIONS>) => {
     try{
-        const res = await api.patch(`/items/many`);
+        await api.patch(`/items/destroy/${id}`);
         dispatch({
-            type: TYPES.ITEMS_MANY,
+            type: TYPES.ITEMS_DESTROY,
+            payload: id
+        });
+    } catch (error: any) {
+        console.log("Please reload")
+        console.log(error.response);
+    }
+};
+
+const analysis = () => async (dispatch: Dispatch<ACTIONS>) => {
+    try{
+        const res = await api.get(`/items/analysis`);
+        dispatch({
+            type: TYPES.ITEMS_ANALYSIS,
             payload: res.data.data
         });
     } catch (error: any) {
@@ -64,12 +77,28 @@ const many = () => async (dispatch: Dispatch<ACTIONS>) => {
     }
 };
 
+const unique = () => async (dispatch: Dispatch<ACTIONS>) => {
+    try{
+        const res = await api.get(`/items/unique`);
+        dispatch({
+            type: TYPES.ITEMS_UNIQUE,
+            payload: res.data.data
+        });
+    } catch (error: any) {
+        console.log("Please reload")
+        console.log(error.response);
+    }
+};
+
+
 const Orders = {
     find,
     create, 
     update,
     remove,
-    many
+    destroy,
+    analysis,
+    unique
 };
 
 export default Orders;

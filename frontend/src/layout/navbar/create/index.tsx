@@ -22,7 +22,7 @@ const CreateIndex = () => {
 
   const dispatch = useAppDispatch();
 
-  const {getQueryValue} = useQuery();
+  const {getQueryValue, setQuery} = useQuery();
 
   const id = Number(getQueryValue("id"));
 
@@ -50,6 +50,7 @@ const CreateIndex = () => {
       price: values.price ? values.price : 0,
       quantity: values.quantity ? values.quantity : 0
     }));
+    setQuery("id", values.id);
     setCustomErrors({});
     onClear();
   };

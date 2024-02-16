@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Item from '@redux/actions/items';
-import { Filtered } from '../Context';
+import { IItems } from '@redux/types/items';
 import { gp, calc_cost_basis, calc_n_quantity } from '@utils/osrs';
 import { UK } from '@utils/time';
 import Button from '@components/buttons/Button';
@@ -25,7 +25,7 @@ interface Props {
       average: number,
       lowest: number
     },
-    data: Filtered
+    data: IItems[]
 }
 
 const Transactions = ({data, prices}: Props) => {
@@ -38,7 +38,7 @@ const Transactions = ({data, prices}: Props) => {
 
     const FitleredByDate = useMemo(() => {
         const dates = [];
-        for(let x of data.items){
+        for(let x of data){
             const itemDate = new Date(Number(x.timestamp)).toDateString();
             const dateIndex = dates.findIndex(el => el.date === itemDate);
             if(dateIndex === -1){
@@ -53,7 +53,7 @@ const Transactions = ({data, prices}: Props) => {
         return dates;
     }, [data]);
 
-    const ItemsList = data.items.map(el => el).flat();
+    const ItemsList = data.map(el => el).flat();
 
     const findIndex = (id: string) => ItemsList.findIndex((item) => item._id ===  id); 
 
@@ -62,9 +62,8 @@ const Transactions = ({data, prices}: Props) => {
             {(dated) => 
                 <Observer key={dated.date}>
 
-                    
                     <Label1 
-                        name={dated.date === new Date().toDateString() ? `Today` : dated.date} 
+                        name={dated.date === new Date().toDateString() ? `Today` : `${dated.date.split(" ")[0]}, ${dated.date.split(" ")[1]}, ${dated.date.split(" ").slice(2).join(" ")}`} 
                         value={`[ ${dated.items.length} ]`} 
                         color='light'
                         valueColor='light'
@@ -74,79 +73,77 @@ const Transactions = ({data, prices}: Props) => {
                     <Line color="main" />        
 
                     { dated.items.map((item) => 
-                     <Container background="dark" key={item._id}>
-                        
-                        <Flex>
-                            <Label1
-                                name={
-                                    <Flex>
-                                        <Label3 
-                                            color={item.side === "buy" ? "green" : "red"} 
-                                            name="" 
-                                            value={item.side.toUpperCase()} 
-                                        />
-                                        <Message message={`Cost_Basis ${calc_cost_basis(findIndex(item._id), ItemsList).toLocaleString()}`}>
-                                            <Label1 
-                                                color='light' 
-                                                name={`[ ${gp(calc_cost_basis(findIndex(item._id), ItemsList))} ]`} 
-                                                size="0.8rem"
+                        <Container background="dark" key={item._id}>
+                            
+                            <Flex>
+                                <Label1
+                                    name={
+                                        <Flex>
+                                            <Label3 
+                                                color={item.side === "buy" ? "green" : "red"} 
+                                                name="" 
+                                                value={item.side.toUpperCase()} 
                                             />
-                                        </Message>
-                                        <Message message={`N_Quantity ${calc_n_quantity(findIndex(item._id), ItemsList).toLocaleString()}`}>
+                                            <Message message={`Cost_Basis ${calc_cost_basis(findIndex(item._id), ItemsList).toLocaleString()}`}>
+                                                <Label1 
+                                                    color='light' 
+                                                    name={`[ ${gp(calc_cost_basis(findIndex(item._id), ItemsList))} ]`} 
+                                                    size="0.8rem"
+                                                />
+                                            </Message>
+                                            <Message message={`N_Quantity ${calc_n_quantity(findIndex(item._id), ItemsList).toLocaleString()}`}>
+                                                <Label1 
+                                                    color='light' 
+                                                    name={`[ ${gp(calc_n_quantity(findIndex(item._id), ItemsList))} ]`} 
+                                                    size="0.8rem"
+                                                />
+                                            </Message>
+                                        </Flex>
+                                    }
+                                />
+                                <SlideIn 
+                                    width={350} 
+                                    icon={
+                                        <Flex>
                                             <Label1 
-                                                color='light' 
-                                                name={`[ ${gp(calc_n_quantity(findIndex(item._id), ItemsList))} ]`} 
-                                                size="0.8rem"
+                                                color="light"
+                                                size="0.8rem" 
+                                                name={`${UK(new Date(Number(item.timestamp))).split(",")[1]}`} 
+                                                style={{"width": "80px"}} 
                                             />
-                                        </Message>
-                                    </Flex>
-                                }
-                            />
-                            <SlideIn 
-                                width={350} 
-                                icon={
-                                    <Flex>
-                                        <Label1 
-                                            color="light"
-                                            size="0.8rem" 
-                                            name={`${UK(new Date(Number(item.timestamp))).split(",")[1]}`} 
-                                            style={{"width": "80px"}} 
-                                        />
-                                        <MdKeyboardArrowRight/>
-                                    </Flex>
-                                } 
-                                iconOpen={<Button onClick={() => onDelete(item._id)} label1="Delete" color="red" style={{"width": "100%"}}/>}
-                            >
-                            <Edit 
-                                data={item} 
-                            />
-                            </SlideIn>
-                        </Flex>
+                                            <MdKeyboardArrowRight/>
+                                        </Flex>
+                                    } 
+                                    iconOpen={<Button onClick={() => onDelete(item._id)} label1="Delete" color="red" style={{"width": "100%"}}/>}
+                                >
+                                <Edit 
+                                    data={item} 
+                                />
+                                </SlideIn>
+                            </Flex>
 
-                        <Line />
+                            <Line />
 
-                        <Flex>
-                            <Label2 
-                                name="Price" 
-                                value={<Message side="left" message={`${item.price ? item.price.toLocaleString() : item.price}`}>{gp(item.price)}</Message>}
-                            />
-                            <Label2 
-                                name="Quantity" 
-                                value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
-                            />
-                            <Label2 
-                                name="Total" 
-                                value={<Message side="left" message={`${(item.quantity * item.price).toLocaleString()}`}>{gp(item.quantity * item.price)}</Message>}
-                            />
-                        </Flex>
+                            <Flex>
+                                <Label2 
+                                    name="Price" 
+                                    value={<Message side="left" message={`${item.price ? item.price.toLocaleString() : item.price}`}>{gp(item.price)}</Message>}
+                                />
+                                <Label2 
+                                    name="Quantity" 
+                                    value={<Message side="left" message={`${item.quantity.toLocaleString()}`}>{gp(item.quantity)}</Message>}
+                                />
+                                <Label2 
+                                    name="Total" 
+                                    value={<Message side="left" message={`${(item.quantity * item.price).toLocaleString()}`}>{gp(item.quantity * item.price)}</Message>}
+                                />
+                            </Flex>
 
-                    </Container>
+                        </Container>
                     )
-                        
-                    }
-                
+                }
             </Observer>
-            }
+        }
     </Pagination>
   )
 }

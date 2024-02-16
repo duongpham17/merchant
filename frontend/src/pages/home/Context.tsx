@@ -40,7 +40,7 @@ const UseContextItems = ({children}: {children: React.ReactNode}) => {
 
     const getLocalMargins = localStorage.getItem("ge-item-sort-margin");
   
-    const localMarginValues = getLocalMargins ? getLocalMargins.split(",") : [0, 0];
+    const localMarginValues = getLocalMargins ? getLocalMargins.split(",") : [0, 100000];
   
     const initial_margin_values = {
       lowest: Number(localMarginValues[0]),

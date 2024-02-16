@@ -2,6 +2,8 @@ import { ACTIONS, TYPES, INITIALSTATE } from '@redux/types/items';
 
 const initialState: INITIALSTATE = {
     items: null,
+    unique: null,
+    analysis: null,
 };
 
 export const reducer = (state = initialState, action: ACTIONS) => {
@@ -16,7 +18,8 @@ export const reducer = (state = initialState, action: ACTIONS) => {
         case TYPES.ITEMS_CREATE:
             return{
                 ...state,
-                items: state.items ? [payload, ...state.items] : [payload]
+                items: state.items ? [payload, ...state.items] : [payload],
+                unique: state.unique ? [{id:payload.id, icon: payload.icon}, ...state.unique] : [{id: payload.id, icon: payload.icon}],
             };
         case TYPES.ITEMS_UPDATE:
             return{
@@ -27,6 +30,22 @@ export const reducer = (state = initialState, action: ACTIONS) => {
             return{
                 ...state,
                 items: state.items ? state.items.filter(el => el._id !== payload._id) : []
+            };
+        case TYPES.ITEMS_DESTROY:
+            return {
+                ...state,
+                items: state.items ? state.items.filter(el => el.id.toString() !== payload) : [],
+                unique: state.unique ? state.unique.filter(el => el.id.toString() !== payload) : [] 
+            };
+        case TYPES.ITEMS_ANALYSIS:
+            return{
+                ...state,
+                analysis: payload
+            };
+        case TYPES.ITEMS_UNIQUE:
+            return{
+                ...state,
+                unique: payload
             };
         default: 
             return state;
