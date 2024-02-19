@@ -55,7 +55,7 @@ const UseContextItems = ({children}: {children: React.ReactNode}) => {
     const onSelectItem = (id: number, icon: string) => {
         if(!quickList) return;
 
-        const already_selected = id === quickList[0].id;
+        const already_selected = id === openLocal;
         if(already_selected) return;
 
         const selected = {id, icon};
@@ -69,7 +69,7 @@ const UseContextItems = ({children}: {children: React.ReactNode}) => {
         const is_saved = quickList.map(el => el.id).includes(id);
         const new_saved = is_saved ? [selected, ...quickList.filter(el => el.id !== id)] : [selected];
         setQuickList(new_saved);
-        return localStorage.setItem("ge-item-quick-saved-list", JSON.stringify(new_saved.slice(0, 15)));
+        return localStorage.setItem("ge-item-quick-saved-list", JSON.stringify(new_saved));
     };
 
     const value = {
