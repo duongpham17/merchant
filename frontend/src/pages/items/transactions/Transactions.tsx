@@ -4,6 +4,7 @@ import Item from '@redux/actions/items';
 import { IItems } from '@redux/types/items';
 import { gp, calc_cost_basis, calc_n_quantity } from '@utils/osrs';
 import { UK } from '@utils/time';
+
 import Button from '@components/buttons/Button';
 import Message from '@components/hover/Message';
 import Line from '@components/line/Style1';
@@ -15,9 +16,12 @@ import Flex from '@components/flex/Between';
 import SlideIn from '@components/slidein/Style1';
 import Pagination from '@components/pagination/Style1';
 import Observer from '@components/observer/Observer';
+
 import { MdKeyboardArrowRight } from 'react-icons/md';
+import { BiCalculator } from 'react-icons/bi';
 
 import Edit from './Edit';
+import Calculator from './Calculator';
 
 interface Props {
     prices: {
@@ -108,6 +112,25 @@ const Transactions = ({data, prices}: Props) => {
                                             <Label1 
                                                 color="light"
                                                 size="0.8rem" 
+                                                name={""} 
+                                                style={{"width": "80px"}} 
+                                            />
+                                            <BiCalculator/>
+                                        </Flex>
+                                    } 
+                                    iconOpen={<Button onClick={() => onDelete(item._id)} label1="Delete" color="red" style={{"width": "100%"}}/>}
+                                >
+                                    <Calculator 
+                                        data={item} 
+                                    />
+                                </SlideIn>
+                                <SlideIn 
+                                    width={350} 
+                                    icon={
+                                        <Flex>
+                                            <Label1 
+                                                color="light"
+                                                size="0.8rem" 
                                                 name={`${UK(new Date(Number(item.timestamp))).split(",")[1]}`} 
                                                 style={{"width": "80px"}} 
                                             />
@@ -116,9 +139,9 @@ const Transactions = ({data, prices}: Props) => {
                                     } 
                                     iconOpen={<Button onClick={() => onDelete(item._id)} label1="Delete" color="red" style={{"width": "100%"}}/>}
                                 >
-                                <Edit 
-                                    data={item} 
-                                />
+                                    <Edit 
+                                        data={item} 
+                                    />
                                 </SlideIn>
                             </Flex>
 

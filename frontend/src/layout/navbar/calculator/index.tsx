@@ -1,13 +1,18 @@
 import { useMemo } from 'react';
-import {getax, gp} from '@utils/osrs'; 
-
+import { getax, gp } from '@utils/osrs'; 
+import { useAppSelector } from '@redux/hooks/useRedux';
 import useForm from '@hooks/useForm';
+
 import Input from '@components/inputs/Input';
 import Label from '@components/labels/Style1';
 import Choice from '@components/inputs/Choice';
 import Line from '@components/line/Style1';
 
 const IndexCalc = () => {
+
+    const {latest} = useAppSelector(state => state.osrs);
+
+    const {items} = useAppSelector(state => state.items);
 
     const initialState = {
         side: "buy",
@@ -56,6 +61,13 @@ const IndexCalc = () => {
 
     return (
         <form onSubmit={onSubmit}>
+
+            <Line />
+
+            {items && <Label name={items[0].name} value={gp(latest[items[0].id].high)} /> }
+
+            <Line />
+
             <Choice 
                 value={values.side} 
                 items={["buy", "sell"]} 
