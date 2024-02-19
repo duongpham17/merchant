@@ -10,7 +10,7 @@ import Anaylsis from './Anaylsis';
 
 const ListIndex = () => {
 
-    const {unique, openLocalSaved, openLocal,onSelectItem} = useContext(Context);
+    const {unique, openLocalSaved, openLocal, onSelectItem} = useContext(Context);
 
     const sortedItems = useMemo(() => {
         if(!unique) return [];

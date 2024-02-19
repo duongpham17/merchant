@@ -19,7 +19,6 @@ export const reducer = (state = initialState, action: ACTIONS) => {
             return{
                 ...state,
                 items: state.items ? [payload, ...state.items] : [payload],
-                unique: state.unique ? [{id:payload.id, icon: payload.icon}, ...state.unique] : [{id: payload.id, icon: payload.icon}],
             };
         case TYPES.ITEMS_UPDATE:
             return{
