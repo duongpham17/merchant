@@ -91,7 +91,7 @@ const Analytics = ({prices, data}: Props) => {
     };
   
     return (
-        <Container style={{padding: "0.5rem 0"}} onClick={onCopy}>
+        <Container style={{padding: "0.5rem 0"}}>
 
             <Label3 
               name={firstcaps(item.name)} 
@@ -113,11 +113,11 @@ const Analytics = ({prices, data}: Props) => {
               <Cover>  
                 <Loading size={100} />
               </Cover>
-            }     
+            }    
 
-            <Line />
-
-            <Flex>
+            <div onClick={onCopy}>
+              <Line />
+              <Flex>
                 <Label2
                   name="Cost Basis" 
                   value={<Message side="left" message={`${latest_analytics.cost_basis.toLocaleString()}`}>{gp(latest_analytics.cost_basis)}</Message>} 
@@ -130,11 +130,11 @@ const Analytics = ({prices, data}: Props) => {
                   name="Sell Total" 
                   value={<Message side="left" message={`${(total.sell).toLocaleString()}`}>{gp(total.sell)}</Message>}
                 />
-            </Flex>
+              </Flex>
 
-            <Line />
+              <Line />
 
-            <Flex>
+              <Flex>
                 <Label2
                   name="N Qty" 
                   value={<Message side="left" message={`${latest_analytics.n_quantity.toLocaleString()}`}>{gp(latest_analytics.n_quantity)}</Message>}
@@ -147,11 +147,11 @@ const Analytics = ({prices, data}: Props) => {
                   name={"Sell Qty"}
                   value={<Message side="left" message={`${total.qty_sold.toLocaleString()}`}>{gp(total.qty_sold)}</Message>}
                 />
-            </Flex>
+              </Flex>
 
-            <Line />
+              <Line />
 
-            <Flex>
+              <Flex>
                 <Label2
                   name="Transactions" 
                   value={data.length}
@@ -165,9 +165,10 @@ const Analytics = ({prices, data}: Props) => {
                   name={"PNL"}
                   value={<Message side="left" message={`Profit/Loss`}>{gp(total.profit_n_loss)}</Message>}
                 />
-            </Flex>
-
-            <Line />
+              </Flex>
+              
+              <Line />
+            </div>
 
         </Container>
     )

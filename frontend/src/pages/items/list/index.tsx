@@ -16,7 +16,7 @@ const ListIndex = () => {
         <div className={styles.container}>
 
             <div className={styles.ids}>
-                {quickList.slice(0, 15).map(el => 
+                {quickList?.map(el => 
                     <button className={`${styles.button} ${el.id.toString() === openLocal.toString() ? styles.selected : ""}`} key={el.id} onClick={() => onSelectItem(el.id, el.icon)}>
                         <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
                     </button>

@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@redux/hooks/useRedux';
 import Items from '@redux/actions/items';
-import { IItems, UniqueItem } from '@redux/types/items';
+import { IItems } from '@redux/types/items';
 import { OSRS_GE_LATEST } from '@redux/types/osrs';
 import { useLocation } from 'react-router-dom';
 import useOpen from '@hooks/useOpen';
@@ -9,7 +9,6 @@ import useQuery from '@hooks/useQuery';
 
 export interface PropsTypes {
     items: IItems[] | null,
-    unique: UniqueItem[] | null,
     latest: OSRS_GE_LATEST[] | [],
     quickList: {id: number, icon: string}[] | [],
     openLocal: string,
@@ -20,7 +19,6 @@ export interface PropsTypes {
 export const Context = createContext<PropsTypes>({
     items: null,
     latest: [],
-    unique: null,
     openLocal: "",
     quickList: [],
     onSelectItem: (id, icon) => "",
@@ -40,9 +38,13 @@ const UseContextItems = ({children}: {children: React.ReactNode}) => {
 
     const { setQuery } = useQuery();
 
-    const savedDataString = localStorage.getItem("ge-item-saved");
-    const initialQuickList = savedDataString ? JSON.parse(savedDataString) : [];
-    const [quickList, setQuickList] = useState(initialQuickList);
+    const [ quickList, setQuickList ] = useState(unique || []);
+
+    useEffect(() => {
+        const savedDataString = localStorage.getItem("ge-item-quick-saved-list");
+        const initialQuickList: {id: number, icon: string}[] = savedDataString ? JSON.parse(savedDataString) : unique;
+        setQuickList(initialQuickList);
+    }, [unique]);
 
     useEffect(() => {
         const id = location.search.slice(4);
@@ -51,6 +53,8 @@ const UseContextItems = ({children}: {children: React.ReactNode}) => {
     }, [dispatch, location]);
 
     const onSelectItem = (id: number, icon: string) => {
+        if(!quickList) return;
+
         const already_selected = id === quickList[0].id;
         if(already_selected) return;
 
@@ -59,20 +63,18 @@ const UseContextItems = ({children}: {children: React.ReactNode}) => {
         onOpenLocal(id);
         if(!quickList){
             setQuickList([{id, icon}]);
-            return localStorage.setItem("ge-item-saved", JSON.stringify([selected]))
+            return localStorage.setItem("ge-item-quick-saved-list", JSON.stringify([selected]))
         };
 
-        const saved: {id: number, icon: string}[] = !quickList ? unique : quickList;
-        const is_saved = saved.map(el => el.id).includes(id);
-        const new_saved = is_saved ? [selected, ...saved.filter(el => el.id !== id)] : [selected];
+        const is_saved = quickList.map(el => el.id).includes(id);
+        const new_saved = is_saved ? [selected, ...quickList.filter(el => el.id !== id)] : [selected];
         setQuickList(new_saved);
-        return localStorage.setItem("ge-item-saved", JSON.stringify(new_saved));
+        return localStorage.setItem("ge-item-quick-saved-list", JSON.stringify(new_saved.slice(0, 15)));
     };
 
     const value = {
         items, 
         latest,
-        unique,
         quickList,
         openLocal,
         onSelectItem,
