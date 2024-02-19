@@ -66,7 +66,7 @@ const destroy = (id: string) => async (dispatch: Dispatch<ACTIONS>) => {
 
 const analysis = () => async (dispatch: Dispatch<ACTIONS>) => {
     try{
-        const res = await api.get(`/items/analysis`);
+        const res = await api.get(`/items/data/analysis`);
         dispatch({
             type: TYPES.ITEMS_ANALYSIS,
             payload: res.data.data
@@ -79,7 +79,7 @@ const analysis = () => async (dispatch: Dispatch<ACTIONS>) => {
 
 const unique = () => async (dispatch: Dispatch<ACTIONS>) => {
     try{
-        const res = await api.get(`/items/unique`);
+        const res = await api.get(`/items/data/unique`);
         dispatch({
             type: TYPES.ITEMS_UNIQUE,
             payload: res.data.data

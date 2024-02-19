@@ -90,20 +90,29 @@ export const analysis = asyncBlock(async (req: InjectUserToRequest, res: Respons
 
 export const unique = asyncBlock(async (req: InjectUserToRequest, res: Response, next: NextFunction) => {
     
-    const items = await Items.find({user: req.user._id}).sort({timestamp: -1});
+    const items = await Items.aggregate([
+        {
+          $match: { user: req.user._id }
+        },
+        {
+          $group: {
+            _id: "$id",
+            icon: { $first: "$icon" } // Assuming "icon" is a field in your documents
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            id: "$_id",
+            icon: 1
+          }
+        }
+    ]);
 
     if(!items) return next(new appError('cannot find any items', 401));
 
-    const unique_item: { id: number; icon: string }[] = [];
-
-    for (const x of items) {
-      const exist = unique_item.some((item) => item.id === x.id && item.icon === x.icon);
-      if (exist) continue;
-      unique_item.push({ id: x.id, icon: x.icon });
-    };
-
     res.status(200).json({
         status: "success",
-        data: unique_item
+        data: items
     });
 });

@@ -68,19 +68,28 @@ exports.analysis = (0, helper_1.asyncBlock)(async (req, res, next) => {
     });
 });
 exports.unique = (0, helper_1.asyncBlock)(async (req, res, next) => {
-    const items = await items_1.default.find({ user: req.user._id }).sort({ timestamp: -1 });
+    const items = await items_1.default.aggregate([
+        {
+            $match: { user: req.user._id }
+        },
+        {
+            $group: {
+                _id: "$id",
+                icon: { $first: "$icon" } // Assuming "icon" is a field in your documents
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                id: "$_id",
+                icon: 1
+            }
+        }
+    ]);
     if (!items)
         return next(new helper_1.appError('cannot find any items', 401));
-    const unique_item = [];
-    for (const x of items) {
-        const exist = unique_item.some((item) => item.id === x.id && item.icon === x.icon);
-        if (exist)
-            continue;
-        unique_item.push({ id: x.id, icon: x.icon });
-    }
-    ;
     res.status(200).json({
         status: "success",
-        data: unique_item
+        data: items
     });
 });
