@@ -15,9 +15,9 @@ const useOpen = <T>({initialState, local}: Props<T>) => {
 
     const local_value = local ? localStorage.getItem(local) : "";
     
-    const local_value_parsaed = local_value ? JSON.parse(local_value) : "";
+    const local_value_parsed = local_value ? JSON.parse(local_value) : "";
 
-    const [openLocal, setOpenLocal] = useState<any>(local_value_parsaed);
+    const [openLocal, setOpenLocal] = useState<any>(local_value_parsed);
 
     const onOpen = () => setOpen(!open);
 
@@ -40,12 +40,12 @@ const useOpen = <T>({initialState, local}: Props<T>) => {
         setOpenItems([]);
     };
 
-    const onOpenLocal = (value: string, clear=true) => {
+    const onOpenLocal = (value: any, clear=true) => {
         if(!local) return;
         const local_value = local ? localStorage.getItem(local) : "";
-        const local_value_parsaed = local_value ? JSON.parse(local_value) : "";
+        const local_value_parsed = local_value ? JSON.parse(local_value) : "";
 
-        if(value === local_value_parsaed && clear) {
+        if(value === local_value_parsed && clear) {
             localStorage.setItem(local, "");
             setOpenLocal("");
         } else {

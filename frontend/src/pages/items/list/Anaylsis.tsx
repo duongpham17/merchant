@@ -182,7 +182,7 @@ const Anaylsis = () => {
 
         {openLocalQuick === "quick" ?
             data.map(el => 
-                <button key={el.id} onClick={() => onSelectItem(el.id.toString())} className={styles.element}>
+                <button key={el.id} onClick={() => onSelectItem(el.id, el.icon)} className={styles.element}>
 
                     <div className={styles.image}>
                         <p>{firstcaps(el.name)}</p>
@@ -193,7 +193,7 @@ const Anaylsis = () => {
             )
         :
             data.map(el => 
-                <button key={el.id} onClick={() => onSelectItem(el.id.toString())} className={styles.element}>
+                <button key={el.id} onClick={() => onSelectItem(el.id, el.icon)} className={styles.element}>
 
                     <div className={styles.image}>
                         <p>{firstcaps(el.name)}</p>

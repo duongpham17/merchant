@@ -1,5 +1,5 @@
 import styles from './List.module.scss';
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import { Context } from '../Context';
 import { firstcaps } from '@utils/functions';
 import { MdOutlineUnfoldMore } from 'react-icons/md';
@@ -10,23 +10,14 @@ import Anaylsis from './Anaylsis';
 
 const ListIndex = () => {
 
-    const {unique, openLocalSaved, openLocal, onSelectItem} = useContext(Context);
-
-    const sortedItems = useMemo(() => {
-        if(!unique) return [];
-        const saved: string[] = openLocalSaved.split(",");
-        const removed = unique.filter(el => !saved.includes(el.toString()));
-        const find = unique.filter(el => saved.includes(el.toString()));
-        const newest = [...find, ...removed];
-        return newest;
-    }, [unique, openLocalSaved]);
+    const {openLocal, onSelectItem, quickList} = useContext(Context);
 
     return (
         <div className={styles.container}>
 
             <div className={styles.ids}>
-                {sortedItems.map(el => 
-                    <button className={`${styles.button} ${el.id.toString() === openLocal.toString() ? styles.selected : ""}`} key={el.id} onClick={() => onSelectItem(el.id.toString())}>
+                {quickList.slice(0, 15).map(el => 
+                    <button className={`${styles.button} ${el.id.toString() === openLocal.toString() ? styles.selected : ""}`} key={el.id} onClick={() => onSelectItem(el.id, el.icon)}>
                         <img src={`https://oldschool.runescape.wiki/images/${firstcaps(el.icon.replaceAll(" ", "_"))}`} alt="osrs"/>
                     </button>
                 )}

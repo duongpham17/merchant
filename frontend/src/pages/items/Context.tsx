@@ -1,4 +1,4 @@
-import React, { createContext, useEffect } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@redux/hooks/useRedux';
 import Items from '@redux/actions/items';
 import { IItems, UniqueItem } from '@redux/types/items';
@@ -11,9 +11,9 @@ export interface PropsTypes {
     items: IItems[] | null,
     unique: UniqueItem[] | null,
     latest: OSRS_GE_LATEST[] | [],
-    openLocal: any,
-    openLocalSaved: any,
-    onSelectItem: (id: string) => void
+    quickList: {id: number, icon: string}[] | [],
+    openLocal: string,
+    onSelectItem: (id: number, icon: string) => void
 };
 
 // for consuming in children components, initial return state
@@ -21,9 +21,9 @@ export const Context = createContext<PropsTypes>({
     items: null,
     latest: [],
     unique: null,
-    openLocal: null,
-    openLocalSaved: null,
-    onSelectItem: () => "",
+    openLocal: "",
+    quickList: [],
+    onSelectItem: (id, icon) => "",
 });
 
 const UseContextItems = ({children}: {children: React.ReactNode}) => {
@@ -36,11 +36,13 @@ const UseContextItems = ({children}: {children: React.ReactNode}) => {
 
     const { latest } = useAppSelector(state => state.osrs);
 
-    const { onOpenLocal: onOpenLocalSaved, openLocal: openLocalSaved } = useOpen({local: "ge-item-saved"});
-
     const { onOpenLocal, openLocal } = useOpen({local: "ge-item"});
 
     const { setQuery } = useQuery();
+
+    const savedDataString = localStorage.getItem("ge-item-saved");
+    const initialQuickList = savedDataString ? JSON.parse(savedDataString) : [];
+    const [quickList, setQuickList] = useState(initialQuickList);
 
     useEffect(() => {
         const id = location.search.slice(4);
@@ -48,21 +50,32 @@ const UseContextItems = ({children}: {children: React.ReactNode}) => {
         dispatch(Items.unique());
     }, [dispatch, location]);
 
-    const onSelectItem = (id: string) => {
-        onOpenLocal(id);
+    const onSelectItem = (id: number, icon: string) => {
+        const already_selected = id === quickList[0].id;
+        if(already_selected) return;
+
+        const selected = {id, icon};
         setQuery("id", id);
-        const saved: string[] = openLocalSaved.split(",");
-        const list = saved.length >= 4 ? `${id},${saved.slice(0, 3).join(",")}` : `${id},${saved.join(",")}`;
-        onOpenLocalSaved(list);
+        onOpenLocal(id);
+        if(!quickList){
+            setQuickList([{id, icon}]);
+            return localStorage.setItem("ge-item-saved", JSON.stringify([selected]))
+        };
+
+        const saved: {id: number, icon: string}[] = !quickList ? unique : quickList;
+        const is_saved = saved.map(el => el.id).includes(id);
+        const new_saved = is_saved ? [selected, ...saved.filter(el => el.id !== id)] : [selected];
+        setQuickList(new_saved);
+        return localStorage.setItem("ge-item-saved", JSON.stringify(new_saved));
     };
 
     const value = {
         items, 
         latest,
         unique,
+        quickList,
         openLocal,
         onSelectItem,
-        openLocalSaved
     };
 
     return (
