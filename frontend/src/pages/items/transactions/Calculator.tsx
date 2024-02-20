@@ -68,18 +68,23 @@ const IndexCalc = ({data, history, setHistory}: Props) => {
     }, [values]);
 
     const calc_history = useMemo(() => {
+        let data = [];
         let [total, quantity] = [0, 0]
 
         for(let x of history){
-            total+=x.price*x.quantity;
-            quantity+=x.quantity;
+            if(x.side === values.side){
+                data.push(x);
+                total+=x.price*x.quantity;
+                quantity+=x.quantity;
+            };
         };
 
         return {
+            data,
             total,
             quantity,
         };
-    }, [history]);
+    }, [history, values.side]);
 
     const onDeleteHistory = (id: string) => {
         setHistory(history => history.filter(el => el._id !== id));
@@ -204,10 +209,15 @@ const IndexCalc = ({data, history, setHistory}: Props) => {
             <div>
                 <Label 
                     name={`History`} 
-                    value={history.filter(el => el.side === data.side).length} 
+                    value={calc_history.data.length} 
                 />
                 <Container background='light'>
                     <Flex>
+                        <Label2
+                            color="light" 
+                            name={`Avg Price`} 
+                            value={gp(Math.round(calc_history.total / calc_history.quantity))} 
+                        />
                         <Label2
                             color="light" 
                             name={`Quantity`} 
@@ -218,14 +228,9 @@ const IndexCalc = ({data, history, setHistory}: Props) => {
                             name={`Total`} 
                             value={(gp(calc_history.total))} 
                         />
-                        <Label2
-                            color="light" 
-                            name={`Avg Price`} 
-                            value={gp(Math.round(calc_history.total / calc_history.quantity))} 
-                        />
                     </Flex>
                 </Container>
-                {history.filter(el => el.side === data.side).map((el) => 
+                {calc_history.data.map((el) => 
                     <Container key={el._id} background="dark" onClick={() => onDeleteHistory(el._id)}>
                         <Flex>
                             <Label2
