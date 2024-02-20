@@ -6,10 +6,19 @@ import useForm from '@hooks/useForm';
 
 import Input from '@components/inputs/Input';
 import Label from '@components/labels/Style1';
+import Label2 from '@components/labels/Style2';
 import Choice from '@components/inputs/Choice';
 import Line from '@components/line/Style1';
+import Container from '@components/containers/Style1';
+import Flex from '@components/flex/Between';
 
-const IndexCalc = ({data}: {data: IItems}) => {
+interface Props {
+    data: IItems,
+    history: IItems[],
+    setHistory: React.Dispatch<React.SetStateAction<IItems[]>>
+}
+
+const IndexCalc = ({data, history, setHistory}: Props) => {
 
     const {latest} = useAppSelector(state => state.osrs);
 
@@ -58,118 +67,184 @@ const IndexCalc = ({data}: {data: IItems}) => {
         }
     }, [values]);
 
+    const calc_history = useMemo(() => {
+        let [total, quantity] = [0, 0]
+
+        for(let x of history){
+            total+=x.price*x.quantity;
+            quantity+=x.quantity;
+        };
+
+        return {
+            total,
+            quantity,
+        };
+    }, [history])
+
     return (
-        <form onSubmit={onSubmit}>
+        <div>
+            <form onSubmit={onSubmit}>
+
+                <Line />
+
+                <Label name={data.name} value={gp(latest[data.id].high)} />
+
+                <Line />
+
+                <Choice 
+                    value={values.side} 
+                    items={["buy", "sell"]} 
+                    label={"Side"} 
+                    onClick={v => onSetValue({side: v})}
+                />
+
+                {values.side === "buy" &&
+                    <div>
+                        <Input 
+                            label1="Bought Quantity"
+                            label2={gp(values.old_quantity)}
+                            type="number" 
+                            name="old_quantity"
+                            value={values.old_quantity || ""}
+                            onChange={onChange}
+                        />
+                        <Input 
+                            label1="Bought Price"
+                            label2={gp(values.old_price)}
+                            type="number" 
+                            name="old_price"
+                            value={values.old_price || ""}
+                            onChange={onChange}
+                        />
+                        <Input 
+                            label1="Intended Sell Price"
+                            label2={gp(values.new_price)}
+                            type="number" 
+                            name="new_price"
+                            value={values.new_price || ""}
+                            onChange={onChange}
+                        />
+                        <Line />
+                        <Label 
+                            color="light" 
+                            name={`Total Cost`} 
+                            value={gp(calc_buy_side.total) || 0} 
+                        />
+                        <Line />
+                        <Label 
+                            color="light" 
+                            name={`Quantity To Break Even`} 
+                            value={gp(calc_buy_side.need) || 0} 
+                        />
+                        <Line />
+                        <Label 
+                            color="light" 
+                            name={`Quantity Gain`} 
+                            value={gp(calc_buy_side.quantity_gains) || 0} 
+                        />
+                    </div>
+                }
+
+                {values.side === "sell" &&
+                    <div>
+                        <Input 
+                            label1="Sell Quantity"
+                            label2={gp(values.old_quantity)}
+                            type="number" 
+                            name="old_quantity"
+                            value={values.old_quantity || ""}
+                            onChange={onChange}
+                        />
+                        <Input 
+                            label1="Sell Price"
+                            label2={gp(values.old_price)}
+                            type="number" 
+                            name="old_price"
+                            value={values.old_price || ""}
+                            onChange={onChange}
+                        />
+                        <Input 
+                            label1="Intended Buy Price"
+                            label2={gp(values.new_price)}
+                            type="number" 
+                            name="new_price"
+                            value={values.new_price || ""}
+                            onChange={onChange}
+                        />
+                        <Line />
+                        <Label 
+                            color="light" 
+                            name={`Total Sell`} 
+                            value={gp(calc_sell_side.total) || 0} 
+                        />
+                        <Line />
+                        <Label 
+                            color="light" 
+                            name={`Quantity To Reinvest`} 
+                            value={gp(calc_sell_side.need) || 0} 
+                        />
+                        <Line />
+                        <Label 
+                            color="light" 
+                            name={`Quantity Gain`} 
+                            value={gp(calc_sell_side.quantity_gains) || 0} 
+                        />
+                    </div>
+                }
+            </form>
 
             <Line />
-
-            <Label name={data.name} value={gp(latest[data.id].high)} />
-
+            <br/>
             <Line />
-
-            <Choice 
-                value={values.side} 
-                items={["buy", "sell"]} 
-                label={"Side"} 
-                onClick={v => onSetValue({side: v})}
-            />
-
-            {values.side === "buy" &&
-                <div>
-                    <Input 
-                        label1="Bought Quantity"
-                        label2={gp(values.old_quantity)}
-                        type="number" 
-                        name="old_quantity"
-                        value={values.old_quantity || ""}
-                        onChange={onChange}
-                    />
-                    <Input 
-                        label1="Bought Price"
-                        label2={gp(values.old_price)}
-                        type="number" 
-                        name="old_price"
-                        value={values.old_price || ""}
-                        onChange={onChange}
-                    />
-                    <Input 
-                        label1="Intended Sell Price"
-                        label2={gp(values.new_price)}
-                        type="number" 
-                        name="new_price"
-                        value={values.new_price || ""}
-                        onChange={onChange}
-                    />
-                    <Line />
-                    <Label 
-                        color="light" 
-                        name={`Total Cost`} 
-                        value={gp(calc_buy_side.total) || 0} 
-                    />
-                    <Line />
-                    <Label 
-                        color="light" 
-                        name={`Quantity To Break Even`} 
-                        value={gp(calc_buy_side.need) || 0} 
-                    />
-                    <Line />
-                    <Label 
-                        color="light" 
-                        name={`Quantity Gain`} 
-                        value={gp(calc_buy_side.quantity_gains) || 0} 
-                    />
-                </div>
-            }
-
-            {values.side === "sell" &&
-                <div>
-                    <Input 
-                        label1="Sell Quantity"
-                        label2={gp(values.old_quantity)}
-                        type="number" 
-                        name="old_quantity"
-                        value={values.old_quantity || ""}
-                        onChange={onChange}
-                    />
-                    <Input 
-                        label1="Sell Price"
-                        label2={gp(values.old_price)}
-                        type="number" 
-                        name="old_price"
-                        value={values.old_price || ""}
-                        onChange={onChange}
-                    />
-                    <Input 
-                        label1="Intended Buy Price"
-                        label2={gp(values.new_price)}
-                        type="number" 
-                        name="new_price"
-                        value={values.new_price || ""}
-                        onChange={onChange}
-                    />
-                    <Line />
-                    <Label 
-                        color="light" 
-                        name={`Total Sell`} 
-                        value={gp(calc_sell_side.total) || 0} 
-                    />
-                    <Line />
-                    <Label 
-                        color="light" 
-                        name={`Quantity To Reinvest`} 
-                        value={gp(calc_sell_side.need) || 0} 
-                    />
-                    <Line />
-                    <Label 
-                        color="light" 
-                        name={`Quantity Gain`} 
-                        value={gp(calc_sell_side.quantity_gains) || 0} 
-                    />
-                </div>
-            }
-
             
-        </form>
+            <div>
+                <Label 
+                    name={`History`} 
+                    value={history.filter(el => el.side === data.side).length} 
+                />
+                <Container background='light'>
+                    <Flex>
+                        <Label2
+                            color="light" 
+                            name={`Quantity`} 
+                            value={gp(calc_history.quantity)} 
+                        />
+                        <Label2
+                            color="light" 
+                            name={`Total`} 
+                            value={(gp(calc_history.total))} 
+                        />
+                        <Label2
+                            color="light" 
+                            name={`Avg Price`} 
+                            value={gp(Math.round(calc_history.total / calc_history.quantity))} 
+                        />
+                    </Flex>
+                </Container>
+                {history.filter(el => el.side === data.side).map((el, index) => 
+                    <Container key={el._id} background="dark">
+                        <Flex>
+                            <Label2
+                                color="light" 
+                                name={`Price`} 
+                                value={gp(el.price) || 0} 
+                            />
+                            <Label2
+                                color="light" 
+                                name={`Quantity`} 
+                                value={gp(el.quantity) || 0} 
+                            />
+                            <Label2
+                                color="light" 
+                                name={`Total`} 
+                                value={gp(el.quantity * el.price) || 0} 
+                            />
+                        </Flex>
+                    </Container>    
+                )}
+            </div>
+
+        </div>
     )
 }
 

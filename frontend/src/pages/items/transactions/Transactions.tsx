@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Item from '@redux/actions/items';
 import { IItems } from '@redux/types/items';
@@ -36,6 +36,8 @@ const Transactions = ({data, prices}: Props) => {
 
     const dispatch = useAppDispatch();
 
+    const [history, setHistory] = useState<IItems[]>([]);
+
     const onDelete = (id: string) => {
         dispatch(Item.remove(id))
     };
@@ -60,6 +62,14 @@ const Transactions = ({data, prices}: Props) => {
     const ItemsList = data.map(el => el).flat();
 
     const findIndex = (id: string) => ItemsList.findIndex((item) => item._id ===  id); 
+
+    const onSelectTxnHistory = (item: IItems) => {
+        const isSaved = history.map(el => el._id).includes(item._id);
+        if(isSaved) return;
+        const added = [...history, item];
+        const sort = added.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
+        setHistory(sort);
+    };
 
     return (
         <Pagination data={FitleredByDate} show={25}>
@@ -105,25 +115,29 @@ const Transactions = ({data, prices}: Props) => {
                                         </Flex>
                                     }
                                 />
-                                <SlideIn 
-                                    width={350} 
-                                    icon={
-                                        <Flex>
-                                            <Label1 
-                                                color="light"
-                                                size="0.8rem" 
-                                                name={""} 
-                                                style={{"width": "80px"}} 
-                                            />
-                                            <BiCalculator/>
-                                        </Flex>
-                                    } 
-                                    iconOpen={<Button onClick={() => onDelete(item._id)} label1="Delete" color="red" style={{"width": "100%"}}/>}
-                                >
-                                    <Calculator 
-                                        data={item} 
-                                    />
-                                </SlideIn>
+                                <div onClick={() => onSelectTxnHistory(item)}>
+                                    <SlideIn 
+                                        width={350} 
+                                        icon={
+                                            <Flex>
+                                                <Label1 
+                                                    color="light"
+                                                    size="0.8rem" 
+                                                    name={""} 
+                                                    style={{"width": "80px"}} 
+                                                />
+                                                <BiCalculator/>
+                                            </Flex>
+                                        } 
+                                        iconOpen={<Button onClick={() => onDelete(item._id)} label1="Delete" color="red" style={{"width": "100%"}}/>}
+                                    >
+                                        <Calculator
+                                            data={item} 
+                                            history={history}
+                                            setHistory={setHistory}
+                                        />
+                                    </SlideIn>
+                                </div>
                                 <SlideIn 
                                     width={350} 
                                     icon={
