@@ -31,9 +31,9 @@ export const Theme = ({children}: {children: ReactNode}) => {
     const [theme, setTheme] = useState<ThemeTypes>(theme_selected);
 
     const selected =         
-        theme.name === "light"    ? [`#15bb39`, `#15bb3986`] :
-        theme.name === "night"    ? [`#6042d7`, `#6042d7cb`] :
-        theme.name === "sunset"   ? [`#e79b38`, `#e79b38`]   :
+        theme.name === "light"    ? [`#15bb39` , `#15bb39cd`] :
+        theme.name === "night"    ? [`#6042d7` , `#6042d7cb`] :
+        theme.name === "sunset"   ? [`#e79b38` , `#e79b38`  ] :
         theme.name === "ocean"    ? [`#1349e8` , `#1348e8c6`] : 
         theme.name === "thunder"  ? [`#f8ee29` , `#f8ee29ef`] :
         ["", ""]
@@ -48,7 +48,7 @@ export const Theme = ({children}: {children: ReactNode}) => {
         if(theme.name === "night") theme_change =  {name: "sunset", background: "black"};
         if(theme.name === "sunset") theme_change = {name: "ocean",  background: "black"};
         if(theme.name === "ocean") theme_change =  {name: "thunder",  background: "black"};
-        if(theme.name === "thunder") theme_change =  {name: "light",  background: "black"};
+        if(theme.name === "thunder") theme_change =  {name: "light",  background: "white"};
         setTheme(theme_change);
         localSet("theme", theme_change);
     };

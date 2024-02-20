@@ -14,8 +14,9 @@
         justify-content: space-between;
         
         svg{
-            display: block;
             font-size: 1rem;
+            display: flex;
+            align-items: center;
         }
         .button{
             padding: 0.5rem;
@@ -29,6 +30,10 @@
                 background-color: var(--clr-main);
                 border-radius: 50px;
             }
+        }
+        .star{
+            color: var(--clr-yellow);
+            display: flex;
         }
     }
 

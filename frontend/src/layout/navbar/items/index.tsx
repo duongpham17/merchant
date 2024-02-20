@@ -10,6 +10,7 @@ import Search from '@components/search/Search';
 import Pagination from '@components/pagination/Style1';
 import Label3 from '@components/labels/Style3'
 import Flex from '@components/flex/Between';
+import FlexSingle from '@components/flex/Single';
 import Line from '@components/line/Style1';
 import Observer from '@components/observer/Observer';
 import Container from '@components/containers/Style1';
@@ -17,7 +18,7 @@ import Message from '@components/hover/Message';
 
 interface ExtendedOsrsGeItems extends OSRS_GE_ITEM {
     margin: number;
-  };
+};
 
 const Home = () => {
 
@@ -46,13 +47,13 @@ const Home = () => {
             <Observer key={item.id}>
                 <Container background='dark' hover>
                     <Link to={`/item/${item.id}`}>
-                        <Flex>
+                        <FlexSingle>
                             <img 
                                 src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} 
                                 alt="osrs"
                             />
                             <p>{item.name}</p>
-                        </Flex>
+                        </FlexSingle>
                         <Line/>
                         <Flex>
                             <Message message={`Highest`}>

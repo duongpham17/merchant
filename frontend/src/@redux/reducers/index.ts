@@ -5,6 +5,7 @@ import authentication from './authentication';
 import users from './users';
 import items from './items';
 import osrs from './osrs';
+import favourites from './favourites';
 
 const reducers = combineReducers({
     alert,
@@ -12,7 +13,7 @@ const reducers = combineReducers({
     users,
     items,
     osrs,
-
+    favourites
 });
 
 export default reducers;

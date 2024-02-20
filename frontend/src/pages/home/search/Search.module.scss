@@ -5,10 +5,15 @@
     border-radius: 5px;
     width: 100%;
     text-align: center;
+    th{
+        font-size: 1rem;
+        font-weight: 400;
+    }
     td{
         border-bottom: 1px solid var(--clr-dark-light);
         padding: 1rem 0;
         color: var(--clr-text-light);
+        font-size: 0.9rem;
     }
     .name{
         text-align: left;
@@ -24,6 +29,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    .favourite{
+        svg{
+            font-size: 1rem;
+        }
+        .fav{
+            color: var(--clr-yellow);
+        }
     }
 
     @media (max-width: 500px){

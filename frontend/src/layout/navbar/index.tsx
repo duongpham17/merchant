@@ -9,7 +9,7 @@ import { FaWater } from 'react-icons/fa';
 import { BiCalculator } from 'react-icons/bi';
 import { BsSunFill, BsFillMoonFill, BsSunsetFill } from 'react-icons/bs';
 import { AiFillHome, AiFillFileAdd, AiOutlineUser, AiFillThunderbolt, AiOutlineSearch } from 'react-icons/ai';
-import { FaSitemap } from 'react-icons/fa';
+import { FaStar, FaStoreAlt } from 'react-icons/fa';
 import { MdLogin} from 'react-icons/md';
 
 import Message from '@components/hover/Message';
@@ -18,6 +18,7 @@ import SlideIn from '@components/slidein/Style1';
 import CreateComp from './create';
 import CalculatorComp from './calculator';
 import ItemsComp from './items';
+import FavouriteComp from './favourite';
 
 const Navbar = () => {
 
@@ -71,6 +72,15 @@ const Navbar = () => {
           >
             <ItemsComp />
         </SlideIn>
+
+        <SlideIn 
+            width={350} 
+            icon={<Message message='Favourite'><button className={styles.button}><FaStar/></button> </Message>}
+            iconOpen={<FaStar className={styles.star}/>}
+          >
+            <FavouriteComp />
+        </SlideIn>
+
       {isLoggedIn &&
         <>
           <SlideIn 
@@ -81,17 +91,16 @@ const Navbar = () => {
             <CalculatorComp />
           </SlideIn>
 
-          <Message message='Stocks'>
-            <Link className={styles.button} to="/items"><FaSitemap/></Link>
-          </Message>
-
           <SlideIn 
             width={350} 
             icon={<Message message='Transaction'><button className={styles.button}><AiFillFileAdd/></button> </Message>}
           >
             <CreateComp />
           </SlideIn>
-          
+
+          <Message message='Stocks'>
+            <Link className={styles.button} to="/items"><FaStoreAlt/></Link>
+          </Message>
         </> 
         }
       </nav>

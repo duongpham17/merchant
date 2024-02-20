@@ -60,7 +60,7 @@ const CreateIndex = () => {
       const value = await navigator.clipboard.readText();
       const parsed = JSON.parse(value);
       if (typeof parsed === 'object' && parsed !== null) {
-          onSetValue({ price: parsed.cost_basis });
+          onSetValue({ price: parsed.cost_basis, quantity: parsed.new_quantity });
       } else {
         console.error('Invalid clipboard data: Not a valid JSON object.');
       }

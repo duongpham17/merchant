@@ -208,8 +208,8 @@ const IndexCalc = ({data, history, setHistory}: Props) => {
             
             <div>
                 <Label 
-                    name={`History`} 
-                    value={calc_history.data.length} 
+                    name={`Calculator`} 
+                    value={`[ ${calc_history.data.length} ]`} 
                 />
                 <Container background='light'>
                     <Flex>

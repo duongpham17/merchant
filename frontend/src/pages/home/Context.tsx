@@ -5,7 +5,7 @@ import OsrsGeItems, {OSRS_GE_ITEM} from '@data/osrs-ge';
 import useForm from '@hooks/useForm';
 import { gemargin } from '@utils/osrs';
 
-interface ExtendedOsrsGeItems extends OSRS_GE_ITEM {
+export interface ExtendedOsrsGeItems extends OSRS_GE_ITEM {
   margin: number;
 };  
 

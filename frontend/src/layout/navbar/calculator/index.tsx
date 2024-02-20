@@ -64,7 +64,7 @@ const IndexCalc = () => {
 
             <Line />
 
-            {items && <Label name={items[0].name} value={gp(latest[items[0].id].high)} /> }
+            {!items ? "" : items.length ? <Label name={items[0].name} value={gp(latest[items[0].id].high)} /> : "" }
 
             <Line />
 

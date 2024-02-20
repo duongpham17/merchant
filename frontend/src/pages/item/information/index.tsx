@@ -1,19 +1,25 @@
 import styles from './Information.module.scss';
-import React, {useContext, useMemo} from 'react';
+import {useContext, useMemo} from 'react';
+import Favourites from '@redux/actions/favourites';
 import { Context } from '../Context';
-import { useAppSelector } from '@redux/hooks/useRedux';
+import { useAppSelector, useAppDispatch } from '@redux/hooks/useRedux';
 import { firstcaps } from '@utils/functions';
 import { gp } from '@utils/osrs';
 import { MdSell, MdStar } from "react-icons/md";
 import { timeAgo, convertTimestampToUKTime } from '@utils/time';
 
 import Message from '@components/hover/Message'
+import { FaStar } from 'react-icons/fa';
 
 const Information = () => {
+
+    const dispatch = useAppDispatch();
 
     const { item, timeseries } = useContext(Context);
     
     const { latest } = useAppSelector(state => state.osrs);
+
+    const { favourites } = useAppSelector(state => state.favourites);
 
     const latest_data = latest[item.id];
 
@@ -49,8 +55,22 @@ const Information = () => {
         <div className={styles.container}>
         
         <div className={styles.name}>
-            <img src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} width={30} alt="osrs" />
-            <p>{item.name}</p>
+            <div>
+                <img src={`https://oldschool.runescape.wiki/images/${firstcaps(item.icon.replaceAll(" ", "_"))}`} width={30} alt="osrs" />
+                <p>{item.name}</p>
+            </div>
+            <div>
+            { !favourites  
+                ? 
+                    <button className={styles.favourite} onClick={() => dispatch(Favourites.create(item))}>
+                        <FaStar />
+                    </button> 
+                :                             
+                    <button className={styles.favourite} onClick={() => dispatch(Favourites.selector(item, favourites))}>
+                        {favourites.includes(item.id) ? <FaStar className={styles.fav}/> : <FaStar/> }
+                    </button>
+                }
+            </div>
         </div>
 
         <div className={styles.examine}>

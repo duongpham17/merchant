@@ -11,7 +11,25 @@
     .name{
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 1rem;
+
+        div{
+            display: flex;
+            align-items: center;
+            p{
+                margin-left: 1rem;
+            }
+        }
+
+        .favourite{
+            svg{
+                font-size: 1rem;
+            }
+            .fav{
+                color: var(--clr-yellow);
+            }
+        }
     }
 
     .others{
