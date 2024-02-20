@@ -79,7 +79,11 @@ const IndexCalc = ({data, history, setHistory}: Props) => {
             total,
             quantity,
         };
-    }, [history])
+    }, [history]);
+
+    const onDeleteHistory = (id: string) => {
+        setHistory(history => history.filter(el => el._id !== id));
+    };  
 
     return (
         <div>
@@ -221,8 +225,8 @@ const IndexCalc = ({data, history, setHistory}: Props) => {
                         />
                     </Flex>
                 </Container>
-                {history.filter(el => el.side === data.side).map((el, index) => 
-                    <Container key={el._id} background="dark">
+                {history.filter(el => el.side === data.side).map((el) => 
+                    <Container key={el._id} background="dark" onClick={() => onDeleteHistory(el._id)}>
                         <Flex>
                             <Label2
                                 color="light" 
