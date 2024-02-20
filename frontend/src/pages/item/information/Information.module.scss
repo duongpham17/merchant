@@ -1,0 +1,74 @@
+.container{
+    background-color: var(--clr-dark);
+    padding: 1rem;
+    margin-bottom: 1rem;
+
+    .name, .examine, .others, .prices, .roi{
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--clr-light);
+    }
+
+    .name{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .others{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        div{
+            width: 100%;
+            span{
+                display: block;
+            }
+            svg{
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+
+    .prices{
+
+        div{
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            p{
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            small{
+                color: var(--clr-text-light);
+            }
+        }
+        .sell{
+            color: var(--clr-red);
+        }
+        .buy{
+            color: var(--clr-green);
+        }
+    }
+
+    .roi{
+        p{
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        small{
+            color: var(--clr-text-light);
+        }
+        .loss{
+            color: var(--clr-red);
+        }
+        .profit{
+            color: var(--clr-green);
+        }
+    }
+}

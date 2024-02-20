@@ -47,4 +47,32 @@ export const minuteToString = (minutes: number) => {
         minutes >= (60 * 24) && minutes < (60 * 24 * 7) ? `${minutes / 60 / 24} day` :
         `${minutes / 60 / 24 / 7} week` 
     return time;
+};
+
+export const timeAgo = (timestamp: number): string => {
+    const date: Date = new Date(timestamp * 1000);
+    const currentDate: Date = new Date();
+    const differenceInMillis: number = currentDate.getTime() - date.getTime();
+    const differenceInSeconds: number = Math.floor(differenceInMillis / 1000);
+
+    if (differenceInSeconds < 60) {
+        return `${differenceInSeconds} seconds ago`;
+    } else if (differenceInSeconds < 3600) {
+        const minutes: number = Math.floor(differenceInSeconds / 60);
+        return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    } else if (differenceInSeconds < 86400) {
+        const hours: number = Math.floor(differenceInSeconds / 3600);
+        return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    } else {
+        const days: number = Math.floor(differenceInSeconds / 86400);
+        return `${days} day${days > 1 ? 's' : ''} ago`;
+    }
+};
+
+export const convertTimestampToUKTime = (timestamp: number) => {
+    const date = new Date(timestamp * 1000); // Multiply by 1000 to convert seconds to milliseconds
+    // Format the date as "day month year"
+    const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+    const ukDate = new Intl.DateTimeFormat('en-GB', options).format(date);
+    return ukDate;
 }
