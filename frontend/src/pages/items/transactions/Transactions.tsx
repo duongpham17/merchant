@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useAppDispatch } from '@redux/hooks/useRedux';
 import Item from '@redux/actions/items';
 import { IItems } from '@redux/types/items';
@@ -58,6 +58,10 @@ const Transactions = ({data, prices}: Props) => {
         };
         return dates;
     }, [data]);
+
+    useEffect(() => {
+        setHistory([]);
+    }, [ data ])
 
     const ItemsList = data.map(el => el).flat();
 
