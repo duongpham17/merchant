@@ -52,22 +52,19 @@ const UseContextItems = ({children}: {children: React.ReactNode}) => {
         dispatch(Items.unique());
     }, [dispatch, location]);
 
-    const onSelectItem = (id: number, icon: string) => {
+    const onSelectItem = (id: number, icon: string): void => {
         if(!quickList) return;
-
         const already_selected = id === openLocal;
         if(already_selected) return;
-
         const selected = {id, icon};
         setQuery("id", id);
         onOpenLocal(id);
-        if(!quickList){
+        if(!quickList || !quickList.length){
             setQuickList([{id, icon}]);
             return localStorage.setItem("ge-item-quick-saved-list", JSON.stringify([selected]))
         };
-
         const is_saved = quickList.map(el => el.id).includes(id);
-        const new_saved = is_saved ? [selected, ...quickList.filter(el => el.id !== id)] : [selected];
+        const new_saved = is_saved ? [selected, ...quickList.filter(el => el.id !== id)] : [selected, ...quickList];
         setQuickList(new_saved);
         return localStorage.setItem("ge-item-quick-saved-list", JSON.stringify(new_saved));
     };

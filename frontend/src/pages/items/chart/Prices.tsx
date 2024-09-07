@@ -40,6 +40,7 @@ const Prices = ({timeseries}: Props) => {
 
   return (
     <>
+    
       <Flex style={{padding: "1rem 0"}}>
           <Flex style={{gap: "1rem"}}>
             <Label2

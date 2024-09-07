@@ -15,30 +15,30 @@ const MarginIndex = () => {
             <form onSubmit={onSubmit}>
                 <Flex>
                     <Input 
-                    label1="Lowest"
-                    label2={`${gp(values.lowest)}`}
-                    type="number"
-                    name="lowest" 
-                    placeholder='...'
-                    value={values.lowest || ""} 
-                    onChange={onChange} 
+                        label1="Lowest"
+                        label2={`${gp(values.lowest)}`}
+                        type="number"
+                        name="lowest" 
+                        placeholder='...'
+                        value={values.lowest || ""} 
+                        onChange={onChange} 
                     />
                     <Input 
-                    label1="Highest"
-                    label2={`${gp(values.highest)}`}
-                    type="number"
-                    name="highest" 
-                    placeholder='...'
-                    value={values.highest || ""} 
-                    onChange={onChange} 
+                        label1="Highest"
+                        label2={`${gp(values.highest)}`}
+                        type="number"
+                        name="highest" 
+                        placeholder='...'
+                        value={values.highest || ""} 
+                        onChange={onChange} 
                     />
                 </Flex>
 
                 {edited && 
                     <Button 
-                    label1="save"
-                    type="submit"
-                    color="blue"
+                        label1="save"
+                        type="submit"
+                        color="blue"
                     />
                 }
             </form>
